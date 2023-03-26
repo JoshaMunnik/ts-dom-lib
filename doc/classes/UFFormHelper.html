@@ -18,85 +18,95 @@
 <section class="tsd-panel tsd-comment">
 <div class="tsd-comment tsd-typography"><p>Defines static class <a href="UFFormHelper.html">UFFormHelper</a>, a class to make html forms more dynamic by changing styles,
 visibility and enabled states based on input elements value and valid state.</p>
-<p><a href="UFFormHelper.html">UFFormHelper</a> is a singleton class instance; its methods can be accessed directly. When loaded
-it will automatically check the DOM for specific &#39;data-uf-XXXX&#39; attribute usage.</p>
-<p>Add &#39;data-uf-manage-submit=&quot;&quot;&#39; to a form tag to link the valid state of the form (using html5 validation) to the
+<p><a href="UFFormHelper.html">UFFormHelper</a> is a singleton class instance; its methods can be accessed directly.</p>
+<p>Add <code>data-uf-manage-submit</code> to a <code>&lt;form&gt;</code> to link the valid state of the form (using html5 validation) to the
 enabled state of the submit buttons within the form. The submit buttons will only be enabled when all required fields
 are valid. The value of this data field is not used and can be set to anything.</p>
 <p>For a finer control of a tag based on the state of an input element or form use a combination of
-&#39;data-uf-toggle-XXXX&#39; at the tag. The tag can be enabled or disabled, shown or hidden or a css class can be added or
-removed based on either the valid state of an input element or if the value of the input element matches a certain
-value.</p>
+<code>data-uf-toggle-XXXX</code> at the tag. It alters the element depending if one or more elements matches a condition or not.</p>
 <p>The following data attributes can be added:</p>
 <ul>
-<li><p>&#39;data-uf-toggle-type&#39; = auto (default), value, valid, property
-Determines what that check for the valid state. With &#39;value&#39; it is assumed the selector points to an input element,
-its value is compared to the values set with &#39;data-uf-toggle-value&#39; or &#39;data-uf-toggle-values&#39;. If no values are
-set, the input element is considered valid if the value is not empty. With &#39;valid&#39; the html5 validation result
-is used. With &#39;property&#39; the value of a property is checked against the set values.
-Use &#39;auto&#39; to select the type based on certain conditions. The type is set to &#39;value&#39; if either
-&#39;data-uf-toggle-value&#39; or &#39;data-uf-toggle-values&#39; is used. The type is set to &#39;property&#39; if the selector points to
-an input element that is checkbox or radio button. Else the type is set to &#39;valid&#39;.
-If the selector points to a form, the type is forced to &#39;valid&#39; since a form does not have a value.
-If &#39;auto&#39; is used and the selector points to a checkbox or radio button and no values have been set, the values
-are set to [&#39;true&#39;].</p>
+<li><p><code>data-uf-toggle-type</code> = &#39;auto&#39; (default), &#39;value&#39;, &#39;valid&#39;, &#39;property&#39;</p>
+<ul>
+<li>&#39;value&#39; = it is assumed the selector points to an input element, its value is compared to the values set with
+&#39;data-uf-toggle-value&#39; or &#39;data-uf-toggle-values&#39;. If no values are set, the input element is considered valid
+if the value is not empty.</li>
+<li>&#39;valid&#39; = the html5 validation result is used.</li>
+<li>&#39;property&#39; = works like &#39;value&#39; but check the value of a property instead of the value of the element.</li>
+<li>&#39;auto&#39; = select the type based on certain conditions:<ul>
+<li>&#39;value&#39; is selected if &#39;data-uf-toggle-value&#39; or &#39;data-uf-toggle-values&#39; is used.</li>
+<li>&#39;property&#39; is selected if the selector points to an input element that is checkbox or radio button.</li>
+<li>&#39;valid&#39; is used in all other cases.</li>
+</ul>
 </li>
-<li><p>&#39;data-uf-toggle-property&#39; = string (default = &#39;checked&#39;)</p>
+</ul>
+<p>If the selector points to a form, the type is forced to &#39;valid&#39; since a form does not have a value.</p>
+<p>If &#39;auto&#39; is used and the selector points to a checkbox or radio button and no values have been set, [&#39;true&#39;] is
+used for the values list.</p>
 </li>
-<li><p>&#39;data-uf-toggle-selector&#39; = #xxxx, .xxxx, xxxx, &#39;&#39; (default)
-To select the elements to check. Use empty text to select the parent form this element is contained in.
-Prefix with &#39;#&#39; to select an element by its id and prefix with &#39;.&#39; to select elements by their css classes.</p>
+<li><p><code>data-uf-toggle-property</code> = string (default = &#39;checked&#39;)</p>
 </li>
-<li><p>&#39;data-uf-toggle-change&#39; = auto (default), enable, visible, none
-Determines how to change the controlled element. With &#39;enable&#39; the disabled property is updated. With &#39;visible&#39;
-the visibility is updated by setting the display style to either &#39;none&#39; or the value of &#39;data-uf-toggle-display&#39;.
-With &#39;none&#39; the elements state is unaltered (except for css classes as set with &#39;data-uf-toggle-class&#39; and
-&#39;data-uf-toggle-class-match&#39;.
-When &#39;auto&#39; is used, the change is set to &#39;none&#39; if one or more css classes have been specified. If the element
-is an input, button or select element change is set to &#39;enable&#39;. In all other cases change is set to &#39;visible&#39;.</p>
+<li><p><code>data-uf-toggle-selector</code> = &#39;#xxxx&#39;, &#39;.xxxx&#39;, &#39;xxxx&#39;, &#39;&#39; (default)
+To select the element or elements to check.</p>
+<p>Use empty text to select the parent form this element is contained in.</p>
+<p>Prefix with &#39;#&#39; to select an element by its id and prefix with &#39;.&#39; to select elements by their css classes.</p>
 </li>
-<li><p>&#39;data-uf-toggle-display&#39; = string (default = &#39;block&#39;)
+<li><p><code>data-uf-toggle-change</code> = &#39;auto&#39; (default), &#39;enable&#39;, &#39;visible&#39;, &#39;none&#39;, &#39;required&#39;, &#39;not-required&#39;</p>
+<ul>
+<li>&#39;enable&#39; = update the disabled property.</li>
+<li>&#39;visible&#39; = update the visibility by setting the <code>display</code> style to either &#39;none&#39; or the value of
+&#39;data-uf-toggle-display&#39;.</li>
+<li>&#39;none&#39; = the elements state is unaltered (except for css classes as set with &#39;data-uf-toggle-class&#39; and
+&#39;data-uf-toggle-class-match&#39;).</li>
+<li>&#39;required&#39; = only of use with a input element. Turns on the required state if there is a match.</li>
+<li>&#39;not-required&#39; = the opposite of &#39;required&#39;, turns off the required state if there is a match.</li>
+<li>&#39;auto&#39; = use &#39;none&#39; if one or more css classes have been defined via &#39;data-uf-toggle-class&#39; and/or
+&#39;data-uf-toggle-class-match&#39;. If the element is an input, button or select element use &#39;enable&#39;.
+In all other cases use &#39;visible&#39;.</li>
+</ul>
+</li>
+<li><p><code>data-uf-toggle-display</code> = string (default = &#39;block&#39;)
 Value to assign to display style when the condition is matched. This value is only used if
 &#39;data-uf-toggle-change&#39; is &#39;visible&#39;</p>
 </li>
-<li><p>&#39;data-uf-toggle-class&#39; = name of css class (without .)
+<li><p><code>data-uf-toggle-class</code> = name of css class (without .)
 The css class to add when the elements pointed to by the selector do not match the condition.</p>
 </li>
-<li><p>&#39;data-uf-toggle-class-match&#39; = name of css class (without .)
+<li><p><code>data-uf-toggle-class-match</code> = name of css class (without .)
 The css class to add when the elements pointed to by the selector do match the condition.</p>
 </li>
-<li><p>&#39;data-uf-toggle-condition&#39; = any, all (default), none
+<li><p><code>data-uf-toggle-condition</code> = &#39;any&#39;, &#39;all&#39; (default), &#39;none&#39;
 Determines the condition the elements must match. With &#39;any&#39; only one element must either be valid or be equal
 to the one of the specified values. With &#39;all&#39; all elements must either be valid or or be equal to one of the
-specified values. With &#39;none&#39; none of the elements must be valid or be equal to any of the specified values.</p>
+specified values. &#39;none&#39; is the reverse of &#39;all&#39;, none of the elements must be valid or be equal to any of the
+specified values.</p>
+</li>
+<li><p><code>data-uf-toggle-value</code> = single value
+Alias for <code>data-uf-toggle-values</code>. If <code>data-uf-toggle-values</code> is also specified, this attribute will be ignored.</p>
+</li>
+<li><p><code>data-uf-toggle-values</code> = multiple values
+Multiple values separated by the separator text as set by <code>data-uf-toggle-values-separator</code>.</p>
+</li>
+<li><p><code>data-uf-toggle-values-separator</code> = string (default = &#39;,&#39;)
+Separator string to split the value of <code>data-uf-toggle-values</code> with.</p>
 </li>
 </ul>
-<p>-&#39;data-uf-toggle-value&#39; = single value
-  Alias for &#39;data-uf-toggle-values&#39;. If &#39;data-uf-toggle-values&#39; is also specified, this attribute will be ignored.</p>
-<ul>
-<li><p>&#39;data-uf-toggle-values&#39; = multiple values
-Multiple values separated by the separator text as set by &#39;data-uf-toggle-values-separator&#39;.</p>
-</li>
-<li><p>&#39;data-uf-toggle-values-separator&#39; = string (default = &#39;,&#39;)
-Separator string to split the value of &#39;data-uf-toggle-values&#39; with.</p>
-</li>
-</ul>
-<p>Use &#39;data-uf-select-url&#39; to a select (single value, drop down) to load a new page when the user changes
+<p>Add <code>data-uf-select-url</code> to a <code>&lt;select&gt;</code> (single value, drop down) to load a new page when the user changes
 the drop down value. Use macro &#39;%value%&#39; in the attribute value to use the selected value in the url.</p>
-<p>Use &#39;data-uf-share-hover&#39; with anchors to add the value as css class when the user hovers over an anchor that points
+<p>Use <code>data-uf-share-hover</code> with anchors to add the value as css class when the user hovers over an anchor that points
 to the same href. This data attribute must be added to every anchor.</p>
-<p>Add &#39;data-uf-page-refresh&#39; to clickable elements (anchors or buttons) to automatically refresh the page after the
-user clicks on the element. The value of &#39;data-uf-page-refresh&#39; is the delay in milliseconds before the refresh is
+<p>Add <code>data-uf-page-refresh</code> to clickable elements (anchors or buttons) to automatically refresh the page after the
+user clicks on the element. The value of <code>data-uf-page-refresh</code> is the delay in milliseconds before the refresh is
 executed.</p>
-<p>Use &#39;data-uf-click-selector&#39; in combination with &#39;data-uf-click-style&#39; and/or &#39;data-uf-click-class&#39; to change the
-style or toggle the class of an element when the element identified by &#39;data-uf-click-selector&#39; is clicked upon.</p>
+<p>Use <code>data-uf-click-selector</code> in combination with <code>data-uf-click-style</code> and/or <code>data-uf-click-class</code> to change the
+style or toggle the class of an element when the element identified by <code>data-uf-click-selector</code> is clicked upon.</p>
 </div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
 <li><span class="target">UFFormHelper</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/JoshaMunnik/ts-dom-lib/blob/622b0d4/src/helpers/UFFormHelper.ts#L913">helpers/UFFormHelper.ts:913</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/JoshaMunnik/ts-dom-lib/blob/e571e66/src/helpers/UFFormHelper.ts#L939">helpers/UFFormHelper.ts:939</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -117,7 +127,7 @@ style or toggle the class of an element when the element identified by &#39;data
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/JoshaMunnik/ts-dom-lib/blob/622b0d4/src/helpers/UFFormHelper.ts#L926">helpers/UFFormHelper.ts:926</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/JoshaMunnik/ts-dom-lib/blob/e571e66/src/helpers/UFFormHelper.ts#L952">helpers/UFFormHelper.ts:952</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">

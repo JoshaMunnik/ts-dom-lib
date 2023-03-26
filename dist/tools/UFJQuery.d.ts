@@ -11,7 +11,7 @@
  *     software without specific prior written permission.</li>
  * </ul>
  * <br/>
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
@@ -36,7 +36,7 @@ export declare class UFJQuery {
      * @param anElement
      *   Selector text or jQuery instance
      *
-     * @returns anElement itself it is an jQuery instance else the method returns `$(anElement)`.
+     * @returns anElement itself if it is an jQuery instance else the method returns `$(anElement)`.
      *   If anElement is a falsy, the method will return anElement.
      */
     static get(anElement: any): JQuery | any;
