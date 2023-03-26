@@ -24,6 +24,7 @@
 // region imports
 
 import {UFJQuery} from '../tools/UFJQuery.js';
+import {UFText} from '@ultraforce/ts-general-lib/dist';
 
 // endregion
 
@@ -654,7 +655,9 @@ function buildToggleData(anElement: JQuery): null|UFToggleData {
   const condition = anElement.data(TOGGLE_CONDITION) || TOGGLE_CONDITION_ALL;
   const property = anElement.data(TOGGLE_PROPERTY) || 'checked';
   const separator = anElement.data(TOGGLE_VALUES_SEPARATOR) || ',';
-  const valuesText = anElement.data(TOGGLE_VALUES) || anElement.data(TOGGLE_VALUE) || '';
+  const valuesText = UFText.asString(anElement.data(TOGGLE_VALUES))
+    || UFText.asString(anElement.data(TOGGLE_VALUE))
+    || '';
   const values = valuesText.length > 0 ? valuesText.split(separator) : [];
   // add 'true' for checkbox/radio buttons if there are no values
   if (isChecked && (values.length === 0)) {
