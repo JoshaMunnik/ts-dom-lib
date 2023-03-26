@@ -1,6 +1,11 @@
+// helpers
+
+export * from './helpers/UFFormHelper';
+
 // tools
 
 export * from './tools/UFCanvas';
+export * from './tools/UFJQuery';
 export * from './tools/UFHtml';
 export * from './tools/UFNetwork';
 
