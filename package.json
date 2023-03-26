@@ -1,0 +1,33 @@
+{
+  "name": "@ultraforce/ts-dom-lib",
+  "version": "1.0.0",
+  "description": "DOM related utility classes.",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "doc": "typedoc"
+  },
+  "files": [
+    "doc",
+    "dist",
+    "LICENSE.MD",
+    "README.md"
+  ],
+  "keywords": [
+    "typescript",
+    "utility"
+  ],
+  "author": "Josha Munnik",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.7",
+    "typedoc": "^0.23.28",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@ultraforce/ts-general-lib": "^1.0.0",
+    "jquery": "^3.6.4"
+  }
+}
