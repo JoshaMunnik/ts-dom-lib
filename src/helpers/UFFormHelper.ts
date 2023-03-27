@@ -452,7 +452,23 @@ function initManageSubmit() {
     // jquery shortcut
     const form = $(this);
     // handle changes to any field within the form that is required
-    form.find('[required]')
+    form.find('input')
+      // first remove previously attached handlers
+      .off('.' + MANAGE_SUBMIT_NAMESPACE)
+      // install new handler
+      .on(
+        UFJQuery.addEventNamespace(CHANGE_EVENTS, MANAGE_SUBMIT_NAMESPACE),
+        () => updateSubmitButtons(form)
+      );
+    form.find('select')
+      // first remove previously attached handlers
+      .off('.' + MANAGE_SUBMIT_NAMESPACE)
+      // install new handler
+      .on(
+        UFJQuery.addEventNamespace(CHANGE_EVENTS, MANAGE_SUBMIT_NAMESPACE),
+        () => updateSubmitButtons(form)
+      );
+    form.find('textarea')
       // first remove previously attached handlers
       .off('.' + MANAGE_SUBMIT_NAMESPACE)
       // install new handler
@@ -950,6 +966,7 @@ export class UFFormHelper {
    * Scans or rescans the DOM and processes forms and form related elements.
    */
   static scan() {
+    // first submit so that its event handlers are called last and toggle event handlers have been processed
     initManageSubmit();
     initToggle();
     initSelectUrl();
