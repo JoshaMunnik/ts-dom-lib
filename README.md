@@ -11,3 +11,7 @@ Some of the classes use `jQuery`.
 ## Installation
 
 `npm install @ultraforce/ts-dom-lib`
+
+## Documentation
+
+To view the generated documentation, visit: https://joshamunnik.github.io/ts-dom-lib/
