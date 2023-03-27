@@ -8,7 +8,7 @@
     "doc": "typedoc"
   },
   "files": [
-    "doc",
+    "docs",
     "dist",
     "LICENSE.MD",
     "README.md"
