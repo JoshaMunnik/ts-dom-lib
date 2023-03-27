@@ -6,7 +6,7 @@ The library exists of various support classes for the DOM for use with TypeScrip
 
 It exists of code snippets found on the internet and conversions from other libraries.
 
-Some of the classes use `jQuery`.
+Some classes use `jQuery`.
 
 ## Installation
 
