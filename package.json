@@ -1,6 +1,6 @@
 {
   "name": "@ultraforce/ts-dom-lib",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "DOM related utility classes.",
   "scripts": {
     "build": "tsc",
@@ -17,6 +17,7 @@
     "typescript",
     "utility"
   ],
+  "typings": "./dist/index.d.ts",
   "author": "Josha Munnik",
   "license": "MIT",
   "devDependencies": {
