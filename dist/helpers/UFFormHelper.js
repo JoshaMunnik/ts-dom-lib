@@ -800,6 +800,7 @@ export class UFFormHelper {
      * Scans or rescans the DOM and processes forms and form related elements.
      */
     static scan() {
+        // first submit so that its event handlers are called last and toggle event handlers have been processed
         initManageSubmit();
         initToggle();
         initSelectUrl();
