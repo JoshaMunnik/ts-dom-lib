@@ -23,7 +23,7 @@
 
 // region imports
 
-import {UFModel} from "@ultraforce/ts-general-lib";
+import {UFModel} from "@ultraforce/ts-general-lib/dist/models/UFModel";
 
 // endregion
 
