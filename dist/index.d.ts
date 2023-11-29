@@ -1,4 +1,5 @@
 export * from './helpers/UFFormHelper';
+export * from './models/UFStorableModel';
 export * from './tools/UFCanvas';
 export * from './tools/UFJQuery';
 export * from './tools/UFHtml';

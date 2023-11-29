@@ -2,6 +2,10 @@
 
 export * from './helpers/UFFormHelper';
 
+// models
+
+export * from './models/UFStorableModel';
+
 // tools
 
 export * from './tools/UFCanvas';
@@ -12,3 +16,4 @@ export * from './tools/UFNetwork';
 // types
 
 export * from './types/UFFetchMethod';
+
