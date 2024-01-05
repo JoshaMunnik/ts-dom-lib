@@ -28,10 +28,15 @@
  */
 type RemoveFunction = () => void;
 
+// endregion
+
+// region exports
+
 /**
- * Class
+ * {@link UFEventManager} can be used to make sure only a single listener is added for a certain
+ * event at an element.
  */
-class UFEventManagerClass {
+export class UFEventManager {
   // region private variables
 
   /**
@@ -39,14 +44,15 @@ class UFEventManagerClass {
    * 
    * @private
    */
-  private m_elementEvents: Map<HTMLElement, Map<string, RemoveFunction>> = new Map();
+  private static s_elementEvents: Map<HTMLElement, Map<string, RemoveFunction>> = new Map();
   
   // endregion
   
   // region public methods
 
   /**
-   * Adds an event listener to an element. The method first removes a previously added listener for the event (if any).
+   * Adds an event listener to an element. The method first removes a previously added listener
+   * for the event (if any).
    * 
    * @param anElement
    *   Element to add event listener to
@@ -55,12 +61,12 @@ class UFEventManagerClass {
    * @param anEventHandler
    *   Event handler to call when event is triggered
    */
-  add(anElement: HTMLElement, anEventName: string, anEventHandler: any) {
-    this.remove(anElement, anEventName);
-    let eventRemoveFunctions = this.m_elementEvents.get(anElement);
+  static add(anElement: HTMLElement, anEventName: string, anEventHandler: any) {
+    UFEventManager.remove(anElement, anEventName);
+    let eventRemoveFunctions = UFEventManager.s_elementEvents.get(anElement);
     if (!eventRemoveFunctions) {
       eventRemoveFunctions = new Map();
-      this.m_elementEvents.set(anElement, eventRemoveFunctions);
+      UFEventManager.s_elementEvents.set(anElement, eventRemoveFunctions);
     }
     eventRemoveFunctions.set(anEventName, () => anElement.removeEventListener(anEventName, anEventHandler));
     anElement.addEventListener(anEventName, anEventHandler);
@@ -74,8 +80,9 @@ class UFEventManagerClass {
    * @param anEventName
    *   Name of event to remove listener for
    */
-  remove(anElement: HTMLElement, anEventName: string): void {
-    const eventRemoveFunctions = this.m_elementEvents.get(anElement);
+  static remove(anElement: HTMLElement, anEventName: string): void {
+    const eventRemoveFunctions =
+      UFEventManager.s_elementEvents.get(anElement);
     if (!eventRemoveFunctions) {
       return;
     }
@@ -88,25 +95,10 @@ class UFEventManagerClass {
     if (eventRemoveFunctions.size > 0) {
       return;
     }
-    this.m_elementEvents.delete(anElement);
+    UFEventManager.s_elementEvents.delete(anElement);
   }
   
   // endregion
 }
-
-/**
- * {@link UFEventManager} is a singleton instance that can be used to add and remove event
- * listeners, including anonymous ones.
- *
- * The class assumes there is only one listener per event and element.
- */
-const UFEventManager = new UFEventManagerClass();
-
-
-// endregion
-
-// region exports
-
-export {UFEventManager};
 
 // endregion

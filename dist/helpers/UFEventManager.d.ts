@@ -21,17 +21,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Class
+ * {@link UFEventManager} can be used to make sure only a single listener is added for a certain
+ * event at an element.
  */
-declare class UFEventManagerClass {
+export declare class UFEventManager {
     /**
      * Stores all remove functions grouped per element.
      *
      * @private
      */
-    private m_elementEvents;
+    private static s_elementEvents;
     /**
-     * Adds an event listener to an element. The method first removes a previously added listener for the event (if any).
+     * Adds an event listener to an element. The method first removes a previously added listener
+     * for the event (if any).
      *
      * @param anElement
      *   Element to add event listener to
@@ -40,7 +42,7 @@ declare class UFEventManagerClass {
      * @param anEventHandler
      *   Event handler to call when event is triggered
      */
-    add(anElement: HTMLElement, anEventName: string, anEventHandler: any): void;
+    static add(anElement: HTMLElement, anEventName: string, anEventHandler: any): void;
     /**
      * Removes a previously added event listener.
      *
@@ -49,13 +51,5 @@ declare class UFEventManagerClass {
      * @param anEventName
      *   Name of event to remove listener for
      */
-    remove(anElement: HTMLElement, anEventName: string): void;
+    static remove(anElement: HTMLElement, anEventName: string): void;
 }
-/**
- * {@link UFEventManager} is a singleton instance that can be used to add and remove event
- * listeners, including anonymous ones.
- *
- * The class assumes there is only one listener per event and element.
- */
-declare const UFEventManager: UFEventManagerClass;
-export { UFEventManager };
