@@ -1,3 +1,5 @@
+export * from './data/UFLocalStorage';
+export * from './helpers/UFEventManager';
 export * from './helpers/UFFormHelper';
 export * from './models/UFStorableModel';
 export * from './tools/UFCanvas';

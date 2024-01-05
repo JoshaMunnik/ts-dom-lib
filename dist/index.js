@@ -1,4 +1,7 @@
+// data
+export * from './data/UFLocalStorage';
 // helpers
+export * from './helpers/UFEventManager';
 export * from './helpers/UFFormHelper';
 // models
 export * from './models/UFStorableModel';
