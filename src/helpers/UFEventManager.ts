@@ -63,12 +63,15 @@ export class UFEventManager {
    */
   static add(anElement: HTMLElement, anEventName: string, anEventHandler: any) {
     UFEventManager.remove(anElement, anEventName);
-    let eventRemoveFunctions = UFEventManager.s_elementEvents.get(anElement);
+    let eventRemoveFunctions =
+      UFEventManager.s_elementEvents.get(anElement);
     if (!eventRemoveFunctions) {
       eventRemoveFunctions = new Map();
       UFEventManager.s_elementEvents.set(anElement, eventRemoveFunctions);
     }
-    eventRemoveFunctions.set(anEventName, () => anElement.removeEventListener(anEventName, anEventHandler));
+    eventRemoveFunctions.set(
+      anEventName, () => anElement.removeEventListener(anEventName, anEventHandler)
+    );
     anElement.addEventListener(anEventName, anEventHandler);
   }
 
