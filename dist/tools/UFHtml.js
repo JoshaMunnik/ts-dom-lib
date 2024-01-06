@@ -69,6 +69,34 @@ export class UFHtml {
         // Retrieve the text property of the element
         return tempDivElement.textContent || tempDivElement.innerText || "";
     }
+    /**
+     * Adds css classes in a single string to an element.
+     *
+     * @param anElement
+     *   Element to add the classes to; can be null in case nothing happens.
+     * @param aClasses
+     *   Css classes separated by a space character
+     */
+    static addClasses(anElement, aClasses) {
+        if (!anElement) {
+            return;
+        }
+        aClasses.split(' ').forEach(aClass => anElement.classList.add(aClass.trim()));
+    }
+    /**
+     * Removes css classes in a single string from an element.
+     *
+     * @param anElement
+     *   Element to remove the classes from; can be null in case nothing happens.
+     * @param aClasses
+     *   Css classes separated by a space character
+     */
+    static removeClasses(anElement, aClasses) {
+        if (!anElement) {
+            return;
+        }
+        aClasses.split(' ').forEach(aClass => anElement.classList.remove(aClass.trim()));
+    }
 }
 // endregion
 // region private vars

@@ -22,7 +22,7 @@
  */
 /**
  * {@link UFEventManager} can be used to make sure only a single listener is added for a certain
- * event at an element.
+ * event at an element. It only contains static methods, there is no need to make an instance.
  */
 export declare class UFEventManager {
     /**

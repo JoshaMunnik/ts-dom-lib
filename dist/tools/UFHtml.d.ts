@@ -59,4 +59,22 @@ export declare class UFHtml {
      * @returns plain version of the text
      */
     static convertToPlain(aHtmlText: string): string;
+    /**
+     * Adds css classes in a single string to an element.
+     *
+     * @param anElement
+     *   Element to add the classes to; can be null in case nothing happens.
+     * @param aClasses
+     *   Css classes separated by a space character
+     */
+    static addClasses(anElement: HTMLElement, aClasses: string): void;
+    /**
+     * Removes css classes in a single string from an element.
+     *
+     * @param anElement
+     *   Element to remove the classes from; can be null in case nothing happens.
+     * @param aClasses
+     *   Css classes separated by a space character
+     */
+    static removeClasses(anElement: HTMLElement, aClasses: string): void;
 }
