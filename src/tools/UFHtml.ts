@@ -99,12 +99,12 @@ export class UFHtml {
    * Adds css classes in a single string to an element.
    *
    * @param anElement
-   *   Element to add the classes to; can be null in case nothing happens.
+   *   Element to add the classes to; can be null, in that case nothing happens.
    * @param aClasses
-   *   Css classes separated by a space character
+   *   Css classes separated by a space character; can be null, in that case nothing happens.
    */
   static addClasses(anElement: HTMLElement, aClasses: string): void {
-    if (!anElement) {
+    if (!anElement || !aClasses) {
       return;
     }
     aClasses.split(' ').forEach(aClass => anElement.classList.add(aClass.trim()));
@@ -114,15 +114,30 @@ export class UFHtml {
    * Removes css classes in a single string from an element.
    *
    * @param anElement
-   *   Element to remove the classes from; can be null in case nothing happens.
+   *   Element to remove the classes from; can be null, in that case nothing happens.
    * @param aClasses
-   *   Css classes separated by a space character
+   *   Css classes separated by a space character; can be null, in that case nothing happens.
    */
   static removeClasses(anElement: HTMLElement, aClasses: string): void {
-    if (!anElement) {
+    if (!anElement || !aClasses) {
       return;
     }
     aClasses.split(' ').forEach(aClass => anElement.classList.remove(aClass.trim()));
+  }
+
+  /**
+   * Combines {@link addClasses} and {@link removeClasses}.
+   *
+   * @param anElement
+   *   Element to add and remove the classes to and from; can be null, in that case nothing happens.
+   * @param anAddClasses
+   *   Css classes separated by a space character; can be null, in that case no classes are added.
+   * @param aRemoveClasses
+   *   Css classes separated by a space character; can be null, in that case no classes are removed.
+   */
+  static addAndRemoveClasses(anElement: HTMLElement, anAddClasses: string, aRemoveClasses: string): void {
+    UFHtml.addClasses(anElement, anAddClasses);
+    UFHtml.removeClasses(anElement, aRemoveClasses);
   }
 }
 
