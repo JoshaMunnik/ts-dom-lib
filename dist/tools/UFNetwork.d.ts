@@ -21,7 +21,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-import { UFFetchMethod } from "../types/UFFetchMethod";
+import { UFFetchMethod } from "../types/UFFetchMethod.js";
 /**
  * Support methods related to network communication.
  */

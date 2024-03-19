@@ -23,7 +23,7 @@
 
 // region imports
 
-import {UFKeyedStorage} from "@ultraforce/ts-general-lib/dist/data/UFKeyedStorage";
+import {UFKeyedStorage} from "@ultraforce/ts-general-lib/dist/data/UFKeyedStorage.js";
 
 // endregion
 

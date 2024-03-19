@@ -24,7 +24,7 @@
 // region imports
 
 import {UFJQuery} from '../tools/UFJQuery.js';
-import {UFText} from '@ultraforce/ts-general-lib/dist';
+import {UFText} from '@ultraforce/ts-general-lib/dist/tools/UFText.js';
 
 // endregion
 

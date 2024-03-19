@@ -24,8 +24,8 @@
 
 // region imports
 
-import {UFFetchMethod} from "../types/UFFetchMethod";
-import {UFText} from '@ultraforce/ts-general-lib/dist';
+import {UFFetchMethod} from "../types/UFFetchMethod.js";
+import {UFText} from '@ultraforce/ts-general-lib/dist/tools/UFText.js';
 
 // endregion
 

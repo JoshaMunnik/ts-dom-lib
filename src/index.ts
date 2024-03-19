@@ -1,24 +1,24 @@
 // data
 
-export * from './data/UFLocalStorage';
+export * from './data/UFLocalStorage.js';
 
 // helpers
 
-export * from './helpers/UFEventManager';
-export * from './helpers/UFFormHelper';
+export * from './helpers/UFEventManager.js';
+export * from './helpers/UFFormHelper.js';
 
 // models
 
-export * from './models/UFStorableModel';
+export * from './models/UFStorableModel.js';
 
 // tools
 
-export * from './tools/UFCanvas';
-export * from './tools/UFJQuery';
-export * from './tools/UFHtml';
-export * from './tools/UFNetwork';
+export * from './tools/UFCanvas.js';
+export * from './tools/UFJQuery.js';
+export * from './tools/UFHtml.js';
+export * from './tools/UFNetwork.js';
 
 // types
 
-export * from './types/UFFetchMethod';
+export * from './types/UFFetchMethod.js';
 

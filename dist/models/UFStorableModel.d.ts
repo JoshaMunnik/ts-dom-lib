@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFModel } from "@ultraforce/ts-general-lib/dist/models/UFModel";
+import { UFModel } from "@ultraforce/ts-general-lib/dist/models/UFModel.js";
 /**
  * {@link UFStorableModel} adds methods to support storing and retrieving properties from a
  * persistent storage.

@@ -21,7 +21,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // region imports
-import { UFModel } from "@ultraforce/ts-general-lib/dist/models/UFModel";
+import { UFModel } from "@ultraforce/ts-general-lib/dist/models/UFModel.js";
 // endregion
 // region exports
 /**

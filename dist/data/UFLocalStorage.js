@@ -21,7 +21,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // region imports
-import { UFKeyedStorage } from "@ultraforce/ts-general-lib/dist/data/UFKeyedStorage";
+import { UFKeyedStorage } from "@ultraforce/ts-general-lib/dist/data/UFKeyedStorage.js";
 // endregion
 // region exports
 /**
