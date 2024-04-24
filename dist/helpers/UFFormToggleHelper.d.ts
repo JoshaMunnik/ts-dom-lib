@@ -79,9 +79,13 @@ type UFToggleData = {
      */
     required: ToggleRequired;
     /**
-     * True if the target is a form tag
+     * True if the first form element is a form tag
      */
     isForm: boolean;
+    /**
+     * True if the first form element is an img tag
+     */
+    isImage: boolean;
     /**
      * Value to compare elements input values with
      */
@@ -104,7 +108,8 @@ type UFToggleData = {
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
        the element.
  *   - 'auto' = select the type based on certain conditions:
- *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used.
+ *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
+ *       input element is a file input element.
  *     - 'property' is selected if the selector points to an input element that is checkbox or radio
  *       button.
  *     - 'valid' is used in all other cases.

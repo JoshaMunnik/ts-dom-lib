@@ -119,9 +119,14 @@ type UFToggleData = {
   required: ToggleRequired;
 
   /**
-   * True if the target is a form tag
+   * True if the first form element is a form tag
    */
   isForm: boolean;
+
+  /**
+   * True if the first form element is an img tag
+   */
+  isImage: boolean;
 
   /**
    * Value to compare elements input values with
@@ -161,7 +166,8 @@ const ChangeEvents: string = 'click keyup keydown input change';
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
        the element.
  *   - 'auto' = select the type based on certain conditions:
- *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used.
+ *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
+ *       input element is a file input element.
  *     - 'property' is selected if the selector points to an input element that is checkbox or radio
  *       button.
  *     - 'valid' is used in all other cases.
@@ -357,6 +363,9 @@ export class UFFormToggleHelper extends UFHtmlHelper {
     const isForm = tagName === 'FORM';
     const isChecked = (tagName === 'INPUT')
       && ['checkbox', 'radio'].includes((formElement as HTMLInputElement).type);
+    const isFile = (tagName === 'INPUT')
+      && ((formElement as HTMLInputElement).type === 'file');
+    const isImage = tagName === 'IMG';
     // get properties for the toggle data structure
     let type = this.getToggleType(anElement);
     let change = this.getToggleChange(anElement);
@@ -400,7 +409,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
       if (isChecked) {
         type = ToggleType.Property;
       }
-      else if (values.length > 0) {
+      else if ((values.length > 0) || isFile) {
         type = ToggleType.Value;
       }
       else {
@@ -417,6 +426,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
       condition,
       required,
       isForm,
+      isImage,
       formElements,
       values
     };
@@ -448,12 +458,19 @@ export class UFFormToggleHelper extends UFHtmlHelper {
           value = UFObject.getAs(element, aData.property, '');
           break;
         default:
-          value = UFObject.getAs(element, 'value', '');
+          value = UFObject.getAs(
+            element,
+            aData.isImage ? 'src' : 'value',
+            ''
+          );
           break;
       }
       // valid was not set, then value was set so validate value
       if (valid === null) {
-        valid = aData.values.length > 0 ? aData.values.indexOf(value) >= 0 : value.length > 0;
+        // ignore the values array when the form element is an image
+        valid = (aData.values.length > 0) && aData.isImage
+          ? aData.values.indexOf(value) >= 0
+          : value.length > 0;
       }
       switch (aData.condition) {
         case ToggleCondition.Any:
