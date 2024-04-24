@@ -20,9 +20,9 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFObject } from "@ultraforce/ts-general-lib/dist/tools/UFObject";
-import { UFHtml } from "../tools/UFHtml";
-import { UFEventManager } from "../events/UFEventManager";
+import { UFObject } from "@ultraforce/ts-general-lib/dist/tools/UFObject.js";
+import { UFHtml } from "../tools/UFHtml.js";
+import { UFEventManager } from "../events/UFEventManager.js";
 // endregion
 // region types
 // the data attributes used by this helper

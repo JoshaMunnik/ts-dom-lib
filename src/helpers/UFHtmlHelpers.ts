@@ -23,15 +23,15 @@
 
 // region imports
 
-import {UFHtmlHelper} from "./UFHtmlHelper";
-import {UFCellFilterHelper} from "./UFCellFilterHelper";
-import {UFTableSortHelper} from "./UFTableSortHelper";
-import {UFImagePreviewHelper} from "./UFImagePreviewHelper";
-import {UFSelectUrlHelper} from "./UFSelectUrlHelper";
-import {UFShareHoverHelper} from "./UFShareHoverHelper";
-import {UFPageRefreshHelper} from "./UFPageRefreshHelper";
-import {UFManageSubmitHelper} from "./UFManageSubmitHelper";
-import {UFFormToggleHelper} from "./UFFormToggleHelper";
+import {UFHtmlHelper} from "./UFHtmlHelper.js";
+import {UFCellFilterHelper} from "./UFCellFilterHelper.js";
+import {UFTableSortHelper} from "./UFTableSortHelper.js";
+import {UFImagePreviewHelper} from "./UFImagePreviewHelper.js";
+import {UFSelectUrlHelper} from "./UFSelectUrlHelper.js";
+import {UFShareHoverHelper} from "./UFShareHoverHelper.js";
+import {UFPageRefreshHelper} from "./UFPageRefreshHelper.js";
+import {UFManageSubmitHelper} from "./UFManageSubmitHelper.js";
+import {UFFormToggleHelper} from "./UFFormToggleHelper.js";
 
 // endregion
 

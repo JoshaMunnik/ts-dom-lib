@@ -23,9 +23,9 @@
 
 // region imports
 
-import {UFHtmlHelper} from "./UFHtmlHelper";
-import {UFEventManager} from "../events/UFEventManager";
-import {UFHtml} from "../tools/UFHtml";
+import {UFHtmlHelper} from "./UFHtmlHelper.js";
+import {UFEventManager} from "../events/UFEventManager.js";
+import {UFHtml} from "../tools/UFHtml.js";
 
 // endregion
 

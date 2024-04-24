@@ -4,7 +4,7 @@ export * from './data/UFLocalStorage.js';
 
 // events
 
-export * from './events/UFEventManager';
+export * from './events/UFEventManager.js';
 
 // helpers
 

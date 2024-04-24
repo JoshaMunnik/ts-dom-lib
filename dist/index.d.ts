@@ -1,5 +1,5 @@
 export * from './data/UFLocalStorage.js';
-export * from './events/UFEventManager';
+export * from './events/UFEventManager.js';
 export * from './helpers/UFCellFilterHelper.js';
 export * from './helpers/UFClickStylingHelper.js';
 export * from './helpers/UFFormToggleHelper.js';

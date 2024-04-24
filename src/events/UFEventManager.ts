@@ -23,9 +23,9 @@
 
 // region imports
 
-import {UFRemoveFunction} from "../types/UFRemoveFunction";
-import {UFHtml} from "../tools/UFHtml";
-import {UFMap} from "@ultraforce/ts-general-lib/dist/tools/UFMap";
+import {UFRemoveFunction} from "../types/UFRemoveFunction.js";
+import {UFHtml} from "../tools/UFHtml.js";
+import {UFMap} from "@ultraforce/ts-general-lib/dist/tools/UFMap.js";
 
 // endregion
 

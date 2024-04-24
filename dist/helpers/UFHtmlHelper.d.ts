@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet";
+import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
 /**
  * Base class for all HTML helper classes. Subclasses should override the {@link scan} method to
  * perform initialization.

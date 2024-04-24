@@ -1,7 +1,7 @@
 // data
 export * from './data/UFLocalStorage.js';
 // events
-export * from './events/UFEventManager';
+export * from './events/UFEventManager.js';
 // helpers
 export * from './helpers/UFCellFilterHelper.js';
 export * from './helpers/UFClickStylingHelper.js';

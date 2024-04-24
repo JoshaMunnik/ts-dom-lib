@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtmlHelper } from "./UFHtmlHelper";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
 /**
  * Add `data-uf-select-url` to a `<select>` (single value, drop down) to load a new page when the
  * user changes the dropdown value. Use macro '$value$' in the attribute value to use the

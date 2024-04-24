@@ -23,8 +23,8 @@
 
 // region imports
 
-import {UFHtmlHelper} from "./UFHtmlHelper";
-import {UFEventManager} from "../events/UFEventManager";
+import {UFHtmlHelper} from "./UFHtmlHelper.js";
+import {UFEventManager} from "../events/UFEventManager.js";
 
 // endregion
 

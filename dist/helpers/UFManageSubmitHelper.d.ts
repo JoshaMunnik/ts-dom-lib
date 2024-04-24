@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtmlHelper } from "./UFHtmlHelper";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
 /**
  * Add `data-uf-manage-submit` attribute to a `<form>` to link the valid state of the form
  * (using html5 validation) to the enabled state of the submit buttons within the form. The submit

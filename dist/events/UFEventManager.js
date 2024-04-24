@@ -20,8 +20,8 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtml } from "../tools/UFHtml";
-import { UFMap } from "@ultraforce/ts-general-lib/dist/tools/UFMap";
+import { UFHtml } from "../tools/UFHtml.js";
+import { UFMap } from "@ultraforce/ts-general-lib/dist/tools/UFMap.js";
 // endregion
 // region types
 /**

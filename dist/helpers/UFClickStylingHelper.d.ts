@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtmlHelper } from "./UFHtmlHelper";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
 /**
  * Use `data-uf-click-styling-selector` in combination with `data-uf-click-styling-classes` to
  * toggle the class(es) of the element containing this data attribute when the element

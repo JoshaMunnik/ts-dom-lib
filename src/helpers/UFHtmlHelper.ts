@@ -23,10 +23,10 @@
 
 // region imports
 
-import {UFMapOfSet} from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet";
-import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject";
-import {UFHtml} from "../tools/UFHtml";
-import {UFEventManager} from "../events/UFEventManager";
+import {UFMapOfSet} from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
+import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject.js";
+import {UFHtml} from "../tools/UFHtml.js";
+import {UFEventManager} from "../events/UFEventManager.js";
 
 // endregion
 

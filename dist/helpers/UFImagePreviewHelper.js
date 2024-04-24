@@ -21,9 +21,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // region imports
-import { UFHtmlHelper } from "./UFHtmlHelper";
-import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet";
-import { UFEventManager } from "../events/UFEventManager";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
+import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
+import { UFEventManager } from "../events/UFEventManager.js";
 // endregion
 // region types
 // the data attributes used by this helper

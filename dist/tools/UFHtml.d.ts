@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFRemoveFunction } from "../types/UFRemoveFunction";
+import { UFRemoveFunction } from "../types/UFRemoveFunction.js";
 /**
  * {@link UFHtml} implements methods for supporting html and the dom.
  */
@@ -101,19 +101,19 @@ export declare class UFHtml {
      */
     static addAndRemoveClasses(anElement: HTMLElement, anAddClasses: string, aRemoveClasses: string): void;
     /**
-     * Adds a listener for an event. The function returns a callback, which can be called to
+     * Adds a listener for one or more events. The function returns a callback, which can be called to
      * remove the listener.
      *
      * @param anElement
      *   Element to add listener to
-     * @param anEvent
-     *   Event to add listener for
+     * @param anEvents
+     *   One or more events to add listener for (separated by space)
      * @param aListener
      *   Listener callback
      *
-     * @return a function that can be called to remove the listener from the element for the event.
+     * @return a function that can be called to remove the listener from the element for the events.
      */
-    static addListener(anElement: HTMLElement, anEvent: string, aListener: EventListenerOrEventListenerObject): UFRemoveFunction;
+    static addListener(anElement: HTMLElement, anEvents: string, aListener: EventListenerOrEventListenerObject): UFRemoveFunction;
     /**
      * Gets the value of an attribute.
      *

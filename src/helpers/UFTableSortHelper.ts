@@ -21,11 +21,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {UFHtmlHelper} from "./UFHtmlHelper";
-import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject";
-import {UFHtml} from "../tools/UFHtml";
-import {UFLocalStorage} from "../data/UFLocalStorage";
-import {UFEventManager} from "../events/UFEventManager";
+import {UFHtmlHelper} from "./UFHtmlHelper.js";
+import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject.js";
+import {UFHtml} from "../tools/UFHtml.js";
+import {UFLocalStorage} from "../data/UFLocalStorage.js";
+import {UFEventManager} from "../events/UFEventManager.js";
 
 // region private types
 

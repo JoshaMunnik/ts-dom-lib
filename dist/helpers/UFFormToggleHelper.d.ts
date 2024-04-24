@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtmlHelper } from "./UFHtmlHelper";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
 declare enum ToggleType {
     Auto = 0,
     Value = 1,

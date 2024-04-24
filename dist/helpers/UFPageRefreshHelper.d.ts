@@ -20,7 +20,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import { UFHtmlHelper } from "./UFHtmlHelper";
+import { UFHtmlHelper } from "./UFHtmlHelper.js";
 /**
  * Add `data-uf-page-refresh` to clickable elements (anchors or buttons) to automatically refresh
  * the page after the user clicks on the element. The value of `data-uf-page-refresh` is the

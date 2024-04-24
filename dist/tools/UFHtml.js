@@ -129,21 +129,22 @@ export class UFHtml {
         UFHtml.removeClasses(anElement, aRemoveClasses);
     }
     /**
-     * Adds a listener for an event. The function returns a callback, which can be called to
+     * Adds a listener for one or more events. The function returns a callback, which can be called to
      * remove the listener.
      *
      * @param anElement
      *   Element to add listener to
-     * @param anEvent
-     *   Event to add listener for
+     * @param anEvents
+     *   One or more events to add listener for (separated by space)
      * @param aListener
      *   Listener callback
      *
-     * @return a function that can be called to remove the listener from the element for the event.
+     * @return a function that can be called to remove the listener from the element for the events.
      */
-    static addListener(anElement, anEvent, aListener) {
-        anElement.addEventListener(anEvent, aListener);
-        return () => anElement.removeEventListener(anEvent, aListener);
+    static addListener(anElement, anEvents, aListener) {
+        const events = anEvents.split(' ').filter(event => event.trim().length > 0);
+        events.forEach(event => anElement.addEventListener(event, aListener));
+        return () => events.forEach(event => anElement.removeEventListener(event, aListener));
     }
     /**
      * Gets the value of an attribute.

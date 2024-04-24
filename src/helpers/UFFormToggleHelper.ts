@@ -23,10 +23,10 @@
 
 // region imports
 
-import {UFHtmlHelper} from "./UFHtmlHelper";
-import {UFEventManager} from "../events/UFEventManager";
-import {UFHtml} from "../tools/UFHtml";
-import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject";
+import {UFHtmlHelper} from "./UFHtmlHelper.js";
+import {UFEventManager} from "../events/UFEventManager.js";
+import {UFHtml} from "../tools/UFHtml.js";
+import {UFObject} from "@ultraforce/ts-general-lib/dist/tools/UFObject.js";
 
 // endregion
 
@@ -380,10 +380,8 @@ export class UFFormToggleHelper extends UFHtmlHelper {
         change = ToggleChange.None;
       }
       else {
-        switch (tagName) {
+        switch (anElement.tagName) {
           case 'INPUT':
-            change = isChecked ? ToggleChange.Visible : ToggleChange.Enable;
-            break;
           case 'BUTTON':
           case 'SELECT':
             change = ToggleChange.Enable;
