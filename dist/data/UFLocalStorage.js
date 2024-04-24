@@ -25,7 +25,7 @@ import { UFKeyedStorage } from "@ultraforce/ts-general-lib/dist/data/UFKeyedStor
 // endregion
 // region exports
 /**
- * Extends {@link UFKeyedStorage} using localStorage to store values.
+ * Extends `UFKeyedStorage` using localStorage to store values.
  */
 export class UFLocalStorage extends UFKeyedStorage {
     /**

@@ -22,7 +22,7 @@
  */
 import { UFKeyedStorage } from "@ultraforce/ts-general-lib/dist/data/UFKeyedStorage.js";
 /**
- * Extends {@link UFKeyedStorage} using localStorage to store values.
+ * Extends `UFKeyedStorage` using localStorage to store values.
  */
 export declare class UFLocalStorage extends UFKeyedStorage {
     /**

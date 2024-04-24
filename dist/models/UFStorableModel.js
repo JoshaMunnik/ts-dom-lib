@@ -28,7 +28,7 @@ import { UFModel } from "@ultraforce/ts-general-lib/dist/models/UFModel.js";
  * {@link UFStorableModel} adds methods to support storing and retrieving properties from a
  * persistent storage.
  *
- * The default implementation uses {@link window.localStorage}. Subclasses can override
+ * The default implementation uses `window.localStorage`. Subclasses can override
  * {@link setValueInStorage} and {@link getValueFromStorage} to use a different persistent
  * storage solution.
  */
@@ -37,7 +37,7 @@ export class UFStorableModel extends UFModel {
     /**
      * This method stores a value for a certain key in some persistent storage.
      *
-     * The default implementation uses {@link window.localStorage}.
+     * The default implementation uses `window.localStorage`.
      *
      * @param aKey
      *   Key to store value for
@@ -52,7 +52,7 @@ export class UFStorableModel extends UFModel {
     /**
      * This method gets the value from a persistent storage.
      *
-     * The default implementation uses the {@link window.localStorage}.
+     * The default implementation uses the `window.localStorage`.
      *
      * @param aKey
      *   Key to get value for.
@@ -147,7 +147,7 @@ export class UFStorableModel extends UFModel {
     }
     /**
      * A helper method that calls {@link getStoredStringProperty} and converts the result to a
-     * number typed value by using {@link parseInt}.
+     * number typed value by using `parseInt`.
      *
      * @param aKey
      *  Key to get value from the storage with
@@ -180,7 +180,7 @@ export class UFStorableModel extends UFModel {
     }
     /**
      * A helper method that calls {@link getStoredStringProperty} and converts the result to a
-     * number typed value by using {@link parseFloat}.
+     * number typed value by using `parseFloat`.
      *
      * @param aKey
      *  Key to get value from the storage with

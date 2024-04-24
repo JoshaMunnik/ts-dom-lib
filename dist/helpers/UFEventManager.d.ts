@@ -20,17 +20,41 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * {@link UFEventManager} can be used to make sure only a single listener is added for a certain
- * event at an element. It only contains static methods, there is no need to make an instance.
- */
-export declare class UFEventManager {
+declare class UFEventManagerClass {
     /**
-     * Stores all remove functions grouped per element.
+     * Stores all remove functions grouped per element and event.
      *
      * @private
      */
-    private static s_elementEvents;
+    private readonly m_singleEvents;
+    /**
+     * Stores all remove functions per group name.
+     *
+     * @private
+     */
+    private readonly m_groupedEvents;
+    /**
+     * Adds a listener to an element for a specific event for a certain group.
+     *
+     * Use {@link removeAllForGroup} to remove the listener and all other listeners in the group.
+     *
+     * @param aGroupName
+     *   Group to register listener for
+     * @param anElement
+     *   Element to add listener to
+     * @param anEventName
+     *   Event to listen for
+     * @param aListener
+     *   Listener to call when event triggers.
+     */
+    addForGroup(aGroupName: string, anElement: HTMLElement, anEventName: string, aListener: EventListenerOrEventListenerObject): void;
+    /**
+     * Removes all listeners for a specific group that were set via {@link addForGroup}.
+     *
+     * @param aGroupName
+     *   Group to remove all listeners for.
+     */
+    removeAllForGroup(aGroupName: string): void;
     /**
      * Adds an event listener to an element. The method first removes a previously added listener
      * for the event (if any).
@@ -39,10 +63,10 @@ export declare class UFEventManager {
      *   Element to add event listener to
      * @param anEventName
      *   Name of event to add listener for
-     * @param anEventHandler
+     * @param aListener
      *   Event handler to call when event is triggered
      */
-    static add(anElement: HTMLElement, anEventName: string, anEventHandler: any): void;
+    addSingle(anElement: HTMLElement, anEventName: string, aListener: EventListenerOrEventListenerObject): void;
     /**
      * Removes a previously added event listener.
      *
@@ -51,5 +75,11 @@ export declare class UFEventManager {
      * @param anEventName
      *   Name of event to remove listener for
      */
-    static remove(anElement: HTMLElement, anEventName: string): void;
+    removeSingle(anElement: HTMLElement, anEventName: string): void;
 }
+/**
+ * Use {@link UFEventManager} to manage event listeners. The exported value is the singleton
+ * instance.
+ */
+declare const UFEventManager: UFEventManagerClass;
+export { UFEventManager };
