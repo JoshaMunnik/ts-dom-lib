@@ -1,25 +1,31 @@
 /**
  * @author Josha Munnik
- * @copyright Copyright (c) 2016 Ultra Force Development
+ * @copyright Copyright (c) 2022 Ultra Force Development
  * @license
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * <ul>
- * <li>Redistributions of source code must retain the above copyright notice, this list of
- *     conditions and the following disclaimer.</li>
- * <li>The authors and companies name may not be used to endorse or promote products derived from
- *     this software without specific prior written permission.</li>
- * </ul>
- * <br/>
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * MIT License
+ *
+ * Copyright (c) 2022 Josha Munnik
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+// region imports
+import { UFFitType } from "../types/UFFitType.js";
 /**
  * Support methods for canvas.
  */
@@ -80,5 +86,164 @@ export class UFCanvas {
         const result = aCanvas.toDataURL('image/png');
         return result.replace('data:image/png;base64,', '');
     }
+    /**
+     * Draws an image in an area in the canvas.
+     *
+     * @param aContext
+     *   Context to draw in
+     * @param anImage
+     *   Image to draw
+     * @param aX
+     *   X position of area
+     * @param aY
+     *   Y position of area
+     * @param aWidth
+     *   Width of area
+     * @param anHeight
+     *   Height of area
+     * @param aFit
+     *   Determines how to fit the image within the area
+     * @param anHorizontalPosition
+     *   Determines the relative horizontal position in case aFit is either {@link UFFitType.Contain}
+     *   or {@link UFFitType.Cover}.
+     * @param aVerticalPosition
+     *   Determines the relative vertical position in case aFit is either {@link UFFitType.Contain}
+     *   or {@link UFFitType.Cover}. When missing use the value of aHorizontalPosition.
+     */
+    static drawImage(aContext, anImage, aX, aY, aWidth, anHeight, aFit, anHorizontalPosition = 0.5, aVerticalPosition) {
+        aVerticalPosition = aVerticalPosition || anHorizontalPosition;
+        let scaleX = aWidth / anImage.width;
+        let scaleY = anHeight / anImage.height;
+        switch (aFit) {
+            case UFFitType.Contain:
+                scaleX = scaleY = Math.min(scaleX, scaleY);
+                break;
+            case UFFitType.Cover:
+                scaleX = scaleY = Math.max(scaleX, scaleY);
+                break;
+        }
+        const imageWidth = aWidth / scaleX;
+        const imageHeight = anHeight / scaleY;
+        const imageX = (anImage.width - imageWidth) * anHorizontalPosition;
+        const imageY = (anImage.height - imageHeight) * aVerticalPosition;
+        aContext.drawImage(anImage, imageX, imageY, imageWidth, imageHeight, aX, aY, aWidth, anHeight);
+    }
+    /**
+     * Draws a rounded rectangle using the current state of the canvas.
+     *
+     * Source:
+     * http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
+     *
+     * @param aContext
+     *   Context to draw rectangle in
+     * @param aX
+     *   The top left x coordinate
+     * @param aY
+     *   The top left y coordinate
+     * @param aWidth
+     *   The width of the rectangle
+     * @param anHeight
+     *   The height of the rectangle
+     * @param aRadius
+     *   The corner radius.
+     * @param aFill
+     *   Whether to fill the rectangle.
+     * @param aStroke
+     *   Whether to draw a stroke with the rectangle.
+     */
+    static drawRoundRect(aContext, aX, aY, aWidth, anHeight, aRadius = 5, aFill = false, aStroke = true) {
+        if (typeof aRadius === 'number') {
+            aRadius = { topLeft: aRadius, topRight: aRadius, bottomLeft: aRadius, bottomRight: aRadius };
+        }
+        else {
+            // make sure aRadius contains all 4 corner properties
+            aRadius = $.extend(aRadius, { topLeft: 0, topRight: 0, bottomRight: 0, bottomLeft: 0 });
+        }
+        aContext.beginPath();
+        aContext.moveTo(aX + aRadius.topLeft, aY);
+        aContext.lineTo(aX + aWidth - aRadius.topRight, aY);
+        aContext.quadraticCurveTo(aX + aWidth, aY, aX + aWidth, aY + aRadius.topRight);
+        aContext.lineTo(aX + aWidth, aY + anHeight - aRadius.bottomRight);
+        aContext.quadraticCurveTo(aX + aWidth, aY + anHeight, aX + aWidth - aRadius.bottomRight, aY + anHeight);
+        aContext.lineTo(aX + aRadius.bottomLeft, aY + anHeight);
+        aContext.quadraticCurveTo(aX, aY + anHeight, aX, aY + anHeight - aRadius.bottomLeft);
+        aContext.lineTo(aX, aY + aRadius.topLeft);
+        aContext.quadraticCurveTo(aX, aY, aX + aRadius.topLeft, aY);
+        aContext.closePath();
+        if (aFill) {
+            aContext.fill();
+        }
+        if (aStroke) {
+            aContext.stroke();
+        }
+    }
+    /**
+     * Draws texture stretched between 4 points.
+     *
+     * Source:
+     * http://stackoverflow.com/questions/4774172/image-manipulation-and-texture-mapping-using-html5-canvas
+     *
+     * @param aContext
+     *   Canvas context
+     * @param anImage
+     *   Image/Canvas/Video object
+     * @param aPoints
+     *   Maps the 4 corners of the image to the 4 corners of the area.
+     * @param aDebug
+     *   When true draw circles at vertexes
+     */
+    static drawTexture(aContext, anImage, aPoints, aDebug = false) {
+        // split the square in two triangles (clockwise order)
+        const triangles = [
+            [aPoints.topLeft, aPoints.topRight, aPoints.bottomRight],
+            [aPoints.bottomRight, aPoints.bottomLeft, aPoints.topLeft]
+        ];
+        // draw each triangle
+        triangles.forEach((triangleVertex) => {
+            const [point0, point1, point2] = triangleVertex;
+            const { x: x0, y: y0, u: u0, v: v0 } = point0;
+            const { x: x1, y: y1, u: u1, v: v1 } = point1;
+            const { x: x2, y: y2, u: u2, v: v2 } = point2;
+            if (aDebug) {
+                // show dots at vertexes
+                aContext.save();
+                aContext.fillStyle = 'red';
+                aContext.beginPath();
+                aContext.arc(x0, y0, 5, 0, 2 * Math.PI);
+                aContext.fill();
+                aContext.beginPath();
+                aContext.arc(x1, y1, 5, 0, 2 * Math.PI);
+                aContext.fill();
+                aContext.beginPath();
+                aContext.arc(x2, y2, 5, 0, 2 * Math.PI);
+                aContext.fill();
+                aContext.restore();
+            }
+            // set clipping area so that only pixels inside the triangle will be affected by the image 
+            // drawing operation
+            aContext.save();
+            aContext.beginPath();
+            aContext.moveTo(x0, y0);
+            aContext.lineTo(x1, y1);
+            aContext.lineTo(x2, y2);
+            aContext.closePath();
+            aContext.clip();
+            // compute matrix transform
+            const delta = u0 * v1 + v0 * u2 + u1 * v2 - v1 * u2 - v0 * u1 - u0 * v2;
+            const deltaA = x0 * v1 + v0 * x2 + x1 * v2 - v1 * x2 - v0 * x1 - x0 * v2;
+            const deltaB = u0 * x1 + x0 * u2 + u1 * x2 - x1 * u2 - x0 * u1 - u0 * x2;
+            const deltaC = u0 * v1 * x2 + v0 * x1 * u2 + x0 * u1 * v2 - x0 * v1 * u2 - v0 * u1 * x2
+                - u0 * x1 * v2;
+            const deltaD = y0 * v1 + v0 * y2 + y1 * v2 - v1 * y2 - v0 * y1 - y0 * v2;
+            const deltaE = u0 * y1 + y0 * u2 + u1 * y2 - y1 * u2 - y0 * u1 - u0 * y2;
+            const deltaF = u0 * v1 * y2 + v0 * y1 * u2 + y0 * u1 * v2 - y0 * v1 * u2 - v0 * u1 * y2
+                - u0 * y1 * v2;
+            // draw the transformed image
+            aContext.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
+            aContext.drawImage(anImage, 0, 0);
+            aContext.restore();
+        });
+    }
 }
+// endregion
 //# sourceMappingURL=UFCanvas.js.map

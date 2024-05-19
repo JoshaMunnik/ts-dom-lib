@@ -1,26 +1,30 @@
 /**
  * @author Josha Munnik
- * @copyright Copyright (c) 2021 Ultra Force Development
+ * @copyright Copyright (c) 2024 Ultra Force Development
  * @license
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * <ul>
- * <li>Redistributions of source code must retain the above copyright notice, this list of
- *     conditions and the following disclaimer.</li>
- * <li>The authors and companies name may not be used to endorse or promote products derived from
- *     this software without specific prior written permission.</li>
- * </ul>
- * <br/>
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * MIT License
+ *
+ * Copyright (c) 2024 Josha Munnik
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-import { UFRemoveFunction } from "../types/UFRemoveFunction.js";
+import { UFCallback } from "@ultraforce/ts-general-lib/dist/types/UFCallback.js";
 /**
  * {@link UFHtml} implements methods for supporting html and the dom.
  */
@@ -67,7 +71,7 @@ export declare class UFHtml {
      * @param aClasses
      *   Css classes separated by a space character; can be null, in that case nothing happens.
      */
-    static addClasses(anElement: HTMLElement | null, aClasses: string | null): void;
+    static addClasses(anElement: Element | null, aClasses: string | null): void;
     /**
      * Removes css classes in a single string from an element.
      *
@@ -76,7 +80,7 @@ export declare class UFHtml {
      * @param aClasses
      *   Css classes separated by a space character; can be null, in that case nothing happens.
      */
-    static removeClasses(anElement: HTMLElement | null, aClasses: string | null): void;
+    static removeClasses(anElement: Element | null, aClasses: string | null): void;
     /**
      * Toggle css classes in a single string in an element.
      *
@@ -88,7 +92,7 @@ export declare class UFHtml {
      *   If true the classes are added, if false the classes are removed, if not set the classes are
      *   toggled.
      */
-    static toggleClasses(anElement: HTMLElement | null, aClasses: string | null, aForce?: boolean): void;
+    static toggleClasses(anElement: Element | null, aClasses: string | null, aForce?: boolean): void;
     /**
      * Combines {@link addClasses} and {@link removeClasses}.
      *
@@ -99,7 +103,7 @@ export declare class UFHtml {
      * @param aRemoveClasses
      *   Css classes separated by a space character; can be null, in that case no classes are removed.
      */
-    static addAndRemoveClasses(anElement: HTMLElement, anAddClasses: string, aRemoveClasses: string): void;
+    static addAndRemoveClasses(anElement: Element, anAddClasses: string, aRemoveClasses: string): void;
     /**
      * Adds a listener for one or more events. The function returns a callback, which can be called to
      * remove the listener.
@@ -113,7 +117,7 @@ export declare class UFHtml {
      *
      * @return a function that can be called to remove the listener from the element for the events.
      */
-    static addListener(anElement: HTMLElement, anEvents: string, aListener: EventListenerOrEventListenerObject): UFRemoveFunction;
+    static addListener(anElement: HTMLElement | Document | Window, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
     /**
      * Gets the value of an attribute.
      *
@@ -127,4 +131,82 @@ export declare class UFHtml {
      * @return the value of the attribute or `aDefault` if there is no value.
      */
     static getAttribute(anElement: HTMLElement, aName: string, aDefault?: string): string;
+    /**
+     * Gets an element for a selector. If the selector is an element, it just returns the element.
+     *
+     * If the selector is a string, it will try to find the element in the document.
+     *
+     * If no element can be found or the selector is a null value, the method will throw an error.
+     *
+     * @param aSelector
+     *   Element, selector text or null
+     *
+     * @return found element
+     *
+     * @throws Error if no element can be found
+     */
+    static get<T extends Element>(aSelector: string | T | null): T;
+    /**
+     * Fades in an element by setting the styles opacity and transition.
+     *
+     * @param anElement
+     *   Element to fade in
+     * @param aDuration
+     *   Duration in millisecond for the fade in transition (default = 400)
+     */
+    static fadeIn(anElement: HTMLElement, aDuration?: number): void;
+    /**
+     * Fades out an element by setting the styles opacity and transition.
+     *
+     * @param anElement
+     *   Element to fade out
+     * @param aDuration
+     *   Duration in millisecond for the fade in transition (default = 400)
+     */
+    static fadeOut(anElement: HTMLElement, aDuration?: number): void;
+    /**
+     * Creates an element by parsing a piece of html.
+     *
+     * @param aHtml
+     *   Html to parse
+     *
+     * @return created element
+     */
+    static createAs<T extends Element>(aHtml: string): T;
+    /**
+     * Removes all child elements from an element.
+     *
+     * @param anElement
+     *   Element to remove all children of.
+     */
+    static empty(anElement: Element): void;
+    /**
+     * Gets all parents of an element.
+     *
+     * @param anElement
+     *   Element to get all parents for
+     * @param aSelector
+     *   Optional selector to filter the parents with
+     *
+     * @return all parent elements of the element (parent, grand parent, great grand parent, etc.)
+     */
+    static getParents(anElement: HTMLElement, aSelector?: string): HTMLElement[];
+    /**
+     * Shows a element by updating the `display` style property.
+     *
+     * @param anElement
+     *   Element to show
+     * @param aDisplay
+     *   When set use this value, else use the initial value which was copied with {@link hide}. If
+     *   there is no initial value, use 'block'.
+     */
+    static show(anElement: HTMLElement, aDisplay?: string): void;
+    /**
+     * Hides an element by updating the `display` style property. The current value is stored in the
+     * element and is used by {@link show}. Then the value 'none' is assigned to `display` style.
+     *
+     * @param anElement
+     *   Element to hide
+     */
+    static hide(anElement: HTMLElement): void;
 }

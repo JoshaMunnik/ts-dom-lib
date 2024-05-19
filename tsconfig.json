@@ -5,7 +5,8 @@
     "declaration": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "moduleResolution": "Node"
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
   },
   "exclude": [
     "tests",
