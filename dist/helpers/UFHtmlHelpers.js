@@ -25,9 +25,10 @@
  * SOFTWARE.
  */
 // region imports
-import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
+import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
+import { UFSetFormFieldHelper } from "./UFSetFormFieldHelper.js";
 import { UFTableSortHelper } from "./UFTableSortHelper.js";
 import { UFImagePreviewHelper } from "./UFImagePreviewHelper.js";
 import { UFSelectUrlHelper } from "./UFSelectUrlHelper.js";
@@ -72,6 +73,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
         this.registerHelper(new UFManageSubmitHelper());
         this.registerHelper(new UFFormToggleHelper());
         this.registerHelper(new UFDetailsHelper());
+        this.registerHelper(new UFSetFormFieldHelper());
     }
     // endregion
     // region public methods

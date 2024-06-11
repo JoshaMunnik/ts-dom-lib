@@ -120,6 +120,8 @@ export class UFSetFormFieldHelper extends UFHtmlHelper {
         anInputElement.value = aValue;
         break;
     }
+    anInputElement.dispatchEvent(new Event('input'));
+    anInputElement.dispatchEvent(new Event('change'));
   }
 
   // endregion
