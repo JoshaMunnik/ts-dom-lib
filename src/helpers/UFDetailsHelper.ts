@@ -81,7 +81,7 @@ export class UFDetailsHelper extends UFHtmlHelper {
       this.m_clickableElements,
       this.m_collapsableElements,
       'click',
-      (aElement: HTMLElement) => this.updateDetails(aElement, false),
+      (aElement: HTMLElement) => this.handleCollapseClick(aElement),
       DataAttribute.DetailsCollapse
     );
     this.addSourceAndTargetElements(
@@ -89,7 +89,7 @@ export class UFDetailsHelper extends UFHtmlHelper {
       this.m_clickableElements,
       this.m_expandableElements,
       'click',
-      (aElement: HTMLElement) => this.updateDetails(aElement, true),
+      (aElement: HTMLElement) => this.handleExpandClick(aElement),
       DataAttribute.DetailsCollapse
     );
   }
@@ -107,19 +107,36 @@ export class UFDetailsHelper extends UFHtmlHelper {
     this.m_collapsableElements.clear();
     this.m_expandableElements.clear();
   }
+  
+  // endregion
+  
+  // region event handlers
 
   /**
-   * Update all attached details elements.
+   * Collapses the details elements.
    *
    * @param anElement
-   * @param anOpen
    */
-  private updateDetails(anElement: HTMLElement, anOpen: boolean): void {
+  private handleCollapseClick(anElement: HTMLElement): void {
     if (!this.m_collapsableElements.has(anElement)) {
       return;
     }
     this.m_collapsableElements.get(anElement)!.forEach(
-      aDetails => aDetails.open = anOpen
+      aDetails => aDetails.open = false
+    );
+  }
+
+  /**
+   * Expands the details elements.
+   *
+   * @param anElement
+   */
+  private handleExpandClick(anElement: HTMLElement): void {
+    if (!this.m_expandableElements.has(anElement)) {
+      return;
+    }
+    this.m_expandableElements.get(anElement)!.forEach(
+      aDetails => aDetails.open = true
     );
   }
 
