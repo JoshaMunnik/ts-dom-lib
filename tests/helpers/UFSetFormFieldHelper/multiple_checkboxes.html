@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Multiple Checkboxes</title>
+  </head>
+  <body>
+    <form>
+      <input type="checkbox" name="checkboxes[]" value="1" />
+      <input type="checkbox" name="checkboxes[]" value="2" />
+      <input type="checkbox" name="checkboxes[]" value="3" />
+      <input type="checkbox" name="checkboxes[]" value="4" />
+      <input type="checkbox" name="checkboxes[]" value="5" />
+      <button type="button" data-uf-set-field-selector="input[type=checkbox]">Uncheck all</button>
+      <button type="button" data-uf-set-field-selector="input[type=checkbox]" data-uf-set-field-value="true">Check all</button>
+    </form>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>
