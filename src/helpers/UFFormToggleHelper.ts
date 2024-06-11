@@ -356,7 +356,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
    *
    * @returns null if there are no targets, else a data structure
    */
-  buildToggleData(anElement: HTMLElement): null|UFToggleData {
+  private buildToggleData(anElement: HTMLElement): null|UFToggleData {
     const formElements = this.getFormElements(anElement);
     if (!formElements.length) {
       return null;
@@ -453,13 +453,13 @@ export class UFFormToggleHelper extends UFHtmlHelper {
     let result = aData.condition !== ToggleCondition.Any;
     aData.formElements.every(element => {
       let valid: boolean | null = null;
-      let value = '';
+      let value: string = '';
       switch (aData.type) {
         case ToggleType.Valid:
           valid = (element as HTMLObjectElement).checkValidity();
           break;
         case ToggleType.Property:
-          value = UFObject.getAs(element, aData.property, '');
+          value = UFObject.getAs(element, aData.property, '').toString();
           break;
         default:
           value = UFObject.getAs(
@@ -472,7 +472,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
       // valid was not set, then value was set so validate value
       if (valid === null) {
         // ignore the values array when the form element is an image
-        valid = (aData.values.length > 0) && aData.isImage
+        valid = (aData.values.length > 0) && !aData.isImage
           ? aData.values.indexOf(value) >= 0
           : value.length > 0;
       }
