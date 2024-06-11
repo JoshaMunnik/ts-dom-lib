@@ -67,8 +67,8 @@ export class UFDetailsHelper extends UFHtmlHelper {
     scan() {
         super.scan();
         this.clear();
-        this.addSourceAndTargetElements(DataAttribute.DetailsCollapse, this.m_clickableElements, this.m_collapsableElements, 'click', (aElement) => this.updateDetails(aElement, false), DataAttribute.DetailsCollapse);
-        this.addSourceAndTargetElements(DataAttribute.DetailsExpand, this.m_clickableElements, this.m_expandableElements, 'click', (aElement) => this.updateDetails(aElement, true), DataAttribute.DetailsCollapse);
+        this.addSourceAndTargetElements(DataAttribute.DetailsCollapse, this.m_clickableElements, this.m_collapsableElements, 'click', (aElement) => this.handleCollapseClick(aElement), DataAttribute.DetailsCollapse);
+        this.addSourceAndTargetElements(DataAttribute.DetailsExpand, this.m_clickableElements, this.m_expandableElements, 'click', (aElement) => this.handleExpandClick(aElement), DataAttribute.DetailsCollapse);
     }
     // endregion
     // region private methods
@@ -81,17 +81,29 @@ export class UFDetailsHelper extends UFHtmlHelper {
         this.m_collapsableElements.clear();
         this.m_expandableElements.clear();
     }
+    // endregion
+    // region event handlers
     /**
-     * Update all attached details elements.
+     * Collapses the details elements.
      *
      * @param anElement
-     * @param anOpen
      */
-    updateDetails(anElement, anOpen) {
+    handleCollapseClick(anElement) {
         if (!this.m_collapsableElements.has(anElement)) {
             return;
         }
-        this.m_collapsableElements.get(anElement).forEach(aDetails => aDetails.open = anOpen);
+        this.m_collapsableElements.get(anElement).forEach(aDetails => aDetails.open = false);
+    }
+    /**
+     * Expands the details elements.
+     *
+     * @param anElement
+     */
+    handleExpandClick(anElement) {
+        if (!this.m_expandableElements.has(anElement)) {
+            return;
+        }
+        this.m_expandableElements.get(anElement).forEach(aDetails => aDetails.open = true);
     }
 }
 // endregion

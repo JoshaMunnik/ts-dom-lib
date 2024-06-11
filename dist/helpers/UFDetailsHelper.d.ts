@@ -51,10 +51,15 @@ export declare class UFDetailsHelper extends UFHtmlHelper {
      */
     private clear;
     /**
-     * Update all attached details elements.
+     * Collapses the details elements.
      *
      * @param anElement
-     * @param anOpen
      */
-    private updateDetails;
+    private handleCollapseClick;
+    /**
+     * Expands the details elements.
+     *
+     * @param anElement
+     */
+    private handleExpandClick;
 }

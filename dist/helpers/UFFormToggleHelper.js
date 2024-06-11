@@ -375,7 +375,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
                     valid = element.checkValidity();
                     break;
                 case ToggleType.Property:
-                    value = UFObject.getAs(element, aData.property, '');
+                    value = UFObject.getAs(element, aData.property, '').toString();
                     break;
                 default:
                     value = UFObject.getAs(element, aData.isImage ? 'src' : 'value', '');
@@ -384,7 +384,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             // valid was not set, then value was set so validate value
             if (valid === null) {
                 // ignore the values array when the form element is an image
-                valid = (aData.values.length > 0) && aData.isImage
+                valid = (aData.values.length > 0) && !aData.isImage
                     ? aData.values.indexOf(value) >= 0
                     : value.length > 0;
             }

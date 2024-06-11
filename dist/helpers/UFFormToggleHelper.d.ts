@@ -25,76 +25,6 @@
  * SOFTWARE.
  */
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
-declare enum ToggleType {
-    Auto = 0,
-    Value = 1,
-    Valid = 2,
-    Property = 3
-}
-declare enum ToggleChange {
-    Auto = 0,
-    None = 1,
-    Enable = 2,
-    Visible = 3,
-    Required = 4,
-    NotRequired = 5
-}
-declare enum ToggleCondition {
-    Any = 0,
-    All = 1,
-    None = 2
-}
-declare enum ToggleRequired {
-    None = 0,
-    Match = 1,
-    NoMatch = 2
-}
-type UFToggleData = {
-    /**
-     * Form elements listeners have been attached to
-     */
-    formElements: HTMLElement[];
-    /**
-     * Type of toggle
-     */
-    type: ToggleType;
-    /**
-     * What to change in the element
-     */
-    change: ToggleChange;
-    /**
-     * Name of property to track
-     */
-    property: string;
-    /**
-     * Css class to toggle if elements do not match the condition
-     */
-    cssClassesNoMatch: string;
-    /**
-     * Css class to toggle if elements do match the condition
-     */
-    cssClassesMatch: string;
-    /**
-     * Condition the elements must match
-     */
-    condition: ToggleCondition;
-    /**
-     * How to update the required attribute.
-     */
-    required: ToggleRequired;
-    /**
-     * True if the first form element is a form tag
-     */
-    isForm: boolean;
-    /**
-     * True if the first form element is an img tag
-     */
-    isImage: boolean;
-    /**
-     * Value to compare elements input values with
-     */
-    values: string[];
-};
 /**
  * Defines class {@link UFFormToggleHelper}, a class to make html forms more dynamic
  * by changing styles, visibility and enabled states based on input elements value and valid state.
@@ -209,7 +139,7 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @returns null if there are no targets, else a data structure
      */
-    buildToggleData(anElement: HTMLElement): null | UFToggleData;
+    private buildToggleData;
     /**
      * Checks if the target for a toggle is valid or invalid.
      *
@@ -233,4 +163,3 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      */
     private updateToggleElement;
 }
-export {};

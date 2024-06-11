@@ -6,7 +6,8 @@
     "sourceMap": true,
     "outDir": "./dist",
     "moduleResolution": "NodeNext",
-    "module": "NodeNext"
+    "module": "NodeNext",
+    "allowJs": true
   },
   "exclude": [
     "tests",
