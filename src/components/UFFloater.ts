@@ -363,7 +363,7 @@ export class UFFloater {
    * @private
    */
   private readonly m_floaterElement: HTMLElement = UFHtml.createAs<HTMLElement>(
-    `<div style="overflow: hidden; position: absolute; left: 0; top: 0; pointer-events: all; z-index: 99999; visibility: hidden;" ${DataAttribute.floater}="1"></div>`
+    `<div style="overflow: hidden; position: absolute; left: 0; top: 0; pointer-events: all; z-index: 99999; visibility: hidden; width: max-content; height: max-content" ${DataAttribute.floater}="1"></div>`
   );
 
   /**
@@ -635,8 +635,8 @@ export class UFFloater {
    */
   private updateElementPosition() {
     const rect: DOMRect = this.m_element!.getBoundingClientRect();
-    const floaterWidth: number = this.m_options.width || this.m_floaterElement.offsetWidth;
-    const floaterHeight: number = this.m_options.height || this.m_floaterElement.offsetHeight;
+    const floaterWidth: number = this.m_options.width || this.m_floaterWidth;
+    const floaterHeight: number = this.m_options.height || this.m_floaterHeight
     const documentWidth: number = document.documentElement.clientWidth;
     const documentHeight: number = document.documentElement.clientHeight;
     let left: number = this.getFloaterPosition(
@@ -801,7 +801,7 @@ export class UFFloater {
       this.showFloaterElement();
       setTimeout(
         () => {
-          this.copyDimensions()
+          //this.copyDimensions()
           this.handleShowDone();
         },
         1
@@ -912,6 +912,7 @@ export class UFFloater {
     if (!this.m_enabled) {
       return;
     }
+    console.debug({state: this.m_state});
     if (
       // always hide if the floater is visible
       (
