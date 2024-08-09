@@ -64,7 +64,7 @@ export class UFSetFormFieldHelper extends UFHtmlHelper {
   scan() {
     UFEventManager.instance.removeAllForGroup(DataAttribute.SetFieldSelector);
     const elements =
-      document.querySelectorAll<HTMLSelectElement>('[' + DataAttribute.SetFieldSelector + ']');
+      document.querySelectorAll<HTMLElement>('[' + DataAttribute.SetFieldSelector + ']');
     elements.forEach(
       element => this.processClickableElement(element)
     );
@@ -79,7 +79,7 @@ export class UFSetFormFieldHelper extends UFHtmlHelper {
    *
    * @private
    */
-  private processClickableElement(anElement: HTMLSelectElement): void {
+  private processClickableElement(anElement: HTMLElement): void {
     const setFieldSelector = UFHtml.getAttribute(anElement, DataAttribute.SetFieldSelector);
     const setFieldValue = UFHtml.getAttribute(anElement, DataAttribute.SetFieldValue);
     if (setFieldSelector) {
