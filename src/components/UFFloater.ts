@@ -77,8 +77,9 @@ export enum UFFloaterElementPosition {
   /**
    * The floater is positioned adjacent to the element. Either the end of the floater is placed
    * at the start of the element or the start of the floater is placed at the end of the element.
-   * The floater position value is not used. The element position is added to the floater position
-   * to get the final position. It can be used to partially overlap the floater with the element
+   * The floater position value is not used. The element position is added or subtracted to the
+   * floater position (depending on the side) to get the final position.
+   * It can be used to partially overlap the floater with the element
    * or create a space between the floater and the element.
    */
   Adjacent = 'adjacent',

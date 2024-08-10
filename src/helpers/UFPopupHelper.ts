@@ -45,6 +45,8 @@ enum DataAttribute {
   PopupPosition = "data-uf-popup-position",
   PopupHide = "data-uf-popup-hide",
   PopupTransition = "data-uf-popup-transition",
+  PopupDeltaX = "data-uf-popup-delta-x",
+  PopupDeltaY = "data-uf-popup-delta-y",
 }
 
 enum PopupPosition {
@@ -85,6 +87,10 @@ enum PopupHide {
  * - 'slide-vertical' will use a vertical slide transition animation
  * - 'slide-horizontal' will use a horizontal slide transition animation
  *
+ * User `data-uf-popup-delta-x` and `data-uf-popup-delta-y` to adjust the position of the floater
+ * relative to the clickable element. Its value is a positive or integer value that is added to
+ * the position of the floater.
+ *
  * Once a floater is content is processed, the `data-uf-popup-content` attribute is removed.
  */
 export class UFPopupHelper extends UFHtmlHelper {
@@ -105,12 +111,13 @@ export class UFPopupHelper extends UFHtmlHelper {
     const clickableElements = document.querySelectorAll<HTMLElement>(aContentElement.getAttribute(DataAttribute.PopupContent)!);
     const popupHide: PopupHide = (aContentElement.getAttribute(DataAttribute.PopupHide) || PopupHide.Always) as PopupHide;
     const popupPosition: PopupPosition = (aContentElement.getAttribute(DataAttribute.PopupPosition) || PopupPosition.Horizontal) as PopupPosition;
-    const popupTransition: UFFloaterTransition = (aContentElement.getAttribute(DataAttribute.PopupTransition) || UFFloaterTransition.None) as UFFloaterTransition;
     const options: Partial<UFFloaterOptions> = {
       element: Array.from(clickableElements),
       autoHide: popupHide == PopupHide.Tree ? UFFloaterAutoHide.Tree : UFFloaterAutoHide.Always,
       content: aContentElement,
-      transition: popupTransition,
+      transition: (aContentElement.getAttribute(DataAttribute.PopupTransition) || UFFloaterTransition.None) as UFFloaterTransition,
+      elementX: parseInt(aContentElement.getAttribute(DataAttribute.PopupDeltaX) || '0'),
+      elementY: parseInt(aContentElement.getAttribute(DataAttribute.PopupDeltaY) || '0'),
     };
     switch(popupPosition) {
       case PopupPosition.Vertical:
