@@ -170,7 +170,7 @@ export declare class UFHtml {
      * @param aHtml
      *   Html to parse
      *
-     * @return created element
+     * @return created element; the element is removed from the document before it is returned.
      */
     static createAs<T extends Element>(aHtml: string): T;
     /**

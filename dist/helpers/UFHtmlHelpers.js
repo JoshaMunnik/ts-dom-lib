@@ -28,6 +28,7 @@
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
+import { UFPopupHelper } from "./UFPopupHelper.js";
 import { UFSetFormFieldHelper } from "./UFSetFormFieldHelper.js";
 import { UFTableSortHelper } from "./UFTableSortHelper.js";
 import { UFImagePreviewHelper } from "./UFImagePreviewHelper.js";
@@ -74,6 +75,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
         this.registerHelper(new UFFormToggleHelper());
         this.registerHelper(new UFDetailsHelper());
         this.registerHelper(new UFSetFormFieldHelper());
+        this.registerHelper(new UFPopupHelper());
     }
     // endregion
     // region public methods

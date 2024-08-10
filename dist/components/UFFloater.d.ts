@@ -108,7 +108,8 @@ export declare enum UFFloaterAutoHide {
 export declare enum UFFloaterTransition {
     None = "none",
     Fade = "fade",
-    Slide = "slide",
+    SlideVertical = "slide-vertical",
+    SlideHorizontal = "slide-horizontal",
     Custom = "custom"
 }
 /**
@@ -134,9 +135,10 @@ export type UFFloaterOptions = {
      */
     screenY: number | string;
     /**
-     * Element to position floater to. The default value is null.
+     * Element to position floater to. The default value is null. When not null the floater instance
+     * will check if the element is clicked/tapped up on and will show or hide the floater.
      */
-    element: string | HTMLElement | null;
+    element: string | HTMLElement | null | HTMLElement[];
     /**
      * Determines how to use the {@link floaterX} and {@link elementX} values.
      * The default value is {@link UFFloaterElementPosition.Adjacent}.
@@ -234,7 +236,8 @@ export type UFFloaterOptions = {
 /**
  * {@link UFFloater} is a class to show a floating element shown on top of the DOM.
  *
- * The class can be used to show a floater somewhere in the browser or relative to a certain element.
+ * The class can be used to show a floater somewhere in the browser or relative to a certain
+ * element.
  *
  * The class uses the css class 'uf-floater', make sure no css class style exists with that name.
  */
@@ -265,11 +268,29 @@ export declare class UFFloater {
      */
     private readonly m_floaterElement;
     /**
-     * Element to position floater to.
+     * Element that contains the content and is placed within the floater element.
      *
      * @private
      */
-    private m_element;
+    private readonly m_contentElement;
+    /**
+     * Element(s) to position the floater to.
+     *
+     * @private
+     */
+    private m_elements;
+    /**
+     * Current element the floater is positioned to.
+     *
+     * @private
+     */
+    private m_selectedElement;
+    /**
+     * Element to move floater to after it is hidden.
+     *
+     * @private
+     */
+    private m_nextElement;
     /**
      * Current state of floater.
      */
@@ -299,17 +320,23 @@ export declare class UFFloater {
      */
     private m_enabled;
     /**
-     * Callbacks to remove listeners.
+     * Callbacks to remove global listeners.
      *
      * @private
      */
     private m_removeListeners;
     /**
-     * Callback to remove element listeners.
+     * Callback to remove element related listeners.
      *
      * @private
      */
     private m_removeElementListeners;
+    /**
+     * Timer to handle end of a transition.
+     *
+     * @private
+     */
+    private m_transitionTimer;
     /**
      * Constructs an instance of {@link UFFloater}. Note that the dimensional properties are not set
      * immediately. The floater is added to the DOM to get the dimensions and then removed again.
@@ -341,13 +368,13 @@ export declare class UFFloater {
      */
     show(): void;
     /**
-     * Sets a new element to position the floater to and then show the floater. It is a combination of
-     * {@link setOptions} and {@link show}
+     * Sets new element(s) to position the floater to and then show the floater. It is a combination
+     * of {@link setOptions} and {@link show}
      *
-     * @param {string|HTMLElement} anElement
-     *   Element to position to
+     * @param anElement
+     *   Element(s) to position to
      */
-    positionAndShow(anElement: string | HTMLElement): void;
+    positionAndShow(anElement: string | HTMLElement | HTMLElement[]): void;
     /**
      * Refreshes the position of the floater if it is visible.
      */
@@ -390,6 +417,86 @@ export declare class UFFloater {
      */
     get contentHeight(): number;
     /**
+     * Removes all global listeners.
+     *
+     * @private
+     */
+    private removeListeners;
+    /**
+     * Removes all element related listeners.
+     *
+     * @private
+     */
+    private removeElementListeners;
+    /**
+     * Adds listeners for an element. This might also include elements related to the element.
+     *
+     * @param anElement
+     *
+     * @private
+     */
+    private addElementListeners;
+    /**
+     * Shows a floater using a build in transition.
+     *
+     * @private
+     */
+    private showFloaterElementWithTransition;
+    /**
+     * Hides a floater using a build in transition.
+     *
+     * @private
+     */
+    private hideFloaterElementWithTransition;
+    /**
+     * Shows the floater without any show transition.
+     *
+     * @private
+     */
+    private showFloaterElementImmediately;
+    /**
+     * Hides the floater without any show transition.
+     *
+     * @private
+     */
+    private hideFloaterElementImmediately;
+    /**
+     * Shows the floater with a fade transition.
+     *
+     * @private
+     */
+    private showFloaterElementFade;
+    /**
+     * Hides the floater with a fade transition.
+     *
+     * @private
+     */
+    private hideFloaterElementFade;
+    /**
+     * Shows the floater with a vertical slide (from top to bottom).
+     *
+     * @private
+     */
+    private showFloaterElementVerticalSlide;
+    /**
+     * Hides the floater with a vertical slide (from bottom to top).
+     *
+     * @private
+     */
+    private hideFloaterElementVerticalSlide;
+    /**
+     * Shows the floater with a horizontal slide (from left to right).
+     *
+     * @private
+     */
+    private showFloaterElementHorizontalSlide;
+    /**
+     * Hides the floater with a horizontal slide (from right to left).
+     *
+     * @private
+     */
+    private hideFloaterElementHorizontalSlide;
+    /**
      * Hides the floater element.
      *
      * @private
@@ -408,7 +515,7 @@ export declare class UFFloater {
     /**
      * Updates the position of the floater element relative to an element.
      */
-    private updateElementPosition;
+    private updatePositionForElement;
     /**
      * Get the position of the floater relative to an element.
      *
@@ -426,17 +533,17 @@ export declare class UFFloater {
     /**
      * Updates the position of the element within the document.
      */
-    private updateDocumentPosition;
+    private updatePositionInDocument;
     /**
-     * This #is called whenever element in options might have changed.
+     * This is called whenever element in options might have changed.
      */
-    private refreshElement;
+    private refreshElements;
     /**
-     * Removes any reference to the element and removes all attached listeners.
+     * Removes any reference to the element(s) and removes all attached listeners.
      *
      * @private
      */
-    private destroyElement;
+    private destroyElements;
     /**
      * Copies the dimensions of the floater and content.
      */
@@ -445,6 +552,13 @@ export declare class UFFloater {
      * Shows the floater.
      */
     private showFloater;
+    /**
+     * Moves the floater to a new element. It assumes the floater is visible.
+     *
+     * @param anElement
+     *   Element to move to
+     */
+    private moveFloater;
     /**
      * Closes the floater if it can be closed.
      *
@@ -463,6 +577,22 @@ export declare class UFFloater {
      * @returns True if the element is part of a floater / element chain going back to this floater.
      */
     private isRelated;
+    /**
+     * Tries to find the element that was clicked.
+     *
+     * @param anEvent
+     *
+     * @return the element or null if none could be found.
+     *
+     * @private
+     */
+    private findClickedElement;
+    /**
+     * Stops the transition timer (if any).
+     *
+     * @private
+     */
+    private stopTransitionTimer;
     /**
      * Handles end of show transition.
      */

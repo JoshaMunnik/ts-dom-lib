@@ -229,12 +229,14 @@ export class UFHtml {
      * @param aHtml
      *   Html to parse
      *
-     * @return created element
+     * @return created element; the element is removed from the document before it is returned.
      */
     static createAs(aHtml) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(aHtml, 'text/html');
-        return doc.body.firstChild;
+        const result = doc.body.firstChild;
+        result.remove();
+        return result;
     }
     /**
      * Removes all child elements from an element.

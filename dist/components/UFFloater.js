@@ -123,13 +123,15 @@ export var UFFloaterTransition;
 (function (UFFloaterTransition) {
     UFFloaterTransition["None"] = "none";
     UFFloaterTransition["Fade"] = "fade";
-    UFFloaterTransition["Slide"] = "slide";
+    UFFloaterTransition["SlideVertical"] = "slide-vertical";
+    UFFloaterTransition["SlideHorizontal"] = "slide-horizontal";
     UFFloaterTransition["Custom"] = "custom";
 })(UFFloaterTransition || (UFFloaterTransition = {}));
 /**
  * {@link UFFloater} is a class to show a floating element shown on top of the DOM.
  *
- * The class can be used to show a floater somewhere in the browser or relative to a certain element.
+ * The class can be used to show a floater somewhere in the browser or relative to a certain
+ * element.
  *
  * The class uses the css class 'uf-floater', make sure no css class style exists with that name.
  */
@@ -178,13 +180,31 @@ export class UFFloater {
          *
          * @private
          */
-        this.m_floaterElement = UFHtml.createAs(`<div style="overflow: hidden; position: absolute; left: 0; top: 0; pointer-events: all; z-index: 99999; visibility: hidden;" ${DataAttribute.floater}="1"></div>`);
+        this.m_floaterElement = UFHtml.createAs(`<div style="overflow: hidden; position: absolute; left: 0; top: 0; pointer-events: all; z-index: 99999; visibility: hidden; width: max-content; height: max-content" ${DataAttribute.floater}="1"></div>`);
         /**
-         * Element to position floater to.
+         * Element that contains the content and is placed within the floater element.
          *
          * @private
          */
-        this.m_element = null;
+        this.m_contentElement = UFHtml.createAs(`<div style="position: relative; left: 0; top: 0; width: max-content; height: max-content"></div>`);
+        /**
+         * Element(s) to position the floater to.
+         *
+         * @private
+         */
+        this.m_elements = null;
+        /**
+         * Current element the floater is positioned to.
+         *
+         * @private
+         */
+        this.m_selectedElement = null;
+        /**
+         * Element to move floater to after it is hidden.
+         *
+         * @private
+         */
+        this.m_nextElement = null;
         /**
          * Current state of floater.
          */
@@ -214,21 +234,28 @@ export class UFFloater {
          */
         this.m_enabled = true;
         /**
-         * Callbacks to remove listeners.
+         * Callbacks to remove global listeners.
          *
          * @private
          */
         this.m_removeListeners = [];
         /**
-         * Callback to remove element listeners.
+         * Callback to remove element related listeners.
          *
          * @private
          */
         this.m_removeElementListeners = [];
+        /**
+         * Timer to handle end of a transition.
+         *
+         * @private
+         */
+        this.m_transitionTimer = null;
         // updates options
         this.m_options = Object.assign(this.m_options, anOptions);
         // initial floater has hidden visibility
-        this.m_floaterElement.append(this.m_options.content);
+        this.m_contentElement.append(this.m_options.content);
+        this.m_floaterElement.append(this.m_contentElement);
         // store initially in body so it can be processed
         document.body.append(this.m_floaterElement);
         // use time out so element gets processed by browser before the class can get the dimensions
@@ -242,7 +269,7 @@ export class UFFloater {
                 this.m_options.onInitialized(this);
             }
         }, 1);
-        this.refreshElement();
+        this.refreshElements();
     }
     // endregion
     // region public methods
@@ -250,9 +277,9 @@ export class UFFloater {
      * Destroys the floater and removes all listeners.
      */
     destroy() {
-        this.destroyElement();
-        this.m_removeListeners.forEach((callback) => callback());
-        this.m_removeListeners.length = 0;
+        this.destroyElements();
+        this.removeListeners();
+        this.removeElementListeners();
         this.m_floaterElement.remove();
     }
     /**
@@ -263,7 +290,7 @@ export class UFFloater {
      */
     setOptions(anOptions) {
         this.m_options = Object.assign(this.m_options, anOptions);
-        this.refreshElement();
+        this.refreshElements();
         this.refreshContent();
     }
     /**
@@ -279,14 +306,14 @@ export class UFFloater {
      * Shows the floater.
      */
     show() {
-        this.showFloater();
+        this.showFloater(null);
     }
     /**
-     * Sets a new element to position the floater to and then show the floater. It is a combination of
-     * {@link setOptions} and {@link show}
+     * Sets new element(s) to position the floater to and then show the floater. It is a combination
+     * of {@link setOptions} and {@link show}
      *
-     * @param {string|HTMLElement} anElement
-     *   Element to position to
+     * @param anElement
+     *   Element(s) to position to
      */
     positionAndShow(anElement) {
         this.setOptions({ element: anElement });
@@ -305,9 +332,12 @@ export class UFFloater {
      */
     refreshContent() {
         if (this.visible) {
-            UFHtml.empty(this.m_floaterElement);
-            this.m_floaterElement.append(this.m_options.content);
-            this.updateFloaterPosition();
+            UFHtml.empty(this.m_contentElement);
+            this.m_contentElement.append(this.m_options.content);
+            setTimeout(() => {
+                this.copyDimensions();
+                this.updateFloaterPosition();
+            });
         }
     }
     // endregion
@@ -362,6 +392,198 @@ export class UFFloater {
     // endregion
     // region private functions
     /**
+     * Removes all global listeners.
+     *
+     * @private
+     */
+    removeListeners() {
+        this.m_removeListeners.forEach((callback) => callback());
+        this.m_removeListeners.length = 0;
+    }
+    /**
+     * Removes all element related listeners.
+     *
+     * @private
+     */
+    removeElementListeners() {
+        this.m_removeElementListeners.forEach((callback) => callback());
+        this.m_removeElementListeners.length = 0;
+    }
+    /**
+     * Adds listeners for an element. This might also include elements related to the element.
+     *
+     * @param anElement
+     *
+     * @private
+     */
+    addElementListeners(anElement) {
+        UFHtml.getParents(anElement).forEach(parent => this.m_removeElementListeners.push(UFHtml.addListener(parent, 'scroll', () => this.updateFloaterPosition())));
+    }
+    /**
+     * Shows a floater using a build in transition.
+     *
+     * @private
+     */
+    showFloaterElementWithTransition() {
+        if ((this.m_options.transition === UFFloaterTransition.Custom) && this.m_options.customShow) {
+            this.m_options.customShow(this.m_floaterElement, () => this.handleShowDone());
+            return;
+        }
+        switch (this.m_options.transition) {
+            case UFFloaterTransition.Fade:
+                this.showFloaterElementFade();
+                break;
+            case UFFloaterTransition.SlideVertical:
+                this.showFloaterElementVerticalSlide();
+                break;
+            case UFFloaterTransition.SlideHorizontal:
+                this.showFloaterElementHorizontalSlide();
+                break;
+            default:
+                this.showFloaterElementImmediately();
+                break;
+        }
+    }
+    /**
+     * Hides a floater using a build in transition.
+     *
+     * @private
+     */
+    hideFloaterElementWithTransition() {
+        if ((this.m_options.transition === UFFloaterTransition.Custom) && this.m_options.customHide) {
+            this.m_options.customHide(this.m_floaterElement, () => this.handleHideDone());
+            return;
+        }
+        switch (this.m_options.transition) {
+            case UFFloaterTransition.Fade:
+                this.hideFloaterElementFade();
+                break;
+            case UFFloaterTransition.SlideVertical:
+                this.hideFloaterElementVerticalSlide();
+                break;
+            case UFFloaterTransition.SlideHorizontal:
+                this.hideFloaterElementHorizontalSlide();
+                break;
+            default:
+                this.hideFloaterElementImmediately();
+                break;
+        }
+    }
+    /**
+     * Shows the floater without any show transition.
+     *
+     * @private
+     */
+    showFloaterElementImmediately() {
+        this.showFloaterElement();
+        setTimeout(() => this.handleShowDone());
+    }
+    /**
+     * Hides the floater without any show transition.
+     *
+     * @private
+     */
+    hideFloaterElementImmediately() {
+        this.hideFloaterElement();
+        setTimeout(() => this.handleHideDone());
+    }
+    /**
+     * Shows the floater with a fade transition.
+     *
+     * @private
+     */
+    showFloaterElementFade() {
+        this.showFloaterElement();
+        this.m_floaterElement.style.transition = '';
+        this.m_floaterElement.style.opacity = '0';
+        setTimeout(() => {
+            this.m_floaterElement.style.transition = 'opacity 0.15s';
+            this.m_floaterElement.style.opacity = '1';
+        }, 10);
+        this.m_transitionTimer = setTimeout(() => {
+            this.handleShowDone();
+        }, 160);
+    }
+    /**
+     * Hides the floater with a fade transition.
+     *
+     * @private
+     */
+    hideFloaterElementFade() {
+        this.m_floaterElement.style.transition = '';
+        this.m_floaterElement.style.opacity = '1';
+        this.m_floaterElement.style.transition = 'opacity 0.15s';
+        this.m_floaterElement.style.opacity = '0';
+        this.m_transitionTimer = setTimeout(() => {
+            this.hideFloaterElement();
+            this.handleHideDone();
+        }, 150);
+    }
+    /**
+     * Shows the floater with a vertical slide (from top to bottom).
+     *
+     * @private
+     */
+    showFloaterElementVerticalSlide() {
+        this.showFloaterElement();
+        this.m_contentElement.style.transition = '';
+        this.m_contentElement.style.translate = '0 -100%';
+        setTimeout(() => {
+            this.m_contentElement.style.transition = 'translate 0.15s';
+            this.m_contentElement.style.translate = '0 0';
+        }, 10);
+        this.m_transitionTimer = setTimeout(() => {
+            this.handleShowDone();
+        }, 160);
+    }
+    /**
+     * Hides the floater with a vertical slide (from bottom to top).
+     *
+     * @private
+     */
+    hideFloaterElementVerticalSlide() {
+        this.showFloaterElement();
+        this.m_contentElement.style.transition = '';
+        this.m_contentElement.style.translate = '0 0';
+        this.m_contentElement.style.transition = 'translate 0.15s';
+        this.m_contentElement.style.translate = '0 -100%';
+        this.m_transitionTimer = setTimeout(() => {
+            this.handleHideDone();
+        }, 150);
+    }
+    /**
+     * Shows the floater with a horizontal slide (from left to right).
+     *
+     * @private
+     */
+    showFloaterElementHorizontalSlide() {
+        this.showFloaterElement();
+        this.m_contentElement.style.transition = '';
+        this.m_contentElement.style.translate = '-100% 0';
+        setTimeout(() => {
+            this.m_contentElement.style.transition = 'translate 0.15s';
+            this.m_contentElement.style.translate = '0 0';
+        }, 10);
+        this.m_transitionTimer = setTimeout(() => {
+            this.handleShowDone();
+        }, 160);
+    }
+    /**
+     * Hides the floater with a horizontal slide (from right to left).
+     *
+     * @private
+     */
+    hideFloaterElementHorizontalSlide() {
+        this.showFloaterElement();
+        this.m_contentElement.style.transition = '';
+        this.m_contentElement.style.translate = '0 0';
+        this.m_contentElement.style.transition = 'translate 0.15s';
+        this.m_contentElement.style.translate = '-100% 0';
+        this.m_transitionTimer = setTimeout(() => {
+            this.handleHideDone();
+        }, 150);
+    }
+    /**
      * Hides the floater element.
      *
      * @private
@@ -381,20 +603,20 @@ export class UFFloater {
      * Updates the position of the floater.
      */
     updateFloaterPosition() {
-        if (this.m_options.element) {
-            this.updateElementPosition();
+        if (this.m_selectedElement) {
+            this.updatePositionForElement();
         }
         else {
-            this.updateDocumentPosition();
+            this.updatePositionInDocument();
         }
     }
     /**
      * Updates the position of the floater element relative to an element.
      */
-    updateElementPosition() {
-        const rect = this.m_element.getBoundingClientRect();
-        const floaterWidth = this.m_options.width || this.m_floaterElement.offsetWidth;
-        const floaterHeight = this.m_options.height || this.m_floaterElement.offsetHeight;
+    updatePositionForElement() {
+        const rect = this.m_selectedElement.getBoundingClientRect();
+        const floaterWidth = this.m_options.width || this.m_floaterWidth;
+        const floaterHeight = this.m_options.height || this.m_floaterHeight;
         const documentWidth = document.documentElement.clientWidth;
         const documentHeight = document.documentElement.clientHeight;
         let left = this.getFloaterPosition(this.m_options.positionX, documentWidth, rect.left, rect.width, this.m_options.elementX, floaterWidth, this.m_options.floaterX);
@@ -443,7 +665,7 @@ export class UFFloater {
     /**
      * Updates the position of the element within the document.
      */
-    updateDocumentPosition() {
+    updatePositionInDocument() {
         const floaterWidth = this.m_options.width || this.m_floaterElement.offsetWidth;
         const floaterHeight = this.m_options.height || this.m_floaterElement.offsetHeight;
         const documentWidth = document.documentElement.clientWidth;
@@ -462,26 +684,23 @@ export class UFFloater {
         }
     }
     /**
-     * This #is called whenever element in options might have changed.
+     * This is called whenever element in options might have changed.
      */
-    refreshElement() {
-        this.destroyElement();
+    refreshElements() {
+        this.destroyElements();
         if (this.m_options.element && (this.m_options.autoShow !== UFFloaterAutoShow.None)) {
-            this.m_element = UFHtml.get(this.m_options.element);
-            UFHtml.getParents(this.m_element).forEach(parent => this.m_removeElementListeners.push(UFHtml.addListener(parent, 'scroll', () => this.updateFloaterPosition())));
-            UFFloater.s_floaterToElementMap.set(this.m_floaterElement, this.m_element);
+            this.m_elements = Array.isArray(this.m_options.element) ? this.m_options.element : [UFHtml.get(this.m_options.element)];
         }
     }
     /**
-     * Removes any reference to the element and removes all attached listeners.
+     * Removes any reference to the element(s) and removes all attached listeners.
      *
      * @private
      */
-    destroyElement() {
-        if (this.m_element) {
-            this.m_removeElementListeners.forEach(callback => callback());
-            this.m_removeElementListeners.length = 0;
-            this.m_element = null;
+    destroyElements() {
+        if (this.m_elements) {
+            this.removeElementListeners();
+            this.m_elements = null;
             if (this.m_floaterElement) {
                 UFFloater.s_floaterToElementMap.delete(this.m_floaterElement);
             }
@@ -501,10 +720,17 @@ export class UFFloater {
     /**
      * Shows the floater.
      */
-    showFloater() {
+    showFloater(anElement) {
         // exit if the floater is already visible
         if ((this.m_state === FloaterState.Visible) || (this.m_state === FloaterState.Showing)) {
             return;
+        }
+        this.stopTransitionTimer();
+        // set element as selected
+        if (anElement) {
+            this.addElementListeners(anElement);
+            this.m_selectedElement = anElement;
+            UFFloater.s_floaterToElementMap.set(this.m_floaterElement, anElement);
         }
         //this.#floater.empty().append(this.m_options.content);
         this.m_floaterElement.style.visibility = 'hidden';
@@ -518,15 +744,22 @@ export class UFFloater {
         this.m_floaterElement.style.visibility = 'visible';
         this.hideFloaterElement();
         this.m_state = FloaterState.Showing;
-        if ((this.m_options.transition === UFFloaterTransition.Custom) && this.m_options.customShow) {
-            this.m_options.customShow(this.m_floaterElement, () => this.handleShowDone());
+        this.showFloaterElementWithTransition();
+    }
+    /**
+     * Moves the floater to a new element. It assumes the floater is visible.
+     *
+     * @param anElement
+     *   Element to move to
+     */
+    moveFloater(anElement) {
+        // exit if the floater is already visible
+        if ((this.m_state === FloaterState.Visible) || (this.m_state === FloaterState.Showing)) {
+            this.m_nextElement = anElement;
+            this.hideFloater();
         }
         else {
-            this.showFloaterElement();
-            setTimeout(() => {
-                this.copyDimensions();
-                this.handleShowDone();
-            }, 1);
+            this.showFloater(anElement);
         }
     }
     /**
@@ -543,18 +776,11 @@ export class UFFloater {
             return true;
         }
         if (!this.m_options.canHide || this.m_options.canHide(anEvent)) {
+            this.stopTransitionTimer();
             this.m_state = FloaterState.Hiding;
             // use timeout, so other event listeners can also react to up/click events before floater
             // is hidden
-            setTimeout(() => {
-                if ((this.m_options.transition === UFFloaterTransition.Custom) && this.m_options.customHide) {
-                    this.m_options.customHide(this.m_floaterElement, () => this.handleHideDone());
-                }
-                else {
-                    this.hideFloaterElement();
-                    this.handleHideDone();
-                }
-            });
+            setTimeout(() => this.hideFloaterElementWithTransition());
             return true;
         }
         return false;
@@ -587,6 +813,37 @@ export class UFFloater {
             anElement = UFFloater.s_floaterToElementMap.get(floater);
         }
     }
+    /**
+     * Tries to find the element that was clicked.
+     *
+     * @param anEvent
+     *
+     * @return the element or null if none could be found.
+     *
+     * @private
+     */
+    findClickedElement(anEvent) {
+        if (!this.m_elements) {
+            return null;
+        }
+        for (const element of this.m_elements) {
+            if (UFBrowser.isClicked(element, anEvent)) {
+                return element;
+            }
+        }
+        return null;
+    }
+    /**
+     * Stops the transition timer (if any).
+     *
+     * @private
+     */
+    stopTransitionTimer() {
+        if (this.m_transitionTimer) {
+            clearTimeout(this.m_transitionTimer);
+            this.m_transitionTimer = null;
+        }
+    }
     // endregion
     // region event handlers
     /**
@@ -612,6 +869,15 @@ export class UFFloater {
         if (this.m_options.onHidden) {
             this.m_options.onHidden();
         }
+        if (this.m_selectedElement) {
+            this.removeElementListeners();
+            this.m_selectedElement = null;
+            UFFloater.s_floaterToElementMap.delete(this.m_floaterElement);
+        }
+        if (this.m_nextElement) {
+            this.showFloater(this.m_nextElement);
+            this.m_nextElement = null;
+        }
     }
     /**
      * Handles mouse up / touch end on the document.
@@ -619,36 +885,44 @@ export class UFFloater {
      * @param {jQuery.Event} anEvent
      */
     handleDocumentUp(anEvent) {
+        // ignore interactions while the floater is disabled
         if (!this.m_enabled) {
             return;
         }
-        if (
-        // always hide if the floater is visible
-        ((this.m_options.autoHide === UFFloaterAutoHide.Always) &&
-            (this.m_state !== FloaterState.Hidden)) ||
-            // only hide if user clicked outside the floater and element
-            ((this.m_options.autoHide === UFFloaterAutoHide.Outside) &&
-                (this.m_state !== FloaterState.Hidden) &&
-                !UFBrowser.isClicked(this.m_floaterElement, anEvent) &&
-                !(this.m_element && UFBrowser.isClicked(this.m_element, anEvent))) ||
-            // only hide if the user clicked outside all elements that are related to this floater
-            ((this.m_options.autoHide === UFFloaterAutoHide.Tree) &&
-                (this.m_state !== FloaterState.Hidden) &&
-                !this.isRelated(anEvent.target))) {
-            this.hideFloater(anEvent);
-        }
-        else if (this.m_element && UFBrowser.isClicked(this.m_element, anEvent)) {
+        // first process an element that the floater can attach to (if any)
+        const element = this.findClickedElement(anEvent);
+        if (element) {
             switch (this.m_state) {
                 case FloaterState.Hidden:
                 case FloaterState.Hiding:
-                    this.showFloater();
-                    break;
+                    this.showFloater(element);
+                    return;
                 case FloaterState.Visible:
                 case FloaterState.Showing:
-                    if (this.m_options.autoShow === UFFloaterAutoShow.Toggle) {
-                        this.hideFloater(anEvent);
+                    if (element == this.m_selectedElement) {
+                        if (this.m_options.autoShow === UFFloaterAutoShow.Toggle) {
+                            this.hideFloater(anEvent);
+                        }
                     }
-                    break;
+                    else {
+                        this.moveFloater(element);
+                    }
+                    return;
+            }
+        }
+        if (this.m_state !== FloaterState.Hidden) {
+            if (
+            // always hide if the floater is visible
+            (this.m_options.autoHide === UFFloaterAutoHide.Always) ||
+                // only hide if user clicked outside the floater and element
+                ((this.m_options.autoHide === UFFloaterAutoHide.Outside) &&
+                    !UFBrowser.isClicked(this.m_floaterElement, anEvent) &&
+                    !((this.m_selectedElement != null) && UFBrowser.isClicked(this.m_selectedElement, anEvent))) ||
+                // only hide if the user clicked outside all elements that are related to this floater
+                ((this.m_options.autoHide === UFFloaterAutoHide.Tree) &&
+                    !this.isRelated(anEvent.target))) {
+                this.hideFloater(anEvent);
+                return;
             }
         }
     }

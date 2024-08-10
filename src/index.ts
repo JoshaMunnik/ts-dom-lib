@@ -27,6 +27,7 @@ export * from './helpers/UFHtmlHelpers.js';
 export * from './helpers/UFImagePreviewHelper.js';
 export * from './helpers/UFManageSubmitHelper.js';
 export * from './helpers/UFPageRefreshHelper.js';
+export * from './helpers/UFPopupHelper.js';
 export * from './helpers/UFSelectUrlHelper.js';
 export * from './helpers/UFShareHoverHelper.js';
 export * from './helpers/UFTableSortHelper.js';

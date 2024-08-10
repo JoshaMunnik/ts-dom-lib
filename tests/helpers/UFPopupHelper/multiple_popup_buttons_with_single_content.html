@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Multiple Checkboxes</title>
+  </head>
+  <body>
+    <div>
+      Some buttons:
+      <br/><button>click</button>
+      <br/><button>click</button>
+      <br/><button>click</button>
+      <br/><button>click</button>
+      <br/><button>click</button>
+    </div>
+    <div data-uf-popup-content="button" data-uf-popup-position="vertical" style="display: flex; flex-direction: column;">
+      <button>First choice</button><button>Second choice</button>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>
