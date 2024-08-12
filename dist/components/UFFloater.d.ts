@@ -612,4 +612,8 @@ export declare class UFFloater {
      * Handles window size changes.
      */
     private handleWindowResize;
+    /**
+     * Handles scrolling by one of the parent elements.
+     */
+    private handleScrolling;
 }

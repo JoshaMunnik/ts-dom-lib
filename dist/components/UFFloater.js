@@ -53,8 +53,9 @@ export var UFFloaterElementPosition;
     /**
      * The floater is positioned adjacent to the element. Either the end of the floater is placed
      * at the start of the element or the start of the floater is placed at the end of the element.
-     * The floater position value is not used. The element position is added to the floater position
-     * to get the final position. It can be used to partially overlap the floater with the element
+     * The floater position value is not used. The element position is added or subtracted to the
+     * floater position (depending on the side) to get the final position.
+     * It can be used to partially overlap the floater with the element
      * or create a space between the floater and the element.
      */
     UFFloaterElementPosition["Adjacent"] = "adjacent";
@@ -406,6 +407,7 @@ export class UFFloater {
      * @private
      */
     removeElementListeners() {
+        console.debug('removeElementListeners');
         this.m_removeElementListeners.forEach((callback) => callback());
         this.m_removeElementListeners.length = 0;
     }
@@ -417,7 +419,9 @@ export class UFFloater {
      * @private
      */
     addElementListeners(anElement) {
-        UFHtml.getParents(anElement).forEach(parent => this.m_removeElementListeners.push(UFHtml.addListener(parent, 'scroll', () => this.updateFloaterPosition())));
+        const parents = UFHtml.getParents(anElement);
+        parents.forEach(parent => this.m_removeElementListeners.push(UFHtml.addListener(parent, 'scroll', () => this.handleScrolling())));
+        this.m_removeElementListeners.push(UFHtml.addListener(window, 'scroll', () => this.handleScrolling()));
     }
     /**
      * Shows a floater using a build in transition.
@@ -934,6 +938,14 @@ export class UFFloater {
             this.updateFloaterPosition();
         }
     }
+    /**
+     * Handles scrolling by one of the parent elements.
+     */
+    handleScrolling() {
+        if (this.m_state != FloaterState.Hidden) {
+            this.updateFloaterPosition();
+        }
+    }
 }
 // region private variables
 /**
@@ -942,7 +954,7 @@ export class UFFloater {
  *
  * @private
  */
-UFFloater.s_container = UFHtml.createAs('<div style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>');
+UFFloater.s_container = UFHtml.createAs('<div style="position: fixed; top: 0; left: 0; pointer-events: none;"></div>');
 /**
  * Maps a floater to the element that shows/hides it.
  *
