@@ -321,7 +321,7 @@ export class UFFloater {
    * @private
    */
   private static readonly s_container: HTMLElement = UFHtml.createAs<HTMLElement>(
-    '<div style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>'
+    '<div style="position: fixed; top: 0; left: 0; pointer-events: none;"></div>'
   );
 
   /**
@@ -654,6 +654,7 @@ export class UFFloater {
    * @private
    */
   private removeElementListeners() {
+    console.debug('removeElementListeners');
     this.m_removeElementListeners.forEach((callback) => callback());
     this.m_removeElementListeners.length = 0;
   }
@@ -666,11 +667,15 @@ export class UFFloater {
    * @private
    */
   private addElementListeners(anElement: HTMLElement) {
-    UFHtml.getParents(anElement).forEach(
+    const parents: HTMLElement[] = UFHtml.getParents(anElement);
+    parents.forEach(
       parent => this.m_removeElementListeners.push(
-        UFHtml.addListener(parent, 'scroll', () => this.updateFloaterPosition())
+        UFHtml.addListener(parent, 'scroll', () => this.handleScrolling())
       )
-    )
+    );
+    this.m_removeElementListeners.push(
+      UFHtml.addListener(window, 'scroll', () => this.handleScrolling())
+    );
   }
 
   /**
@@ -1251,6 +1256,15 @@ export class UFFloater {
    * Handles window size changes.
    */
   private handleWindowResize() {
+    if (this.m_state != FloaterState.Hidden) {
+      this.updateFloaterPosition();
+    }
+  }
+
+  /**
+   * Handles scrolling by one of the parent elements.
+   */
+  private handleScrolling() {
     if (this.m_state != FloaterState.Hidden) {
       this.updateFloaterPosition();
     }
