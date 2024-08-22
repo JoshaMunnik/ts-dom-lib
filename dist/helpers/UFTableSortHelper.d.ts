@@ -56,6 +56,10 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * If there are multiple table rows for a location, they will still be sorted within that location.
  * When this attribute is not specified the classes `middle` as default location.
  *
+ * During initialization the code checks every cell and stores the value that should be used to sort
+ * with. Add `data-uf-no-caching` to a `th` or `td` element to disable caching this column or value
+ * and instead determine the value every time the cell is accessed while sorting.
+ *
  * When the rows are resorted the class will dispatch an event "tableSorted" on the table element.
  */
 export declare class UFTableSortHelper extends UFHtmlHelper {
@@ -64,14 +68,6 @@ export declare class UFTableSortHelper extends UFHtmlHelper {
      */
     static readonly TableSortedEvent: string;
     scan(): void;
-    /**
-     * Gets the sort type for a column.
-     *
-     * @param aHeaderCell
-     *
-     * @private
-     */
-    private getSortType;
     /**
      * Returns a compare private to compare a specific column in two rows as numbers.
      *

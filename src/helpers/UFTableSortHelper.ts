@@ -47,6 +47,7 @@ enum DataAttribute {
   SortAscending = "data-uf-sort-ascending",
   SortDescending = "data-uf-sort-descending",
   StorageId = "data-uf-storage-id",
+  NoCaching = "data-uf-no-caching",
 }
 
 // The location of a row in a table.
@@ -75,6 +76,47 @@ type SortInfo = {
 // Function to compare two table rows.
 type CompareFunction = (anItem0: HTMLTableRowElement, anItem1: HTMLTableRowElement) => number;
 
+// endregion
+
+// region private functions
+
+/**
+ * Gets the sort type for a column.
+ *
+ * @param aHeaderCell
+ *
+ * @private
+ */
+function getSortType(aHeaderCell: HTMLTableCellElement): SortType {
+  const sortTypeText = UFHtml.getAttribute(aHeaderCell, DataAttribute.SortType);
+  switch(sortTypeText) {
+    case "number":
+      return SortType.Number;
+    case "text":
+      return SortType.Text;
+    case "date":
+      return SortType.Date;
+    default:
+      return SortType.None;
+  }
+}
+
+/**
+ * Determines if the value of a cell should be cached.
+ *
+ * @param anElement
+ *
+ * @private
+ */
+function cacheValue(anElement: HTMLElement): boolean {
+  const attribute = anElement.attributes.getNamedItem(DataAttribute.NoCaching);
+  return (attribute == null) || (attribute.value != '1');
+}
+
+// endregion
+
+// region private classes
+
 // Data for each row.
 class RowData {
   // region private variables
@@ -91,7 +133,7 @@ class RowData {
    *
    * @private
    */
-  private readonly m_columnData: (number | string | null)[] = [];
+  private readonly m_columnData: (number | string | (() => number | string))[] = [];
 
   /**
    * The element the data has been attached to.
@@ -133,30 +175,17 @@ class RowData {
    *
    * @param aTypes
    *   {@link SortType} for each column
+   * @param aCacheValues
    */
-  buildColumnData(aTypes: SortType[]) {
+  buildColumnData(aTypes: SortType[], aCacheValues: boolean[]) {
     this.m_columnData.length = 0;
     this.m_element.querySelectorAll<HTMLTableCellElement>('td').forEach(
       (cell, index) => {
-        const value = cell.attributes.getNamedItem(DataAttribute.SortValue)?.value ?? cell.textContent;
-        if (!value) {
-          this.m_columnData.push(null);
-          return;
+        if (aCacheValues[index] && cacheValue(cell)) {
+          this.m_columnData.push(this.getColumnValue(cell, aTypes[index]));
         }
-        switch (aTypes[index]) {
-          case SortType.Date:
-            const parsed = Date.parse(value.toString().trim());
-            this.m_columnData.push(isNaN(parsed) ? 0 : -parsed);
-            break;
-          case SortType.Number:
-            this.m_columnData.push(parseFloat(value.toString().trim()));
-            break;
-          case SortType.Text:
-            this.m_columnData.push(value.toString().toLowerCase().trim());
-            break;
-          default:
-            this.m_columnData.push(null);
-            break;
+        else {
+          this.m_columnData.push(() => this.getColumnValue(cell, aTypes[index]));
         }
       }
     );
@@ -168,7 +197,8 @@ class RowData {
    * @param anIndex
    */
   getColumn(anIndex: number): string | number {
-    return this.m_columnData[anIndex] ?? '';
+    const value = this.m_columnData[anIndex];
+    return typeof value === 'function' ? value() : value;
   }
 
   // endregion
@@ -180,6 +210,29 @@ class RowData {
    */
   get sortLocation(): SortLocation {
     return this.m_sortLocation;
+  }
+
+  // endregion
+
+  // region private methods
+
+  private getColumnValue(aCell: HTMLTableCellElement, aSortType: SortType): string | number {
+    const value = aCell.attributes.getNamedItem(DataAttribute.SortValue)?.value ?? aCell.textContent;
+    if (value == null) {
+      return '';
+    }
+    switch (aSortType) {
+      case SortType.Date:
+        const parsed = Date.parse(value.toString().trim());
+        // use negative value to sort dates in correct order
+        return isNaN(parsed) ? 0 : -parsed;
+      case SortType.Number:
+        return parseFloat(value.toString().trim());
+      case SortType.Text:
+        return value.toString().toLowerCase().trim();
+      default:
+        return '';
+    }
   }
 
   // endregion
@@ -363,6 +416,10 @@ class TableData {
  * If there are multiple table rows for a location, they will still be sorted within that location.
  * When this attribute is not specified the classes `middle` as default location.
  *
+ * During initialization the code checks every cell and stores the value that should be used to sort
+ * with. Add `data-uf-no-caching` to a `th` or `td` element to disable caching this column or value
+ * and instead determine the value every time the cell is accessed while sorting.
+ *
  * When the rows are resorted the class will dispatch an event "tableSorted" on the table element.
  */
 export class UFTableSortHelper extends UFHtmlHelper {
@@ -379,34 +436,13 @@ export class UFTableSortHelper extends UFHtmlHelper {
 
   scan() {
     UFEventManager.instance.removeAllForGroup(DataAttribute.Sorting);
-    const tables = document.querySelectorAll('[' + DataAttribute.Sorting + ']');
+    const tables = document.querySelectorAll(`[${DataAttribute.Sorting}]`);
     tables.forEach(table => this.initTable(table as HTMLTableElement));
   }
 
   // endregion
 
   // region private methods
-
-  /**
-   * Gets the sort type for a column.
-   *
-   * @param aHeaderCell
-   *
-   * @private
-   */
-  private getSortType(aHeaderCell: HTMLTableCellElement): SortType {
-    const sortTypeText = UFHtml.getAttribute(aHeaderCell, DataAttribute.SortType);
-    switch(sortTypeText) {
-      case "number":
-        return SortType.Number;
-      case "text":
-        return SortType.Text;
-      case "date":
-        return SortType.Date;
-      default:
-        return SortType.None;
-    }
-  }
 
   /**
    * Returns a compare private to compare a specific column in two rows as numbers.
@@ -499,7 +535,7 @@ export class UFTableSortHelper extends UFHtmlHelper {
   private getCompareFunction(
     anHeaderCell: HTMLTableCellElement, aColumnIndex: number, aDescending: boolean
   ): CompareFunction {
-    switch (this.getSortType(anHeaderCell)) {
+    switch (getSortType(anHeaderCell)) {
       case SortType.Number:
         return this.getCompareNumberFunction(aColumnIndex, aDescending);
       case SortType.Date:
@@ -640,8 +676,10 @@ export class UFTableSortHelper extends UFHtmlHelper {
     const tableData: TableData = TableData.get(aTable);
     let firstSelectable: number = -1;
     const types: SortType[] = [];
+    const cacheValues: boolean[] = [];
     headerRow.querySelectorAll('th').forEach((cell, index) => {
-      const sortType = this.getSortType(cell);
+      cacheValues.push(cacheValue(cell));
+      const sortType = getSortType(cell);
       if (sortType != SortType.None) {
         // store as first sortable column
         if (firstSelectable < 0) {
@@ -674,7 +712,7 @@ export class UFTableSortHelper extends UFHtmlHelper {
     // to speed things up, store for every row the text contents of every column in an array (so there is no 
     // need to query column elements when sorting)
     aTable.querySelectorAll('tr').forEach(
-      row => RowData.get(row).buildColumnData(types)
+      row => RowData.get(row).buildColumnData(types, cacheValues)
     );
     // perform initial sort
     this.sortTable(aTable);

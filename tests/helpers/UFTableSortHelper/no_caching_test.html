@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>No caching test</title>
+  </head>
+  <body>
+    <table data-uf-sorting data-uf-sorting-url="/sorting">
+        <tr data-uf-header-row>
+          <th data-uf-sort-type="text"><button>Cached data</button></th>
+          <th data-uf-sort-type="text" data-uf-no-cache><button>Not cached data</button></th>
+          <th data-uf-sort-type="number"><button>Mixed cached</button></th>
+        </tr>
+        <tr>
+          <td data-first>John</td>
+          <td data-second>Smith</td>
+          <td data-third>25</td>
+        </tr>
+        <tr>
+          <td data-first>Mike</td>
+          <td data-second>Thompson</td>
+          <td data-third data-uf-no-cache>30</td>
+        </tr>
+        <tr>
+          <td data-first>Anna</td>
+          <td data-second>Baker</td>
+          <td data-third>20</td>
+        </tr>
+    </table>
+    <div>
+      <button id="refill">Refill</button>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+
+      function shuffleArray(array) {
+        const shuffledArray = array.slice();
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+      }
+
+      function updateColumns(anElements, aValues) {
+        const shuffledValues = shuffleArray(aValues);
+        for (let i = 0; i < anElements.length; i++) {
+          anElements[i].textContent = shuffledValues.pop();
+        }
+      }
+
+      document.querySelector('#refill').addEventListener('click', function() {
+        updateColumns(document.querySelectorAll('[data-first]'), ['Peter', 'Tom', 'Alice', 'Janice', 'Paul', 'Fred']);
+        updateColumns(document.querySelectorAll('[data-second]'), ['Parker', 'Hanks', 'Cooper', 'Futher', 'Johnson', 'Brown']);
+        updateColumns(document.querySelectorAll('[data-third]'), [35, 40, 45, 50, 55, 60, 15, 80]);
+      });
+    </script>
+  </body>
+</html>
