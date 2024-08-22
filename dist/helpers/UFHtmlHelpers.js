@@ -66,7 +66,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
          */
         this.m_helpers = [];
         this.registerHelper(new UFCellFilterHelper());
-        this.registerHelper(new UFTableSortHelper());
+        this.registerHelper(this.m_tableSortHelper = new UFTableSortHelper());
         this.registerHelper(new UFImagePreviewHelper());
         this.registerHelper(new UFSelectUrlHelper());
         this.registerHelper(new UFShareHoverHelper());
@@ -84,6 +84,17 @@ export class UFHtmlHelpers extends UFHtmlHelper {
             UFHtmlHelpers.m_instance = new UFHtmlHelpers();
         }
         return UFHtmlHelpers.m_instance;
+    }
+    /**
+     * Resorts a table using current selected column and sort direction. If the table is not sorted
+     * or the table sorting helper is not active nothing happens.
+     *
+     * @param aTable
+     */
+    resort(aTable) {
+        if (this.m_tableSortHelper) {
+            this.m_tableSortHelper.resort(aTable);
+        }
     }
     // endregion
     // region public UFHtmlHelper

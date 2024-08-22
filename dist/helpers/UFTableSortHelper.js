@@ -324,6 +324,15 @@ export class UFTableSortHelper extends UFHtmlHelper {
         const tables = document.querySelectorAll(`[${DataAttribute.Sorting}]`);
         tables.forEach(table => this.initTable(table));
     }
+    /**
+     * Resorts a table using current selected column and sort direction. If the table is not sorted,
+     * nothing happens.
+     *
+     * @param aTable
+     */
+    resort(aTable) {
+        this.sortTable(aTable);
+    }
     // endregion
     // region private methods
     /**

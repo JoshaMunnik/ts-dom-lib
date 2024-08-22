@@ -69,6 +69,13 @@ export declare class UFTableSortHelper extends UFHtmlHelper {
     static readonly TableSortedEvent: string;
     scan(): void;
     /**
+     * Resorts a table using current selected column and sort direction. If the table is not sorted,
+     * nothing happens.
+     *
+     * @param aTable
+     */
+    resort(aTable: HTMLTableElement): void;
+    /**
      * Returns a compare private to compare a specific column in two rows as numbers.
      *
      * @param aColumnIndex

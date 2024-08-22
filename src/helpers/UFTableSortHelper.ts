@@ -440,6 +440,16 @@ export class UFTableSortHelper extends UFHtmlHelper {
     tables.forEach(table => this.initTable(table as HTMLTableElement));
   }
 
+  /**
+   * Resorts a table using current selected column and sort direction. If the table is not sorted,
+   * nothing happens.
+   *
+   * @param aTable
+   */
+  resort(aTable: HTMLTableElement) {
+    this.sortTable(aTable);
+  }
+
   // endregion
 
   // region private methods

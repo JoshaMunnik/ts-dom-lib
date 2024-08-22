@@ -52,8 +52,21 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      * @private
      */
     private static m_instance;
+    /**
+     * The table sort helper.
+     *
+     * @private
+     */
+    private readonly m_tableSortHelper;
     private constructor();
     static get instance(): UFHtmlHelpers;
+    /**
+     * Resorts a table using current selected column and sort direction. If the table is not sorted
+     * or the table sorting helper is not active nothing happens.
+     *
+     * @param aTable
+     */
+    resort(aTable: HTMLTableElement): void;
     /**
      * Call the {@link UFHtmlHelper.scan} method for every registered helper.
      */
