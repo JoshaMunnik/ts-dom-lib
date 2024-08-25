@@ -225,7 +225,7 @@ export class UFHtml {
   static addListeners<T extends HTMLElement>(
     aSelector: string | NodeListOf<T> | T[],
     anEvents: string,
-    aHandlerFactory: (element: T) => () => void
+    aHandlerFactory: (element: T) => EventListenerOrEventListenerObject
   ): UFCallback {
     const elements = typeof aSelector === 'string'
       ? document.querySelectorAll<T>(aSelector)

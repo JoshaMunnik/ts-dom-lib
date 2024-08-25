@@ -132,7 +132,7 @@ export declare class UFHtml {
      * @return a function that can be called to remove all the added listener from the elements for
      *   the events.
      */
-    static addListeners<T extends HTMLElement>(aSelector: string | NodeListOf<T> | T[], anEvents: string, aHandlerFactory: (element: T) => () => void): UFCallback;
+    static addListeners<T extends HTMLElement>(aSelector: string | NodeListOf<T> | T[], anEvents: string, aHandlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
     /**
      * Gets the value of an attribute.
      *
