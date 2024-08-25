@@ -186,7 +186,7 @@ export class UFHtml {
    * remove the listener.
    *
    * @param anElement
-   *   Element to add listener to
+   *   Element to add listener to or selector for the element
    * @param anEvents
    *   One or more events to add listener for (separated by space)
    * @param aListener
@@ -195,13 +195,48 @@ export class UFHtml {
    * @return a function that can be called to remove the listener from the element for the events.
    */
   static addListener(
-    anElement: HTMLElement | Document | Window,
+    anElement: HTMLElement | Document | Window | string,
     anEvents: string,
     aListener: EventListenerOrEventListenerObject
   ): UFCallback {
+    const element = typeof anElement === 'string' ? document.querySelector(anElement) : anElement;
+    if (element == null) {
+      return () => {};
+    }
     const events = anEvents.split(' ').filter(event => event.trim().length > 0);
-    events.forEach(event => anElement.addEventListener(event, aListener));
-    return () => events.forEach(event => anElement.removeEventListener(event, aListener));
+    events.forEach(event => element.addEventListener(event, aListener));
+    return () => events.forEach(event => element.removeEventListener(event, aListener));
+  }
+
+  /**
+   * Adds a listener for one or more events to an element or a list of elements. The function
+   * returns a callback, which can be called to remove all the listener.
+   *
+   * @param aSelector
+   *   Selector for the element(s) or a list of elements.
+   * @param anEvents
+   *   One or more events to add listener for (separated by space).
+   * @param aHandlerFactory
+   *   A factory function that creates a handler callback for the element.
+   *
+   * @return a function that can be called to remove all the added listener from the elements for
+   *   the events.
+   */
+  static addListeners<T extends HTMLElement>(
+    aSelector: string | NodeListOf<T> | T[],
+    anEvents: string,
+    aHandlerFactory: (element: T) => () => void
+  ): UFCallback {
+    const elements = typeof aSelector === 'string'
+      ? document.querySelectorAll<T>(aSelector)
+      : aSelector;
+    const callbacks: UFCallback[] = [];
+    elements.forEach(
+      element => callbacks.push(
+        UFHtml.addListener(element, anEvents, aHandlerFactory(element))
+      )
+    );
+    return () => callbacks.forEach(callback => callback());
   }
 
   /**
