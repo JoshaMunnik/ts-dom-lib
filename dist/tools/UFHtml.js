@@ -224,6 +224,25 @@ export class UFHtml {
         return element;
     }
     /**
+     * Gets an element for a dom ID and typecast it to a certain type.
+     *
+     * If no element can be found, the method will throw an error.
+     *
+     * @param anId
+     *   Element, selector text or null
+     *
+     * @return found element
+     *
+     * @throws Error if no element can be found
+     */
+    static getForId(anId) {
+        const element = document.getElementById(anId);
+        if (element == null) {
+            throw new Error(`Can not find element for ${anId}`);
+        }
+        return element;
+    }
+    /**
      * Fades in an element by setting the styles opacity and transition.
      *
      * @param anElement
