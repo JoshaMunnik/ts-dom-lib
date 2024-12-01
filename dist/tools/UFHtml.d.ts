@@ -129,12 +129,13 @@ export declare class UFHtml {
      *   Selector the target must match.
      * @param anEvents
      *   One or more events to add listener for (separated by space)
-     * @param aListener
-     *   Listener callback
+     * @param aHandlerFactory
+     *   A factory function that creates a handler callback for the element. Note that this function
+     *   is called everytime an event is fired. The function should take as little time as possible.
      *
      * @return a function that can be called to remove the listener from the body.
      */
-    static addBodyListener(aSelector: string, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
+    static addBodyListener<T extends HTMLElement>(aSelector: string, anEvents: string, aHandlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
     /**
      * Adds a listener for one or more events to an element or a list of elements. The function
      * returns a callback, which can be called to remove all the listener.

@@ -219,28 +219,31 @@ export class UFHtml {
    *   Selector the target must match.
    * @param anEvents
    *   One or more events to add listener for (separated by space)
-   * @param aListener
-   *   Listener callback
+   * @param aHandlerFactory
+   *   A factory function that creates a handler callback for the element. Note that this function
+   *   is called everytime an event is fired. The function should take as little time as possible.
    *
    * @return a function that can be called to remove the listener from the body.
    */
-  static addBodyListener(
+  static addBodyListener<T extends HTMLElement>(
     aSelector: string,
     anEvents: string,
-    aListener: EventListenerOrEventListenerObject
+    aHandlerFactory: (element: T) => EventListenerOrEventListenerObject
   ): UFCallback {
     const events = anEvents.split(' ').filter(event => event.trim().length > 0);
     const listener = (event: Event) => {
-      if ((event.target == null) || !(event.target instanceof HTMLElement)) {
+      if (
+        (event.target == null) ||
+        !(event.target instanceof HTMLElement) ||
+        !event.target.matches(aSelector)) {
         return;
       }
-      if (event.target.matches(aSelector)) {
-        if (aListener instanceof Function) {
-          aListener(event);
-        }
-        else if ('handleEvent' in aListener) {
-          (aListener as EventListenerObject).handleEvent(event);
-        }
+      const tempListener = aHandlerFactory(event.target as T);
+      if (tempListener instanceof Function) {
+        tempListener(event);
+      }
+      else if ('handleEvent' in tempListener) {
+        (tempListener as EventListenerObject).handleEvent(event);
       }
     }
     events.forEach(event => document.body.addEventListener(event, listener));
