@@ -119,6 +119,23 @@ export declare class UFHtml {
      */
     static addListener(anElement: HTMLElement | Document | Window | string, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
     /**
+     * Adds a listener to the body element for one or more events. If the target matches the selector,
+     * the listener is called.
+     * The function returns a callback, which can be called to remove the listener.
+     * This method can be used to handle events fired by elements that are dynamically added at a
+     * later time.
+     *
+     * @param aSelector
+     *   Selector the target must match.
+     * @param anEvents
+     *   One or more events to add listener for (separated by space)
+     * @param aListener
+     *   Listener callback
+     *
+     * @return a function that can be called to remove the listener from the body.
+     */
+    static addBodyListener(aSelector: string, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
+    /**
      * Adds a listener for one or more events to an element or a list of elements. The function
      * returns a callback, which can be called to remove all the listener.
      *

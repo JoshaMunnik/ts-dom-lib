@@ -163,6 +163,40 @@ export class UFHtml {
         return () => events.forEach(event => element.removeEventListener(event, aListener));
     }
     /**
+     * Adds a listener to the body element for one or more events. If the target matches the selector,
+     * the listener is called.
+     * The function returns a callback, which can be called to remove the listener.
+     * This method can be used to handle events fired by elements that are dynamically added at a
+     * later time.
+     *
+     * @param aSelector
+     *   Selector the target must match.
+     * @param anEvents
+     *   One or more events to add listener for (separated by space)
+     * @param aListener
+     *   Listener callback
+     *
+     * @return a function that can be called to remove the listener from the body.
+     */
+    static addBodyListener(aSelector, anEvents, aListener) {
+        const events = anEvents.split(' ').filter(event => event.trim().length > 0);
+        const listener = (event) => {
+            if ((event.target == null) || !(event.target instanceof HTMLElement)) {
+                return;
+            }
+            if (event.target.matches(aSelector)) {
+                if (aListener instanceof Function) {
+                    aListener(event);
+                }
+                else if ('handleEvent' in aListener) {
+                    aListener.handleEvent(event);
+                }
+            }
+        };
+        events.forEach(event => document.body.addEventListener(event, listener));
+        return () => events.forEach(event => document.body.removeEventListener(event, listener));
+    }
+    /**
      * Adds a listener for one or more events to an element or a list of elements. The function
      * returns a callback, which can be called to remove all the listener.
      *
