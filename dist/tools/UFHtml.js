@@ -195,8 +195,8 @@ export class UFHtml {
                 tempListener.handleEvent(event);
             }
         };
-        events.forEach(event => document.body.addEventListener(event, listener));
-        return () => events.forEach(event => document.body.removeEventListener(event, listener));
+        events.forEach(event => document.body.addEventListener(event, listener, true));
+        return () => events.forEach(event => document.body.removeEventListener(event, listener, true));
     }
     /**
      * Adds a listener for one or more events to an element or a list of elements. The function

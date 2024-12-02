@@ -246,9 +246,9 @@ export class UFHtml {
         (tempListener as EventListenerObject).handleEvent(event);
       }
     }
-    events.forEach(event => document.body.addEventListener(event, listener));
+    events.forEach(event => document.body.addEventListener(event, listener, true));
     return () => events.forEach(
-      event => document.body.removeEventListener(event, listener)
+      event => document.body.removeEventListener(event, listener, true)
     );
   }
 
@@ -449,7 +449,9 @@ export class UFHtml {
    *   Element to hide
    */
   static hide(anElement: HTMLElement): void {
-    UFObject.getAttachedAs<string>(anElement, DisplayBackupProperty, () => anElement.style.display);
+    UFObject.getAttachedAs<string>(
+      anElement, DisplayBackupProperty, () => anElement.style.display
+    );
     anElement.style.display = 'none';
   }
 }
