@@ -119,8 +119,8 @@ export declare class UFHtml {
      */
     static addListener(anElement: HTMLElement | Document | Window | string, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
     /**
-     * Adds a listener to the body element for one or more events. If the target matches the selector,
-     * the listener is called.
+     * Adds a listener to the body element for one or more events. If the target or any of the parents
+     * of the target matches the selector, the listener is called.
      * The function returns a callback, which can be called to remove the listener.
      * This method can be used to handle events fired by elements that are dynamically added at a
      * later time.
@@ -226,6 +226,17 @@ export declare class UFHtml {
      *   Element to remove all children of.
      */
     static empty(anElement: Element): void;
+    /**
+     * Gets the first parent element of the element that matches the selector.
+     *
+     * @param anElement
+     *   Element to get the parent (or grandparent or great-grandparent) of
+     * @param aSelector
+     *  Selector to filter the parent with
+     *
+     * @return the parent element that matches the selector or null if no parent could be found
+     */
+    static getFirstParent(anElement: HTMLElement, aSelector: string): HTMLElement | null;
     /**
      * Gets all parents of an element.
      *

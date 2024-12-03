@@ -163,8 +163,8 @@ export class UFHtml {
         return () => events.forEach(event => element.removeEventListener(event, aListener));
     }
     /**
-     * Adds a listener to the body element for one or more events. If the target matches the selector,
-     * the listener is called.
+     * Adds a listener to the body element for one or more events. If the target or any of the parents
+     * of the target matches the selector, the listener is called.
      * The function returns a callback, which can be called to remove the listener.
      * This method can be used to handle events fired by elements that are dynamically added at a
      * later time.
@@ -182,12 +182,20 @@ export class UFHtml {
     static addBodyListener(aSelector, anEvents, aHandlerFactory) {
         const events = anEvents.split(' ').filter(event => event.trim().length > 0);
         const listener = (event) => {
-            if ((event.target == null) ||
-                !(event.target instanceof HTMLElement) ||
-                !event.target.matches(aSelector)) {
+            // make sure the target is a html element
+            if ((event.target == null) || !(event.target instanceof HTMLElement)) {
                 return;
             }
-            const tempListener = aHandlerFactory(event.target);
+            // either use the target or get the first parent that matches the selector
+            const target = event.target.matches(aSelector)
+                ? event.target
+                : this.getFirstParent(event.target, aSelector);
+            // exit if no valid target could be found
+            if (!target) {
+                return;
+            }
+            // call event handler
+            const tempListener = aHandlerFactory(target);
             if (tempListener instanceof Function) {
                 tempListener(event);
             }
@@ -329,6 +337,24 @@ export class UFHtml {
         while (anElement.firstChild) {
             anElement.removeChild(anElement.firstChild);
         }
+    }
+    /**
+     * Gets the first parent element of the element that matches the selector.
+     *
+     * @param anElement
+     *   Element to get the parent (or grandparent or great-grandparent) of
+     * @param aSelector
+     *  Selector to filter the parent with
+     *
+     * @return the parent element that matches the selector or null if no parent could be found
+     */
+    static getFirstParent(anElement, aSelector) {
+        for (let parent = anElement.parentElement; parent; parent = parent.parentElement) {
+            if (parent.matches(aSelector)) {
+                return parent;
+            }
+        }
+        return null;
     }
     /**
      * Gets all parents of an element.
