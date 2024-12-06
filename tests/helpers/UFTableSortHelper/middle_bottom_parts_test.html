@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>No caching test</title>
+  </head>
+  <body>
+    <table data-uf-sorting data-uf-sorting-url="/sorting">
+      <tr data-uf-header-row>
+        <th data-uf-sort-type="text">
+          <button>First name</button>
+        </th>
+        <th data-uf-sort-type="text">
+          <button>Last name</button>
+        </th>
+        <th data-uf-sort-type="number">
+          <button>Age</button>
+        </th>
+      </tr>
+      <tr>
+        <td data-first>John</td>
+        <td data-second>Smith</td>
+        <td data-third>25</td>
+      </tr>
+      <tr>
+        <td data-first>Mike</td>
+        <td data-second>Thompson</td>
+        <td data-third data-uf-no-cache>22</td>
+      </tr>
+      <tr data-uf-sort-location="bottom">
+        <td data-first>Bottom name</td>
+        <td data-second>Bottom name</td>
+        <td data-third>Bottom age</td>
+      </tr>
+    </table>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

@@ -89,7 +89,7 @@ type CompareFunction = (anItem0: HTMLTableRowElement, anItem1: HTMLTableRowEleme
  */
 function getSortType(aHeaderCell: HTMLTableCellElement): SortType {
   const sortTypeText = UFHtml.getAttribute(aHeaderCell, DataAttribute.SortType);
-  switch(sortTypeText) {
+  switch (sortTypeText) {
     case "number":
       return SortType.Number;
     case "text":
@@ -148,8 +148,7 @@ class RowData {
 
   private constructor(aRow: HTMLTableRowElement) {
     this.m_element = aRow;
-    switch(UFHtml.getAttribute(aRow, DataAttribute.SortLocation))
-    {
+    switch (UFHtml.getAttribute(aRow, DataAttribute.SortLocation)) {
       case 'top':
         this.m_sortLocation = SortLocation.Top;
         break;
@@ -477,7 +476,10 @@ export class UFTableSortHelper extends UFHtmlHelper {
           ? (data0 as number) - (data1 as number)
           : (data1 as number) - (data0 as number);
       }
-      if (rowData0.sortLocation == SortLocation.Top) {
+      if (
+        (rowData0.sortLocation == SortLocation.Top) ||
+        (rowData1.sortLocation == SortLocation.Bottom)
+      ) {
         // sortLocation1 is either middle or bottom
         return -1;
       }
@@ -526,7 +528,10 @@ export class UFTableSortHelper extends UFHtmlHelper {
           ? (data0 as number) - (data1 as number)
           : (data0 as number) - (data1 as number);
       }
-      if (rowData0.sortLocation == SortLocation.Top) {
+      if (
+        (rowData0.sortLocation == SortLocation.Top) ||
+        (rowData1.sortLocation == SortLocation.Bottom)
+      ) {
         // sortLocation1 is either middle or bottom
         return -1;
       }
@@ -596,7 +601,9 @@ export class UFTableSortHelper extends UFHtmlHelper {
     // reinsert the table rows using their new order
     rows.forEach(row => {
       if (previousRow) {
-        row.parentElement!.insertBefore(row, previousRow.nextSibling);
+        if (previousRow.nextElementSibling != row) {
+          row.parentElement!.insertBefore(row, previousRow.nextSibling);
+        }
       }
       else {
         body.prepend(row);

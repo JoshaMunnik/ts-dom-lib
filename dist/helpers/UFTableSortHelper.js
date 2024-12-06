@@ -358,7 +358,8 @@ export class UFTableSortHelper extends UFHtmlHelper {
                     ? data0 - data1
                     : data1 - data0;
             }
-            if (rowData0.sortLocation == SortLocation.Top) {
+            if ((rowData0.sortLocation == SortLocation.Top) ||
+                (rowData1.sortLocation == SortLocation.Bottom)) {
                 // sortLocation1 is either middle or bottom
                 return -1;
             }
@@ -406,7 +407,8 @@ export class UFTableSortHelper extends UFHtmlHelper {
                     ? data0 - data1
                     : data0 - data1;
             }
-            if (rowData0.sortLocation == SortLocation.Top) {
+            if ((rowData0.sortLocation == SortLocation.Top) ||
+                (rowData1.sortLocation == SortLocation.Bottom)) {
                 // sortLocation1 is either middle or bottom
                 return -1;
             }
@@ -467,7 +469,9 @@ export class UFTableSortHelper extends UFHtmlHelper {
         // reinsert the table rows using their new order
         rows.forEach(row => {
             if (previousRow) {
-                row.parentElement.insertBefore(row, previousRow.nextSibling);
+                if (previousRow.nextElementSibling != row) {
+                    row.parentElement.insertBefore(row, previousRow.nextSibling);
+                }
             }
             else {
                 body.prepend(row);
