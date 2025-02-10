@@ -53,6 +53,8 @@ import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
  * If the `data-uf-display-value` attribute is not set, the code uses `auto`.
  *
  * The code will assign `"none"` to the display style when hiding the element.
+ *
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export declare class UFHtmlHelper {
     /**
@@ -107,6 +109,19 @@ export declare class UFHtmlHelper {
      */
     protected showElement(anElement: HTMLElement, aShow: boolean): void;
     /**
+     * Gets the target element(s).
+     *
+     * @param element
+     *   Element to get the target element(s) from.
+     * @param target
+     *   Either one of the predefined values or a selector.
+     *
+     * @return list of elements (can be empty)
+     *
+     * @private
+     */
+    protected getTargetElements(element: HTMLElement, target: string): HTMLElement[];
+    /**
      * Adds an element and targets to a target list and a container.
      *
      * @param aSelectorAttribute
@@ -130,6 +145,17 @@ export declare class UFHtmlHelper {
      * @param aGroupName
      */
     private addTargetElement;
+    /**
+     * Returns a list with one element if the element is not null. Else return an empty list.
+     *
+     * @param element
+     *   Element to build the list from.
+     *
+     * @return Either [element] or [].
+     *
+     * @private
+     */
+    private buildListFromOneElement;
     /**
      */
     private handleDomContentLoaded;

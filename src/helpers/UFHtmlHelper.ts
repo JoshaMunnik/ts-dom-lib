@@ -43,6 +43,15 @@ enum DataAttribute {
   HideClasses = "data-uf-hide-classes",
 }
 
+// the predefined targets
+enum Target {
+  Self = '',
+  Parent = '_parent',
+  Next = '_next',
+  Previous = '_previous',
+  Grandparent = '_grandparent',
+}
+
 // endregion
 
 // region exports
@@ -75,6 +84,8 @@ enum DataAttribute {
  * If the `data-uf-display-value` attribute is not set, the code uses `auto`.
  *
  * The code will assign `"none"` to the display style when hiding the element.
+ *
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
   // region private variables
@@ -181,6 +192,35 @@ export class UFHtmlHelper {
     anElement.style.display = aShow ? display : 'none';
   }
 
+  /**
+   * Gets the target element(s).
+   *
+   * @param element
+   *   Element to get the target element(s) from.
+   * @param target
+   *   Either one of the predefined values or a selector.
+   *
+   * @return list of elements (can be empty)
+   *
+   * @private
+   */
+  protected getTargetElements(element: HTMLElement, target: string): HTMLElement[] {
+    switch (target) {
+      case Target.Self:
+        return [element];
+      case Target.Parent:
+        return this.buildListFromOneElement(element.parentElement);
+      case Target.Next:
+        return this.buildListFromOneElement(element.nextElementSibling as HTMLElement);
+      case Target.Previous:
+        return this.buildListFromOneElement(element.previousElementSibling as HTMLElement);
+      case Target.Grandparent:
+        return this.buildListFromOneElement(element.parentElement?.parentElement ?? null);
+      default:
+        return [...document.querySelectorAll<HTMLElement>(target)];
+    }
+  }
+
   // endregion
 
   // region private methods
@@ -249,6 +289,20 @@ export class UFHtmlHelper {
       }
     }
     aTargetToSourceMap.add(aTarget, aSource);
+  }
+
+  /**
+   * Returns a list with one element if the element is not null. Else return an empty list.
+   *
+   * @param element
+   *   Element to build the list from.
+   *
+   * @return Either [element] or [].
+   *
+   * @private
+   */
+  private buildListFromOneElement(element: HTMLElement | null): HTMLElement[] {
+    return element ? [element] : [];
   }
 
   // endregion

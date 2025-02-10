@@ -47,6 +47,7 @@ var DataAttribute;
     DataAttribute["Values"] = "data-uf-toggle-values";
     DataAttribute["ValuesSeparator"] = "data-uf-toggle-values-separator";
     DataAttribute["Required"] = "data-uf-toggle-required";
+    DataAttribute["Target"] = "data-uf-toggle-target";
 })(DataAttribute || (DataAttribute = {}));
 var ToggleType;
 (function (ToggleType) {
@@ -102,7 +103,7 @@ const ChangeEvents = 'click keyup keydown input change';
  *      the input element is considered valid if the value is not empty.
  *   - 'valid' = the html5 validation result is used.
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
-       the element.
+ the element.
  *   - 'auto' = select the type based on certain conditions:
  *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
  *       input element is a file input element.
@@ -164,6 +165,16 @@ const ChangeEvents = 'click keyup keydown input change';
  *
  * - `data-uf-toggle-values-separator` = string (default = ',').
  *   Separator string to split the value of `data-uf-toggle-values` with.
+ *
+ * - `data-uf-toggle-target` = string (default = '')
+ *   When specified, apply the toggle to the target element(s) instead of the element itself.
+ *   Possible values:
+ *   - '' = apply to the element itself (default).
+ *   - '_parent' = apply to the parent element of the element.
+ *   - '_next' = apply to the next sibling of the element.
+ *   - '_previous' = apply to the previous sibling of the element.
+ *   - '_grandparent' = apply to the parent of the parent of the element.
+ *   - any other value is interpreted as a selector and can select one or multiple elements.
  */
 export class UFFormToggleHelper extends UFHtmlHelper {
     // region UFHtmlHelper
@@ -184,11 +195,11 @@ export class UFFormToggleHelper extends UFHtmlHelper {
     // endregion
     // region private methods
     /**
-     * @param anElement
+     * @param element
      * @private
      */
-    getToggleType(anElement) {
-        const typeText = UFHtml.getAttribute(anElement, DataAttribute.Type);
+    getToggleType(element) {
+        const typeText = UFHtml.getAttribute(element, DataAttribute.Type);
         switch (typeText) {
             case 'value':
                 return ToggleType.Value;
@@ -201,11 +212,11 @@ export class UFFormToggleHelper extends UFHtmlHelper {
         }
     }
     /**
-     * @param anElement
+     * @param element
      * @private
      */
-    getToggleChange(anElement) {
-        const changeText = UFHtml.getAttribute(anElement, DataAttribute.Change);
+    getToggleChange(element) {
+        const changeText = UFHtml.getAttribute(element, DataAttribute.Change);
         switch (changeText) {
             case 'enable':
                 return ToggleChange.Enable;
@@ -222,11 +233,11 @@ export class UFFormToggleHelper extends UFHtmlHelper {
         }
     }
     /**
-     * @param anElement
+     * @param element
      * @private
      */
-    getToggleCondition(anElement) {
-        const conditionText = UFHtml.getAttribute(anElement, DataAttribute.Condition);
+    getToggleCondition(element) {
+        const conditionText = UFHtml.getAttribute(element, DataAttribute.Condition);
         switch (conditionText) {
             case 'any':
                 return ToggleCondition.Any;
@@ -237,11 +248,11 @@ export class UFFormToggleHelper extends UFHtmlHelper {
         }
     }
     /**
-     * @param anElement
+     * @param element
      * @private
      */
-    getToggleRequired(anElement) {
-        const requiredText = UFHtml.getAttribute(anElement, DataAttribute.Required);
+    getToggleRequired(element) {
+        const requiredText = UFHtml.getAttribute(element, DataAttribute.Required);
         switch (requiredText) {
             case 'match':
                 return ToggleRequired.Match;
@@ -251,15 +262,23 @@ export class UFFormToggleHelper extends UFHtmlHelper {
                 return ToggleRequired.None;
         }
     }
-    getFormElements(anElement) {
+    /**
+     * Gets the elements in the form that the element is in. If there is no selector, try to get
+     * the closest form element.
+     *
+     * @param element
+     *
+     * @private
+     */
+    getFormElements(element) {
         // get target (if any)
-        const selector = UFHtml.getAttribute(anElement, DataAttribute.Selector) || '';
+        const selector = UFHtml.getAttribute(element, DataAttribute.Selector) || '';
         if (selector === '') {
-            const element = anElement.closest('form');
-            if (!element) {
+            const formElement = element.closest('form');
+            if (!formElement) {
                 return [];
             }
-            return [element];
+            return [formElement];
         }
         return [...document.querySelectorAll(selector)];
     }
@@ -268,13 +287,13 @@ export class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      *
-     * @param anElement
+     * @param element
      *   Element to build toggle data structure for
      *
      * @returns null if there are no targets, else a data structure
      */
-    buildToggleData(anElement) {
-        const formElements = this.getFormElements(anElement);
+    buildToggleData(element) {
+        const formElements = this.getFormElements(element);
         if (!formElements.length) {
             return null;
         }
@@ -288,16 +307,16 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             && (formElement.type === 'file');
         const isImage = tagName === 'IMG';
         // get properties for the toggle data structure
-        let type = this.getToggleType(anElement);
-        let change = this.getToggleChange(anElement);
-        const required = this.getToggleRequired(anElement);
-        const cssClassesNoMatch = UFHtml.getAttribute(anElement, DataAttribute.Classes);
-        const cssClassesMatch = UFHtml.getAttribute(anElement, DataAttribute.ClassesMatch);
-        const condition = this.getToggleCondition(anElement);
-        const property = UFHtml.getAttribute(anElement, DataAttribute.Property, 'checked');
-        const separator = UFHtml.getAttribute(anElement, DataAttribute.ValuesSeparator, ',');
-        const valuesText = UFHtml.getAttribute(anElement, DataAttribute.Values)
-            || UFHtml.getAttribute(anElement, DataAttribute.Value)
+        let type = this.getToggleType(element);
+        let change = this.getToggleChange(element);
+        const required = this.getToggleRequired(element);
+        const cssClassesNoMatch = UFHtml.getAttribute(element, DataAttribute.Classes);
+        const cssClassesMatch = UFHtml.getAttribute(element, DataAttribute.ClassesMatch);
+        const condition = this.getToggleCondition(element);
+        const property = UFHtml.getAttribute(element, DataAttribute.Property, 'checked');
+        const separator = UFHtml.getAttribute(element, DataAttribute.ValuesSeparator, ',');
+        const valuesText = UFHtml.getAttribute(element, DataAttribute.Values)
+            || UFHtml.getAttribute(element, DataAttribute.Value)
             || '';
         const values = valuesText.length > 0 ? valuesText.split(separator) : [];
         // add 'true' for checkbox/radio buttons if there are no values
@@ -310,7 +329,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
                 change = ToggleChange.None;
             }
             else {
-                switch (anElement.tagName) {
+                switch (element.tagName) {
                     case 'INPUT':
                     case 'BUTTON':
                     case 'SELECT':
@@ -337,6 +356,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
                 type = ToggleType.Valid;
             }
         }
+        const target = UFHtml.getAttribute(element, DataAttribute.Target);
         // build toggle data structure
         return {
             type,
@@ -349,7 +369,8 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             isForm,
             isImage,
             formElements,
-            values
+            values,
+            target
         };
     }
     /**
@@ -357,38 +378,38 @@ export class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      *
-     * @param aData
+     * @param data
      *   Data to update with
      *
      * @return True if target matches the condition
      */
-    isValidToggleTarget(aData) {
-        if (aData.isForm) {
-            return aData.formElements[0].checkValidity();
+    isValidToggleTarget(data) {
+        if (data.isForm) {
+            return data.formElements[0].checkValidity();
         }
-        let result = aData.condition !== ToggleCondition.Any;
-        aData.formElements.every(element => {
+        let result = data.condition !== ToggleCondition.Any;
+        data.formElements.every(element => {
             let valid = null;
             let value = '';
-            switch (aData.type) {
+            switch (data.type) {
                 case ToggleType.Valid:
                     valid = element.checkValidity();
                     break;
                 case ToggleType.Property:
-                    value = UFObject.getAs(element, aData.property, '').toString();
+                    value = UFObject.getAs(element, data.property, '').toString();
                     break;
                 default:
-                    value = UFObject.getAs(element, aData.isImage ? 'src' : 'value', '');
+                    value = UFObject.getAs(element, data.isImage ? 'src' : 'value', '');
                     break;
             }
             // valid was not set, then value was set so validate value
             if (valid === null) {
                 // ignore the values array when the form element is an image
-                valid = (aData.values.length > 0) && !aData.isImage
-                    ? aData.values.indexOf(value) >= 0
+                valid = (data.values.length > 0) && !data.isImage
+                    ? data.values.indexOf(value) >= 0
                     : value.length > 0;
             }
-            switch (aData.condition) {
+            switch (data.condition) {
                 case ToggleCondition.Any:
                     if (valid) {
                         result = true;
@@ -417,33 +438,49 @@ export class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      *
-     * @param anElement
+     * @param element
      *   Element to update
-     * @param aData
+     * @param data
      *   Data to update with
      */
-    updateToggleElement(anElement, aData) {
-        const valid = this.isValidToggleTarget(aData);
-        if (aData.cssClassesMatch.length) {
-            UFHtml.toggleClasses(anElement, aData.cssClassesMatch, valid);
+    updateToggleElement(element, data) {
+        const valid = this.isValidToggleTarget(data);
+        const targets = this.getTargetElements(element, data.target);
+        targets.forEach(target => this.updateToggleTargetElement(target, data, valid));
+    }
+    /**
+     * Updates the state of the target element.
+     *
+     * @param element
+     *   Element to update
+     * @param data
+     *   Data to update with
+     * @param valid
+     *   True if the target matches the condition
+     *
+     * @private
+     */
+    updateToggleTargetElement(element, data, valid) {
+        if (data.cssClassesMatch.length) {
+            UFHtml.toggleClasses(element, data.cssClassesMatch, valid);
         }
-        if (aData.cssClassesNoMatch.length) {
-            UFHtml.toggleClasses(anElement, aData.cssClassesNoMatch, !valid);
+        if (data.cssClassesNoMatch.length) {
+            UFHtml.toggleClasses(element, data.cssClassesNoMatch, !valid);
         }
-        switch (aData.change) {
+        switch (data.change) {
             case ToggleChange.Enable:
-                UFObject.set(anElement, 'disabled', !valid);
+                UFObject.set(element, 'disabled', !valid);
                 break;
             case ToggleChange.Visible:
-                this.showElement(anElement, valid);
+                this.showElement(element, valid);
                 break;
         }
-        switch (aData.required) {
+        switch (data.required) {
             case ToggleRequired.Match:
-                UFObject.set(anElement, 'required', valid);
+                UFObject.set(element, 'required', valid);
                 break;
             case ToggleRequired.NoMatch:
-                UFObject.set(anElement, 'required', !valid);
+                UFObject.set(element, 'required', !valid);
                 break;
         }
     }

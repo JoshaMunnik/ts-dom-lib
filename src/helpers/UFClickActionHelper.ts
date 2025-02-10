@@ -51,14 +51,6 @@ enum Action {
   AddToClass = 'add-to-class',
 }
 
-enum Target {
-  Self = '',
-  Parent = '_parent',
-  Next = '_next',
-  Previous = '_previous',
-  Grandparent = '_grandparent',
-}
-
 // endregion
 
 // region exports
@@ -144,49 +136,6 @@ export class UFClickActionHelper extends UFHtmlHelper {
     targetElements.forEach(
       targetElement => this.performActionOnElement(targetElement, action, data)
     );
-  }
-
-  /**
-   * Gets the target element(s).
-   *
-   * @param element
-   *   Element to get the target element(s) from.
-   * @param target
-   *   Either one of the predefined values or a selector.
-   *
-   * @return list of elements (can be empty)
-   *
-   * @private
-   */
-  private getTargetElements(element: HTMLElement, target: string): HTMLElement[] {
-    switch (target) {
-      case Target.Self:
-        return [element];
-      case Target.Parent:
-        return this.buildListFromOneElement(element.parentElement);
-      case Target.Next:
-        return this.buildListFromOneElement(element.nextElementSibling as HTMLElement);
-      case Target.Previous:
-        return this.buildListFromOneElement(element.previousElementSibling as HTMLElement);
-      case Target.Grandparent:
-        return this.buildListFromOneElement(element.parentElement?.parentElement ?? null);
-      default:
-        return [...document.querySelectorAll<HTMLElement>(target)];
-    }
-  }
-
-  /**
-   * Returns a list with one element if the element is not null. Else return an empty list.
-   *
-   * @param element
-   *   Element to build the list from.
-   *
-   * @return Either [element] or [].
-   *
-   * @private
-   */
-  private buildListFromOneElement(element: HTMLElement | null): HTMLElement[] {
-    return element ? [element] : [];
   }
 
   /**

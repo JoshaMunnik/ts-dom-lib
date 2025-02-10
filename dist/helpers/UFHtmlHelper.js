@@ -36,6 +36,15 @@ var DataAttribute;
     DataAttribute["ShowClasses"] = "data-uf-show-classes";
     DataAttribute["HideClasses"] = "data-uf-hide-classes";
 })(DataAttribute || (DataAttribute = {}));
+// the predefined targets
+var Target;
+(function (Target) {
+    Target["Self"] = "";
+    Target["Parent"] = "_parent";
+    Target["Next"] = "_next";
+    Target["Previous"] = "_previous";
+    Target["Grandparent"] = "_grandparent";
+})(Target || (Target = {}));
 // endregion
 // region exports
 /**
@@ -66,6 +75,8 @@ var DataAttribute;
  * If the `data-uf-display-value` attribute is not set, the code uses `auto`.
  *
  * The code will assign `"none"` to the display style when hiding the element.
+ *
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
     constructor() {
@@ -147,6 +158,35 @@ export class UFHtmlHelper {
         const display = UFObject.getAttachedAs(anElement, 'UFDisplayValue', () => displayValue == 'auto' ? anElement.style.display : displayValue);
         anElement.style.display = aShow ? display : 'none';
     }
+    /**
+     * Gets the target element(s).
+     *
+     * @param element
+     *   Element to get the target element(s) from.
+     * @param target
+     *   Either one of the predefined values or a selector.
+     *
+     * @return list of elements (can be empty)
+     *
+     * @private
+     */
+    getTargetElements(element, target) {
+        var _a, _b;
+        switch (target) {
+            case Target.Self:
+                return [element];
+            case Target.Parent:
+                return this.buildListFromOneElement(element.parentElement);
+            case Target.Next:
+                return this.buildListFromOneElement(element.nextElementSibling);
+            case Target.Previous:
+                return this.buildListFromOneElement(element.previousElementSibling);
+            case Target.Grandparent:
+                return this.buildListFromOneElement((_b = (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement) !== null && _b !== void 0 ? _b : null);
+            default:
+                return [...document.querySelectorAll(target)];
+        }
+    }
     // endregion
     // region private methods
     /**
@@ -192,6 +232,19 @@ export class UFHtmlHelper {
             }
         }
         aTargetToSourceMap.add(aTarget, aSource);
+    }
+    /**
+     * Returns a list with one element if the element is not null. Else return an empty list.
+     *
+     * @param element
+     *   Element to build the list from.
+     *
+     * @return Either [element] or [].
+     *
+     * @private
+     */
+    buildListFromOneElement(element) {
+        return element ? [element] : [];
     }
     // endregion
     // region event handlers

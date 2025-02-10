@@ -1,6 +1,6 @@
 {
   "name": "@ultraforce/ts-dom-lib",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "description": "DOM related utility classes.",
   "scripts": {
     "build": "tsc",

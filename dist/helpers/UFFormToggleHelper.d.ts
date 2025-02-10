@@ -40,7 +40,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *      the input element is considered valid if the value is not empty.
  *   - 'valid' = the html5 validation result is used.
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
-       the element.
+ the element.
  *   - 'auto' = select the type based on certain conditions:
  *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
  *       input element is a file input element.
@@ -102,6 +102,16 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *
  * - `data-uf-toggle-values-separator` = string (default = ',').
  *   Separator string to split the value of `data-uf-toggle-values` with.
+ *
+ * - `data-uf-toggle-target` = string (default = '')
+ *   When specified, apply the toggle to the target element(s) instead of the element itself.
+ *   Possible values:
+ *   - '' = apply to the element itself (default).
+ *   - '_parent' = apply to the parent element of the element.
+ *   - '_next' = apply to the next sibling of the element.
+ *   - '_previous' = apply to the previous sibling of the element.
+ *   - '_grandparent' = apply to the parent of the parent of the element.
+ *   - any other value is interpreted as a selector and can select one or multiple elements.
  */
 export declare class UFFormToggleHelper extends UFHtmlHelper {
     /**
@@ -109,32 +119,40 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      */
     scan(): void;
     /**
-     * @param anElement
+     * @param element
      * @private
      */
     private getToggleType;
     /**
-     * @param anElement
+     * @param element
      * @private
      */
     private getToggleChange;
     /**
-     * @param anElement
+     * @param element
      * @private
      */
     private getToggleCondition;
     /**
-     * @param anElement
+     * @param element
      * @private
      */
     private getToggleRequired;
+    /**
+     * Gets the elements in the form that the element is in. If there is no selector, try to get
+     * the closest form element.
+     *
+     * @param element
+     *
+     * @private
+     */
     private getFormElements;
     /**
      * Builds a toggle data structure.
      *
      * @private
      *
-     * @param anElement
+     * @param element
      *   Element to build toggle data structure for
      *
      * @returns null if there are no targets, else a data structure
@@ -145,7 +163,7 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      *
-     * @param aData
+     * @param data
      *   Data to update with
      *
      * @return True if target matches the condition
@@ -156,10 +174,23 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      *
-     * @param anElement
+     * @param element
      *   Element to update
-     * @param aData
+     * @param data
      *   Data to update with
      */
     private updateToggleElement;
+    /**
+     * Updates the state of the target element.
+     *
+     * @param element
+     *   Element to update
+     * @param data
+     *   Data to update with
+     * @param valid
+     *   True if the target matches the condition
+     *
+     * @private
+     */
+    private updateToggleTargetElement;
 }
