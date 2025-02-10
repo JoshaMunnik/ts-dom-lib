@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Remove parent from dom</title>
+  </head>
+  <body>
+    <div>
+      The grand parent.
+      <p>
+        The parent.<br/>
+        <br/>
+        <button data-uf-click-action="remove-from-dom" data-uf-click-target="_parent">Remove parent</button>
+      </p>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

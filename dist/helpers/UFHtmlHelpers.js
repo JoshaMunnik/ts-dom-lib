@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 // region imports
+import { UFClickActionHelper } from "./UFClickActionHelper.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
@@ -76,6 +77,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
         this.registerHelper(new UFDetailsHelper());
         this.registerHelper(new UFSetFormFieldHelper());
         this.registerHelper(new UFPopupHelper());
+        this.registerHelper(new UFClickActionHelper());
     }
     // endregion
     // region public methods
@@ -89,11 +91,11 @@ export class UFHtmlHelpers extends UFHtmlHelper {
      * Resorts a table using current selected column and sort direction. If the table is not sorted
      * or the table sorting helper is not active nothing happens.
      *
-     * @param aTable
+     * @param table
      */
-    resort(aTable) {
+    resort(table) {
         if (this.m_tableSortHelper) {
-            this.m_tableSortHelper.resort(aTable);
+            this.m_tableSortHelper.resort(table);
         }
     }
     // endregion

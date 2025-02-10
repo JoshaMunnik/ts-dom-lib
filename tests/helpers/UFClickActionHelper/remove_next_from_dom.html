@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Remove next from dom</title>
+  </head>
+  <body>
+    <div>
+      <div>Previous element</div>
+      <button data-uf-click-action="remove-from-dom" data-uf-click-target="_next">Remove next</button>
+      <div>Next element</div>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

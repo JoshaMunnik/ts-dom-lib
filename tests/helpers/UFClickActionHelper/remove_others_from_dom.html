@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Remove others from dom</title>
+  </head>
+  <body>
+    <p>
+      <button data-uf-click-action="remove-from-dom" data-uf-click-target="[data-remove]">Remove others</button>
+    </p>
+    <p data-remove="1">
+      This will be removed.
+    </p>
+    <p data-remove="2">
+      This will be removed.
+    </p>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

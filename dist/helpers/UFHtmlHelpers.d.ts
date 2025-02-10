@@ -64,9 +64,9 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      * Resorts a table using current selected column and sort direction. If the table is not sorted
      * or the table sorting helper is not active nothing happens.
      *
-     * @param aTable
+     * @param table
      */
-    resort(aTable: HTMLTableElement): void;
+    resort(table: HTMLTableElement): void;
     /**
      * Call the {@link UFHtmlHelper.scan} method for every registered helper.
      */
