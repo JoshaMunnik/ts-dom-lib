@@ -60,11 +60,9 @@ enum Action {
  *
  * Add `data-uf-click-action` to the clickable element with one of the following values:
  * - `remove-from-dom`: Removes the target(s) from the DOM.
- * - `hide`: Hides the target(s) by setting the `display` style to `none`.
- * - `show`: Sets the display style to the value from `data-uf-click-data`; if this attribute is not
- * set use `block`.
- * - `toggle`: Toggles the visibility of the target(s) by setting the `display` style to `none` or
- * either the value of `data-uf-click-data` or `block`.
+ * - `hide`: Hides the target(s) using {@link UFHtmlHelper.showElement}.
+ * - `show`: Shows the target(s) using {@link UFHtmlHelper.showElement}.
+ * - `toggle`: Shows the target(s) if their display is set to none, hides them otherwise.
  * - `toggle-class`: Toggles the classes set with `data-uf-click-data` at the target(s).
  * - `remove-from-class`: Removes the classes set with `data-uf-click-data` from the target(s).
  * - `add-to-class`: Adds the classes set with `data-uf-click-data` from the target(s).
@@ -156,13 +154,13 @@ export class UFClickActionHelper extends UFHtmlHelper {
         element.remove();
         break;
       case Action.Hide:
-        element.style.display = 'none';
+        this.showElement(element, false);
         break;
       case Action.Show:
-        element.style.display = data || 'block';
+        this.showElement(element, true);
         break;
       case Action.Toggle:
-        element.style.display = element.style.display === 'none' ? data || 'block' : 'none';
+        this.showElement(element, element.style.display === 'none');
         break;
       case Action.ToggleClass:
         element.classList.toggle(data);
