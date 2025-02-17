@@ -50,7 +50,8 @@ import {UFFormToggleHelper} from "./UFFormToggleHelper.js";
  *
  * Use {@link UFHtmlHelpers.instance} to access the singleton.
  *
- * Call {@link init} to initialize the helpers.
+ * Call {@link init} to initialize the Ultra Force html helpers. Extra custom helpers can be added
+ * by passing them as an argument.
  *
  * When the DOM changes, call {@link scan} to let each helper rescan.
  *
@@ -107,11 +108,29 @@ export class UFHtmlHelpers extends UFHtmlHelper {
 
   // region public methods
 
+  /**
+   * Returns the singleton instance. The first time the property is accessed the instance is
+   * created.
+   */
   public static get instance(): UFHtmlHelpers {
     if (UFHtmlHelpers.m_instance === null) {
       UFHtmlHelpers.m_instance = new UFHtmlHelpers();
     }
     return UFHtmlHelpers.m_instance;
+  }
+
+  /**
+   * Initializes the Ultra Force html helpers. Extra custom helpers can be added by passing them as
+   * an argument.
+   *
+   * @param helpers
+   *   Additional helpers to use.
+   */
+  public init(helpers: UFHtmlHelper[] = []): void {
+    helpers.forEach((helper) => {
+      this.registerHelper(helper);
+    });
+    super.init();
   }
 
   /**

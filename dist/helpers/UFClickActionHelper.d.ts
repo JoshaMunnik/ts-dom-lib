@@ -36,6 +36,11 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * - `toggle-class`: Toggles the classes set with `data-uf-click-data` at the target(s).
  * - `remove-from-class`: Removes the classes set with `data-uf-click-data` from the target(s).
  * - `add-to-class`: Adds the classes set with `data-uf-click-data` from the target(s).
+ * - `show-modal`: Shows the target(s) as modal dialog. If the target is not a dialog element,
+ *   nothing happens.
+ * - `show-non-modal`: Shows the target(s) as dialog. If the target is not a dialog element,
+ *   nothing happens.
+ * - `close`: Closes the target. If the target is not a dialog element, nothing happens.
  *
  * Use `data-uf-click-target` to specify another target then element itself. The value can either
  * be a selector or one of the predefined values:
