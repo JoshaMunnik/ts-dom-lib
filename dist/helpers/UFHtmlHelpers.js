@@ -45,7 +45,8 @@ import { UFFormToggleHelper } from "./UFFormToggleHelper.js";
  *
  * Use {@link UFHtmlHelpers.instance} to access the singleton.
  *
- * Call {@link init} to initialize the helpers.
+ * Call {@link init} to initialize the Ultra Force html helpers. Extra custom helpers can be added
+ * by passing them as an argument.
  *
  * When the DOM changes, call {@link scan} to let each helper rescan.
  *
@@ -81,11 +82,28 @@ export class UFHtmlHelpers extends UFHtmlHelper {
     }
     // endregion
     // region public methods
+    /**
+     * Returns the singleton instance. The first time the property is accessed the instance is
+     * created.
+     */
     static get instance() {
         if (UFHtmlHelpers.m_instance === null) {
             UFHtmlHelpers.m_instance = new UFHtmlHelpers();
         }
         return UFHtmlHelpers.m_instance;
+    }
+    /**
+     * Initializes the Ultra Force html helpers. Extra custom helpers can be added by passing them as
+     * an argument.
+     *
+     * @param helpers
+     *   Additional helpers to use.
+     */
+    init(helpers = []) {
+        helpers.forEach((helper) => {
+            this.registerHelper(helper);
+        });
+        super.init();
     }
     /**
      * Resorts a table using current selected column and sort direction. If the table is not sorted

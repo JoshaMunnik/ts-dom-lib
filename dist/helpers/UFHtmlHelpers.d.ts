@@ -30,7 +30,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *
  * Use {@link UFHtmlHelpers.instance} to access the singleton.
  *
- * Call {@link init} to initialize the helpers.
+ * Call {@link init} to initialize the Ultra Force html helpers. Extra custom helpers can be added
+ * by passing them as an argument.
  *
  * When the DOM changes, call {@link scan} to let each helper rescan.
  *
@@ -59,7 +60,19 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      */
     private readonly m_tableSortHelper;
     private constructor();
+    /**
+     * Returns the singleton instance. The first time the property is accessed the instance is
+     * created.
+     */
     static get instance(): UFHtmlHelpers;
+    /**
+     * Initializes the Ultra Force html helpers. Extra custom helpers can be added by passing them as
+     * an argument.
+     *
+     * @param helpers
+     *   Additional helpers to use.
+     */
+    init(helpers?: UFHtmlHelper[]): void;
     /**
      * Resorts a table using current selected column and sort direction. If the table is not sorted
      * or the table sorting helper is not active nothing happens.
