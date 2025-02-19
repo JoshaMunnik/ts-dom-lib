@@ -347,6 +347,8 @@ export class UFHtml {
      *  Selector to filter the parent with
      *
      * @return the parent element that matches the selector or null if no parent could be found
+     *
+     * @deprecated Use built-in `Element.closest()` instead
      */
     static getFirstParent(anElement, aSelector) {
         for (let parent = anElement.parentElement; parent; parent = parent.parentElement) {

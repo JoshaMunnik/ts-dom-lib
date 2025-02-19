@@ -50,6 +50,7 @@ enum Target {
   Next = '_next',
   Previous = '_previous',
   Grandparent = '_grandparent',
+  Dialog = '_dialog',
 }
 
 // endregion
@@ -216,6 +217,8 @@ export class UFHtmlHelper {
         return this.buildListFromOneElement(element.previousElementSibling as HTMLElement);
       case Target.Grandparent:
         return this.buildListFromOneElement(element.parentElement?.parentElement ?? null);
+      case Target.Dialog:
+        return this.buildListFromOneElement(element.closest("dialog"));
       default:
         return [...document.querySelectorAll<HTMLElement>(target)];
     }
