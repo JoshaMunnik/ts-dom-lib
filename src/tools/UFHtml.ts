@@ -486,6 +486,25 @@ export class UFHtml {
     );
     anElement.style.display = 'none';
   }
+
+  /**
+   * Copies one or more attribute values to input elements.
+   *
+   * @param element
+   *   Element to get the attributes from
+   * @param map
+   *   The property names are used as attribute names and the values are used as selectors for the
+   *   input elements.
+   */
+  static copyAttributeToInput(element: Element, map: { [key: string]: string }): void {
+    for(const key in map) {
+      const data = element.getAttribute(key);
+      const input = document.querySelector<HTMLInputElement>(map[key]);
+      if (data && input) {
+        input.value = data.trim();
+      }
+    }
+  }
 }
 
 // endregion

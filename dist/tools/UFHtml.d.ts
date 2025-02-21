@@ -235,6 +235,8 @@ export declare class UFHtml {
      *  Selector to filter the parent with
      *
      * @return the parent element that matches the selector or null if no parent could be found
+     *
+     * @deprecated Use built-in `Element.closest()` instead
      */
     static getFirstParent(anElement: HTMLElement, aSelector: string): HTMLElement | null;
     /**
@@ -266,4 +268,16 @@ export declare class UFHtml {
      *   Element to hide
      */
     static hide(anElement: HTMLElement): void;
+    /**
+     * Copies one or more attribute values to input elements.
+     *
+     * @param element
+     *   Element to get the attributes from
+     * @param map
+     *   The property names are used as attribute names and the values are used as selectors for the
+     *   input elements.
+     */
+    static copyAttributeToInput(element: Element, map: {
+        [key: string]: string;
+    }): void;
 }

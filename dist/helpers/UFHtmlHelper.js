@@ -44,6 +44,7 @@ var Target;
     Target["Next"] = "_next";
     Target["Previous"] = "_previous";
     Target["Grandparent"] = "_grandparent";
+    Target["Dialog"] = "_dialog";
 })(Target || (Target = {}));
 // endregion
 // region exports
@@ -183,6 +184,8 @@ export class UFHtmlHelper {
                 return this.buildListFromOneElement(element.previousElementSibling);
             case Target.Grandparent:
                 return this.buildListFromOneElement((_b = (_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement) !== null && _b !== void 0 ? _b : null);
+            case Target.Dialog:
+                return this.buildListFromOneElement(element.closest("dialog"));
             default:
                 return [...document.querySelectorAll(target)];
         }

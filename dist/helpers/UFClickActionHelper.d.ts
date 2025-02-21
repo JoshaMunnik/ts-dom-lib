@@ -48,6 +48,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * - `_next`: The next sibling of the clickable element.
  * - `_previous`: The previous sibling of the clickable element.
  * - `_grandparent`: The parent element of the parent of the clickable element.
+ * - `_dialog`: The nearest dialog element that contains the clickable element.
  *
  * The implementation supports a selector that selects multiple elements.
  *
