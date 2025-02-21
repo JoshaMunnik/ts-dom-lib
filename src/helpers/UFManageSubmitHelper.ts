@@ -74,6 +74,7 @@ export class UFManageSubmitHelper extends UFHtmlHelper {
     anElements.forEach(
       element => this.addElementListener(element, aForm)
     );
+    this.handleFormChange(aForm);
   }
 
   private addElementListener(anElement: HTMLElement, aForm: HTMLFormElement) {
