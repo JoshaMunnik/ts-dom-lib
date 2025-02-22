@@ -57,46 +57,66 @@ export declare class UFEventManager {
      */
     static get instance(): UFEventManager;
     /**
-     * Adds a listener to an element for a specific event for a certain group.
+     * Adds a listener to an element for specific events for a certain group.
+     *
+     * The method calls {@link UFHtml.addListener} and stores the remove function in the group.
      *
      * Use {@link removeAllForGroup} to remove the listener and all other listeners in the group.
      *
-     * @param aGroupName
+     * @param groupName
      *   Group to register listener for
-     * @param anElement
+     * @param element
      *   Element to add listener to
-     * @param anEventName
-     *   Event to listen for
-     * @param aListener
+     * @param events
+     *   One or more events to listen for (separated by space)
+     * @param listener
      *   Listener to call when event triggers.
      */
-    addForGroup(aGroupName: string, anElement: HTMLElement, anEventName: string, aListener: EventListenerOrEventListenerObject): void;
+    addListenerForGroup(groupName: string, element: HTMLElement, events: string, listener: EventListenerOrEventListenerObject): void;
     /**
-     * Removes all listeners for a specific group that were set via {@link addForGroup}.
+     * Adds a listener to multiple elements for specific events for a certain group.
      *
-     * @param aGroupName
+     * The method calls {@link UFHtml.addListeners} and stores the remove function in the group.
+     *
+     * Use {@link removeAllForGroup} to remove the listener and all other listeners in the group.
+     *
+     * @param groupName
+     *   Group to register listener for
+     * @param selector
+     *   Selector for the element(s) or a list of elements.
+     * @param events
+     *   One or more events to add listener for (separated by space).
+     * @param handlerFactory
+     *   A factory function that creates a handler callback for the element.
+     */
+    addListenersForGroup<T extends HTMLElement>(groupName: string, selector: string | NodeListOf<T> | T[], events: string, handlerFactory: (element: T) => EventListenerOrEventListenerObject): void;
+    /**
+     * Removes all listeners for a specific group that were set via {@link addListenerForGroup} and
+     * {@link addListenersForGroup}.
+     *
+     * @param groupName
      *   Group to remove all listeners for.
      */
-    removeAllForGroup(aGroupName: string): void;
+    removeAllForGroup(groupName: string): void;
     /**
      * Adds an event listener to an element. The method first removes a previously added listener
      * for the event (if any).
      *
-     * @param anElement
+     * @param element
      *   Element to add event listener to
-     * @param anEventName
+     * @param eventName
      *   Name of event to add listener for
-     * @param aListener
+     * @param listener
      *   Event handler to call when event is triggered
      */
-    addSingle(anElement: HTMLElement, anEventName: string, aListener: EventListenerOrEventListenerObject): void;
+    addSingle(element: HTMLElement, eventName: string, listener: EventListenerOrEventListenerObject): void;
     /**
      * Removes a previously added event listener.
      *
-     * @param anElement
+     * @param element
      *   Element to remove event listener from
-     * @param anEventName
+     * @param eventName
      *   Name of event to remove listener for
      */
-    removeSingle(anElement: HTMLElement, anEventName: string): void;
+    removeSingle(element: HTMLElement, eventName: string): void;
 }

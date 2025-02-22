@@ -21,6 +21,7 @@ export * from './events/UFEventManager.js';
 export * from './helpers/UFCellFilterHelper.js';
 export * from './helpers/UFClickStylingHelper.js';
 export * from './helpers/UFDetailsHelper.js';
+export * from './helpers/UFDialogHelper.js';
 export * from './helpers/UFFormToggleHelper.js';
 export * from './helpers/UFHtmlHelper.js';
 export * from './helpers/UFHtmlHelpers.js';

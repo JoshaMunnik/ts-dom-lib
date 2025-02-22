@@ -106,7 +106,7 @@ export declare class UFBrowser {
      * @param {jQuery.Event} anEvent
      *   jQuery event object
      *
-     * @return {{pageX: number, pageY: number}} object with position properties.
+     * @returns {{pageX: number, pageY: number}} object with position properties.
      */
     static getPageXY(anEvent: Event): object;
     /**
@@ -115,7 +115,7 @@ export declare class UFBrowser {
      * @param aName
      *   Parameter name
      *
-     * @return part behind the = (till the next & or # character) or empty string if aName
+     * @returns part behind the = (till the next & or # character) or empty string if aName
      *   parameter is not found
      */
     static getParameterByName(aName: string): string;
@@ -125,7 +125,7 @@ export declare class UFBrowser {
      * @param aSelector
      *   Name of rule (must match definition exactly)
      *
-     * @return Either false if no rule could be found or an object with rules.
+     * @returns Either false if no rule could be found or an object with rules.
      */
     static getCssRule(aSelector: string): false | CSSRule;
     /**
@@ -140,7 +140,7 @@ export declare class UFBrowser {
     /**
      * Returns Android version obtained from UA string.
      *
-     * @return Version (x.x.x) or false if no version could be determined
+     * @returns Version (x.x.x) or false if no version could be determined
      */
     static getAndroidVersion(): string | false;
     /**
@@ -151,7 +151,7 @@ export declare class UFBrowser {
      * @param anEvent
      *   Event object from click event
      *
-     * @return `true`: element is clicked upon, `false`: element is not clicked upon
+     * @returns `true`: element is clicked upon, `false`: element is not clicked upon
      */
     static isClicked(anElement: Element, anEvent: Event): boolean;
     /**
@@ -240,7 +240,7 @@ export declare class UFBrowser {
      * @param anError
      *   Callback method when error occurred, will be passed the Image as parameter.
      *
-     * @return Image dom object
+     * @returns Image dom object
      */
     static loadImage(anUrl: string, aSuccess?: (image: HTMLImageElement) => void, anError?: (image: HTMLImageElement) => void): HTMLImageElement;
 }

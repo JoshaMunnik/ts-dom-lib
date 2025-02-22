@@ -78,7 +78,7 @@ export class UFManageSubmitHelper extends UFHtmlHelper {
   }
 
   private addElementListener(anElement: HTMLElement, aForm: HTMLFormElement) {
-    UFEventManager.instance.addForGroup(
+    UFEventManager.instance.addListenerForGroup(
       DataAttribute.ManageSubmit, anElement, ChangeEvents, () => this.handleFormChange(aForm)
     );
   }

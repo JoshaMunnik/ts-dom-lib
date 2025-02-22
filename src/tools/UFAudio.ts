@@ -42,7 +42,7 @@ export class UFAudio {
    * @param anAudio
    *   Audio to check
    *
-   * @return True when playing
+   * @returns True when playing
    */
   static isPlaying(anAudio: HTMLAudioElement): boolean {
     return anAudio
@@ -61,7 +61,7 @@ export class UFAudio {
    * @param anAudio
    *   Audio to check
    *
-   * @return True when playing
+   * @returns True when playing
    */
   static isPaused(anAudio: HTMLAudioElement): boolean {
     return anAudio

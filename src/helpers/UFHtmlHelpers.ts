@@ -28,6 +28,7 @@
 // region imports
 
 import {UFClickActionHelper} from "./UFClickActionHelper.js";
+import {UFDialogHelper} from "./UFDialogHelper.js";
 import {UFHtmlHelper} from "./UFHtmlHelper.js";
 import {UFDetailsHelper} from "./UFDetailsHelper.js";
 import {UFCellFilterHelper} from "./UFCellFilterHelper.js";
@@ -102,6 +103,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
     this.registerHelper(new UFSetFormFieldHelper());
     this.registerHelper(new UFPopupHelper());
     this.registerHelper(new UFClickActionHelper());
+    this.registerHelper(new UFDialogHelper());
   }
 
   // endregion

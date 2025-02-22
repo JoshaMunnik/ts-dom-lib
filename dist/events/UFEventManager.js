@@ -69,77 +69,101 @@ export class UFEventManager {
     // endregion
     // region public methods
     /**
-     * Adds a listener to an element for a specific event for a certain group.
+     * Adds a listener to an element for specific events for a certain group.
+     *
+     * The method calls {@link UFHtml.addListener} and stores the remove function in the group.
      *
      * Use {@link removeAllForGroup} to remove the listener and all other listeners in the group.
      *
-     * @param aGroupName
+     * @param groupName
      *   Group to register listener for
-     * @param anElement
+     * @param element
      *   Element to add listener to
-     * @param anEventName
-     *   Event to listen for
-     * @param aListener
+     * @param events
+     *   One or more events to listen for (separated by space)
+     * @param listener
      *   Listener to call when event triggers.
      */
-    addForGroup(aGroupName, anElement, anEventName, aListener) {
-        const removeFunctions = UFMap.get(this.m_groupedEvents, aGroupName, () => []);
-        const removeFunction = UFHtml.addListener(anElement, anEventName, aListener);
+    addListenerForGroup(groupName, element, events, listener) {
+        const removeFunctions = UFMap.get(this.m_groupedEvents, groupName, () => []);
+        const removeFunction = UFHtml.addListener(element, events, listener);
         removeFunctions.push(removeFunction);
     }
     /**
-     * Removes all listeners for a specific group that were set via {@link addForGroup}.
+     * Adds a listener to multiple elements for specific events for a certain group.
      *
-     * @param aGroupName
+     * The method calls {@link UFHtml.addListeners} and stores the remove function in the group.
+     *
+     * Use {@link removeAllForGroup} to remove the listener and all other listeners in the group.
+     *
+     * @param groupName
+     *   Group to register listener for
+     * @param selector
+     *   Selector for the element(s) or a list of elements.
+     * @param events
+     *   One or more events to add listener for (separated by space).
+     * @param handlerFactory
+     *   A factory function that creates a handler callback for the element.
+     */
+    addListenersForGroup(groupName, selector, events, handlerFactory) {
+        const removeFunctions = UFMap.get(this.m_groupedEvents, groupName, () => []);
+        const removeFunction = UFHtml.addListeners(selector, events, handlerFactory);
+        removeFunctions.push(removeFunction);
+    }
+    /**
+     * Removes all listeners for a specific group that were set via {@link addListenerForGroup} and
+     * {@link addListenersForGroup}.
+     *
+     * @param groupName
      *   Group to remove all listeners for.
      */
-    removeAllForGroup(aGroupName) {
-        if (!this.m_groupedEvents.has(aGroupName)) {
+    removeAllForGroup(groupName) {
+        if (!this.m_groupedEvents.has(groupName)) {
             return;
         }
-        const removeFunctions = this.m_groupedEvents.get(aGroupName);
-        this.m_groupedEvents.delete(aGroupName);
+        const removeFunctions = this.m_groupedEvents.get(groupName);
+        this.m_groupedEvents.delete(groupName);
         removeFunctions.forEach(removeFunction => removeFunction());
     }
     /**
      * Adds an event listener to an element. The method first removes a previously added listener
      * for the event (if any).
      *
-     * @param anElement
+     * @param element
      *   Element to add event listener to
-     * @param anEventName
+     * @param eventName
      *   Name of event to add listener for
-     * @param aListener
+     * @param listener
      *   Event handler to call when event is triggered
      */
-    addSingle(anElement, anEventName, aListener) {
-        this.removeSingle(anElement, anEventName);
-        const eventRemoveFunctions = UFMap.get(this.m_singleEvents, anElement, () => new Map());
-        eventRemoveFunctions.set(anEventName, () => UFHtml.addListener(anElement, anEventName, aListener));
+    addSingle(element, eventName, listener) {
+        this.removeSingle(element, eventName);
+        const eventRemoveFunctions = UFMap.get(this.m_singleEvents, element, () => new Map());
+        eventRemoveFunctions.set(eventName, () => UFHtml.addListener(element, eventName, listener));
     }
     /**
      * Removes a previously added event listener.
      *
-     * @param anElement
+     * @param element
      *   Element to remove event listener from
-     * @param anEventName
+     * @param eventName
      *   Name of event to remove listener for
      */
-    removeSingle(anElement, anEventName) {
-        const eventRemoveFunctions = this.m_singleEvents.get(anElement);
+    removeSingle(element, eventName) {
+        const eventRemoveFunctions = this.m_singleEvents.get(element);
         if (!eventRemoveFunctions) {
             return;
         }
-        const removeFunction = eventRemoveFunctions.get(anEventName);
+        const removeFunction = eventRemoveFunctions.get(eventName);
         if (!removeFunction) {
             return;
         }
         removeFunction();
-        eventRemoveFunctions.delete(anEventName);
+        eventRemoveFunctions.delete(eventName);
         if (eventRemoveFunctions.size > 0) {
             return;
         }
-        this.m_singleEvents.delete(anElement);
+        this.m_singleEvents.delete(element);
     }
 }
 /**

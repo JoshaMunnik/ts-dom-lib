@@ -39,7 +39,7 @@ export class UFAudio {
      * @param anAudio
      *   Audio to check
      *
-     * @return True when playing
+     * @returns True when playing
      */
     static isPlaying(anAudio) {
         return anAudio
@@ -57,7 +57,7 @@ export class UFAudio {
      * @param anAudio
      *   Audio to check
      *
-     * @return True when playing
+     * @returns True when playing
      */
     static isPaused(anAudio) {
         return anAudio

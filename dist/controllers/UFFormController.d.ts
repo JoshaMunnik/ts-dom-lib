@@ -155,7 +155,7 @@ export declare class UFFormController {
      * Checks if all bindings are valid. If there is an invalid binding and auto update is true start
      * validating all bindings and update error visuals with every change.
      *
-     * @return True=all bindings are valid, false=one or more bindings are invalid.
+     * @returns True=all bindings are valid, false=one or more bindings are invalid.
      */
     validate(): boolean;
     /**
@@ -166,13 +166,13 @@ export declare class UFFormController {
     /**
      * Current auto update state.
      *
-     * @return True=validate and update error visuals with every change, false=don't update
+     * @returns True=validate and update error visuals with every change, false=don't update
      */
     get autoUpdate(): boolean;
     /**
      * Return data used for the bindings.
      *
-     * @return data instance used to bind input fields to
+     * @returns data instance used to bind input fields to
      */
     get data(): UFModel;
     /**
@@ -189,7 +189,7 @@ export declare class UFFormController {
      * @param aNames
      *   Names of properties processed so far. Used when anUpdateDepend is true.
      *
-     * @return true: data is valid or field is inactive, false: field contains invalid data
+     * @returns true: data is valid or field is inactive, false: field contains invalid data
      */
     private updateBinding;
     /**
@@ -200,7 +200,7 @@ export declare class UFFormController {
      * @param anUpdateVisual
      *   True update visual state
      *
-     * @return true: all existing fields are valid, false: one or more fields contain invalid data
+     * @returns true: all existing fields are valid, false: one or more fields contain invalid data
      */
     private updateAllBindings;
     /**

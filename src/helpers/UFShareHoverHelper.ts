@@ -60,10 +60,10 @@ export class UFShareHoverHelper extends UFHtmlHelper {
       document.querySelectorAll<HTMLAnchorElement>('[' + DataAttribute.ShareHover + ']');
     elements.forEach(
       element => {
-        UFEventManager.instance.addForGroup(
+        UFEventManager.instance.addListenerForGroup(
           DataAttribute.ShareHover, element, 'mouseover', () => this.handleShareHover(element, true)
         );
-        UFEventManager.instance.addForGroup(
+        UFEventManager.instance.addListenerForGroup(
           DataAttribute.ShareHover, element, 'mouseout', () => this.handleShareHover(element, false)
         );
       }

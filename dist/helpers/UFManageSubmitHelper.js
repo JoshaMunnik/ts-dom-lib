@@ -57,9 +57,10 @@ export class UFManageSubmitHelper extends UFHtmlHelper {
     // region private methods
     addElementsListener(anElements, aForm) {
         anElements.forEach(element => this.addElementListener(element, aForm));
+        this.handleFormChange(aForm);
     }
     addElementListener(anElement, aForm) {
-        UFEventManager.instance.addForGroup(DataAttribute.ManageSubmit, anElement, ChangeEvents, () => this.handleFormChange(aForm));
+        UFEventManager.instance.addListenerForGroup(DataAttribute.ManageSubmit, anElement, ChangeEvents, () => this.handleFormChange(aForm));
     }
     setElementsDisabled(anElement, aValue) {
         anElement.forEach(element => this.setElementDisabled(element, aValue));

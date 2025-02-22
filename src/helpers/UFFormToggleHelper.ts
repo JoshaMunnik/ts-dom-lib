@@ -260,7 +260,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
       const data = this.buildToggleData(element);
       if (data) {
         data.formElements.forEach(
-          formElement => UFEventManager.instance.addForGroup(
+          formElement => UFEventManager.instance.addListenerForGroup(
             DataAttribute.Type,
             formElement,
             ChangeEvents,
@@ -469,7 +469,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
    * @param data
    *   Data to update with
    *
-   * @return True if target matches the condition
+   * @returns True if target matches the condition
    */
   private isValidToggleTarget(data: UFToggleData): boolean {
     if (data.isForm) {

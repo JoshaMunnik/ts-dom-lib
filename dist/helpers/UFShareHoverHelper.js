@@ -50,8 +50,8 @@ export class UFShareHoverHelper extends UFHtmlHelper {
         UFEventManager.instance.removeAllForGroup(DataAttribute.ShareHover);
         const elements = document.querySelectorAll('[' + DataAttribute.ShareHover + ']');
         elements.forEach(element => {
-            UFEventManager.instance.addForGroup(DataAttribute.ShareHover, element, 'mouseover', () => this.handleShareHover(element, true));
-            UFEventManager.instance.addForGroup(DataAttribute.ShareHover, element, 'mouseout', () => this.handleShareHover(element, false));
+            UFEventManager.instance.addListenerForGroup(DataAttribute.ShareHover, element, 'mouseover', () => this.handleShareHover(element, true));
+            UFEventManager.instance.addListenerForGroup(DataAttribute.ShareHover, element, 'mouseout', () => this.handleShareHover(element, false));
         });
     }
     // endregion

@@ -49,7 +49,7 @@ export class UFPageRefreshHelper extends UFHtmlHelper {
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.PageRefresh);
         const elements = document.querySelectorAll('[' + DataAttribute.PageRefresh + ']');
-        elements.forEach(element => UFEventManager.instance.addForGroup(DataAttribute.PageRefresh, element, 'click', () => this.handleClick(element)));
+        elements.forEach(element => UFEventManager.instance.addListenerForGroup(DataAttribute.PageRefresh, element, 'click', () => this.handleClick(element)));
     }
     // endregion
     // region event handlers

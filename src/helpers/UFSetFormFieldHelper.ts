@@ -85,7 +85,7 @@ export class UFSetFormFieldHelper extends UFHtmlHelper {
     if (setFieldSelector) {
       const inputElements = document.querySelectorAll<HTMLInputElement>(setFieldSelector);
       if (inputElements.length) {
-        UFEventManager.instance.addForGroup(
+        UFEventManager.instance.addListenerForGroup(
           DataAttribute.SetFieldSelector,
           anElement, 'click',
           () => this.changeInputElements(inputElements, setFieldValue)

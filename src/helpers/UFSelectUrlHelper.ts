@@ -59,7 +59,7 @@ export class UFSelectUrlHelper extends UFHtmlHelper {
     const elements =
       document.querySelectorAll<HTMLSelectElement>('[' + DataAttribute.SelectUrl + ']');
     elements.forEach(
-      element => UFEventManager.instance.addForGroup(
+      element => UFEventManager.instance.addListenerForGroup(
         DataAttribute.SelectUrl, element, 'change', () => this.handleSelectUrl(element)
       )
     );

@@ -49,7 +49,7 @@ export class UFSelectUrlHelper extends UFHtmlHelper {
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.SelectUrl);
         const elements = document.querySelectorAll('[' + DataAttribute.SelectUrl + ']');
-        elements.forEach(element => UFEventManager.instance.addForGroup(DataAttribute.SelectUrl, element, 'change', () => this.handleSelectUrl(element)));
+        elements.forEach(element => UFEventManager.instance.addListenerForGroup(DataAttribute.SelectUrl, element, 'change', () => this.handleSelectUrl(element)));
     }
     // endregion
     // region event handlers

@@ -201,7 +201,7 @@ export class UFHtmlHelper {
    * @param target
    *   Either one of the predefined values or a selector.
    *
-   * @return list of elements (can be empty)
+   * @returns list of elements (can be empty)
    *
    * @private
    */
@@ -282,7 +282,7 @@ export class UFHtmlHelper {
       aTargetList.push(aTarget);
       if (anEvent && anHandler) {
         if (aGroupName) {
-          UFEventManager.instance.addForGroup(
+          UFEventManager.instance.addListenerForGroup(
             aGroupName, aTarget, anEvent, () => anHandler(aTarget)
           );
         }
@@ -300,7 +300,7 @@ export class UFHtmlHelper {
    * @param element
    *   Element to build the list from.
    *
-   * @return Either [element] or [].
+   * @returns Either [element] or [].
    *
    * @private
    */

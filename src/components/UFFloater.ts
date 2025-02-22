@@ -1128,7 +1128,7 @@ export class UFFloater {
    *
    * @param anEvent
    *
-   * @return the element or null if none could be found.
+   * @returns the element or null if none could be found.
    *
    * @private
    */

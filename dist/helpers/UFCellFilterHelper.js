@@ -89,7 +89,7 @@ export class UFCellFilterHelper extends UFHtmlHelper {
         }
         const tablesColumnMap = new Map();
         tables.forEach(table => tablesColumnMap.set(table, this.getAllowedColumns(table)));
-        UFEventManager.instance.addForGroup(DataAttribute.FilterTable, anInputElement, 'input', () => this.applyFilter(anInputElement.value, tablesColumnMap));
+        UFEventManager.instance.addListenerForGroup(DataAttribute.FilterTable, anInputElement, 'input', () => this.applyFilter(anInputElement.value, tablesColumnMap));
     }
     /**
      * Returns an array with a boolean for each column in the table. The boolean indicates if the
@@ -98,7 +98,7 @@ export class UFCellFilterHelper extends UFHtmlHelper {
      * @param aTable
      *   Table to process
      *
-     * @return column settings
+     * @returns column settings
      *
      * @private
      */

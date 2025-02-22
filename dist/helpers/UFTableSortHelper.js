@@ -573,7 +573,7 @@ export class UFTableSortHelper extends UFHtmlHelper {
                 // attach click handler on the button
                 const button = cell.querySelector('button');
                 if (button) {
-                    UFEventManager.instance.addForGroup(DataAttribute.Sorting, button, 'click', () => this.handleClick(aTable, index));
+                    UFEventManager.instance.addListenerForGroup(DataAttribute.Sorting, button, 'click', () => this.handleClick(aTable, index));
                 }
             }
             else {

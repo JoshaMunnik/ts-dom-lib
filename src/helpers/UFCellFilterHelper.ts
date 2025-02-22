@@ -110,7 +110,7 @@ export class UFCellFilterHelper extends UFHtmlHelper {
     }
     const tablesColumnMap = new Map<HTMLTableElement, boolean[]>();
     tables.forEach(table => tablesColumnMap.set(table, this.getAllowedColumns(table)));
-    UFEventManager.instance.addForGroup(
+    UFEventManager.instance.addListenerForGroup(
       DataAttribute.FilterTable,
       anInputElement,
       'input', 
@@ -125,7 +125,7 @@ export class UFCellFilterHelper extends UFHtmlHelper {
    * @param aTable
    *   Table to process
    *
-   * @return column settings
+   * @returns column settings
    *
    * @private
    */

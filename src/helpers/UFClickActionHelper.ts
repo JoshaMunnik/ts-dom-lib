@@ -116,7 +116,7 @@ export class UFClickActionHelper extends UFHtmlHelper {
     const target = UFHtml.getAttribute(element, DataAttribute.ClickTarget);
     const data = UFHtml.getAttribute(element, DataAttribute.ClickData);
     //console.debug({element, action, target, data});
-    UFEventManager.instance.addForGroup(
+    UFEventManager.instance.addListenerForGroup(
       DataAttribute.ClickAction,
       element,
       'click',

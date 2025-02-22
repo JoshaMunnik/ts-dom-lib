@@ -65,7 +65,7 @@ export declare class UFCellFilterHelper extends UFHtmlHelper {
      * @param aTable
      *   Table to process
      *
-     * @return column settings
+     * @returns column settings
      *
      * @private
      */

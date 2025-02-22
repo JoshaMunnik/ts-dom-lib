@@ -129,7 +129,7 @@ class UFBinding {
     /**
      * Gets value from the element.
      *
-     * @return Value from the element.
+     * @returns Value from the element.
      */
     getFieldValue() {
         switch (this.m_element.tagName.toLowerCase()) {
@@ -461,7 +461,7 @@ export class UFFormController {
      * Checks if all bindings are valid. If there is an invalid binding and auto update is true start
      * validating all bindings and update error visuals with every change.
      *
-     * @return True=all bindings are valid, false=one or more bindings are invalid.
+     * @returns True=all bindings are valid, false=one or more bindings are invalid.
      */
     validate() {
         // update all existing bindings
@@ -493,7 +493,7 @@ export class UFFormController {
     /**
      * Current auto update state.
      *
-     * @return True=validate and update error visuals with every change, false=don't update
+     * @returns True=validate and update error visuals with every change, false=don't update
      */
     get autoUpdate() {
         return this.m_autoUpdate;
@@ -501,7 +501,7 @@ export class UFFormController {
     /**
      * Return data used for the bindings.
      *
-     * @return data instance used to bind input fields to
+     * @returns data instance used to bind input fields to
      */
     get data() {
         return this.m_data;
@@ -522,7 +522,7 @@ export class UFFormController {
      * @param aNames
      *   Names of properties processed so far. Used when anUpdateDepend is true.
      *
-     * @return true: data is valid or field is inactive, false: field contains invalid data
+     * @returns true: data is valid or field is inactive, false: field contains invalid data
      */
     updateBinding(aBinding, anUpdateData, anUpdateVisual, anUpdateDepend, aNames = []) {
         // store name
@@ -565,7 +565,7 @@ export class UFFormController {
      * @param anUpdateVisual
      *   True update visual state
      *
-     * @return true: all existing fields are valid, false: one or more fields contain invalid data
+     * @returns true: all existing fields are valid, false: one or more fields contain invalid data
      */
     updateAllBindings(anUpdateData, anUpdateVisual) {
         // initially all displayObjects are valid

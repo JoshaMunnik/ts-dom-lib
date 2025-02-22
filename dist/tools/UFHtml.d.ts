@@ -48,7 +48,7 @@ export declare class UFHtml {
      * @param aText
      *   Text to convert
      *
-     * @return Html formatted plain text
+     * @returns Html formatted plain text
      */
     static escapeHtml(aText: string): string;
     /**
@@ -57,67 +57,67 @@ export declare class UFHtml {
      * Based on code from:
      * https://javascript.plainenglish.io/3-ways-to-convert-html-text-to-plain-text-strip-off-the-tags-from-the-string-4c947feb8a8c
      *
-     * @param aHtmlText
+     * @param htmlText
      *   Html text to format
      *
      * @returns plain version of the text
      */
-    static convertToPlain(aHtmlText: string): string;
+    static convertToPlain(htmlText: string): string;
     /**
      * Adds css classes in a single string to an element.
      *
-     * @param anElement
+     * @param element
      *   Element to add the classes to; can be null, in that case nothing happens.
-     * @param aClasses
+     * @param classes
      *   Css classes separated by a space character; can be null, in that case nothing happens.
      */
-    static addClasses(anElement: Element | null, aClasses: string | null): void;
+    static addClasses(element: Element | null, classes: string | null): void;
     /**
      * Removes css classes in a single string from an element.
      *
-     * @param anElement
+     * @param element
      *   Element to remove the classes from; can be null, in that case nothing happens.
-     * @param aClasses
+     * @param classes
      *   Css classes separated by a space character; can be null, in that case nothing happens.
      */
-    static removeClasses(anElement: Element | null, aClasses: string | null): void;
+    static removeClasses(element: Element | null, classes: string | null): void;
     /**
      * Toggle css classes in a single string in an element.
      *
-     * @param anElement
+     * @param element
      *   Element to add to or remove from the classes; can be null, in that case nothing happens.
-     * @param aClasses
+     * @param classes
      *   Css classes separated by a space character; can be null, in that case nothing happens.
-     * @param aForce
+     * @param force
      *   If true the classes are added, if false the classes are removed, if not set the classes are
      *   toggled.
      */
-    static toggleClasses(anElement: Element | null, aClasses: string | null, aForce?: boolean): void;
+    static toggleClasses(element: Element | null, classes: string | null, force?: boolean): void;
     /**
      * Combines {@link addClasses} and {@link removeClasses}.
      *
-     * @param anElement
+     * @param element
      *   Element to add and remove the classes to and from; can be null, in that case nothing happens.
-     * @param anAddClasses
+     * @param addClasses
      *   Css classes separated by a space character; can be null, in that case no classes are added.
-     * @param aRemoveClasses
+     * @param removeClasses
      *   Css classes separated by a space character; can be null, in that case no classes are removed.
      */
-    static addAndRemoveClasses(anElement: Element, anAddClasses: string, aRemoveClasses: string): void;
+    static addAndRemoveClasses(element: Element, addClasses: string, removeClasses: string): void;
     /**
      * Adds a listener for one or more events. The function returns a callback, which can be called to
      * remove the listener.
      *
-     * @param anElement
+     * @param element
      *   Element to add listener to or selector for the element
-     * @param anEvents
+     * @param events
      *   One or more events to add listener for (separated by space)
-     * @param aListener
+     * @param listener
      *   Listener callback
      *
-     * @return a function that can be called to remove the listener from the element for the events.
+     * @returns a function that can be called to remove the listener from the element for the events.
      */
-    static addListener(anElement: HTMLElement | Document | Window | string, anEvents: string, aListener: EventListenerOrEventListenerObject): UFCallback;
+    static addListener(element: HTMLElement | Document | Window | string, events: string, listener: EventListenerOrEventListenerObject): UFCallback;
     /**
      * Adds a listener to the body element for one or more events. If the target or any of the parents
      * of the target matches the selector, the listener is called.
@@ -125,45 +125,65 @@ export declare class UFHtml {
      * This method can be used to handle events fired by elements that are dynamically added at a
      * later time.
      *
-     * @param aSelector
+     * @param selector
      *   Selector the target must match.
-     * @param anEvents
+     * @param events
      *   One or more events to add listener for (separated by space)
-     * @param aHandlerFactory
+     * @param handlerFactory
      *   A factory function that creates a handler callback for the element. Note that this function
      *   is called everytime an event is fired. The function should take as little time as possible.
      *
-     * @return a function that can be called to remove the listener from the body.
+     * @returns a function that can be called to remove the listener from the body.
      */
-    static addBodyListener<T extends HTMLElement>(aSelector: string, anEvents: string, aHandlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
+    static addBodyListener<T extends HTMLElement>(selector: string, events: string, handlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
     /**
      * Adds a listener for one or more events to an element or a list of elements. The function
      * returns a callback, which can be called to remove all the listener.
      *
-     * @param aSelector
+     * @param selector
      *   Selector for the element(s) or a list of elements.
-     * @param anEvents
+     * @param events
      *   One or more events to add listener for (separated by space).
-     * @param aHandlerFactory
+     * @param handlerFactory
      *   A factory function that creates a handler callback for the element.
      *
-     * @return a function that can be called to remove all the added listener from the elements for
+     * @returns a function that can be called to remove all the added listener from the elements for
      *   the events.
+     *
+     * @example
+     * // without event
+     * const removeListeners = UFHtml.addListeners(
+     *   '.some-button',
+     *   'click touchstart',
+     *   (element) => () => {
+     *     // do something with element
+     *   }
+     * );
+     *
+     * @example
+     * // with event
+     * const removeListeners = UFHtml.addListeners(
+     *   '.some-button',
+     *   'click touchstart',
+     *   (element) => (event) => {
+     *     // do something with element and event
+     *   }
+     * );
      */
-    static addListeners<T extends HTMLElement>(aSelector: string | NodeListOf<T> | T[], anEvents: string, aHandlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
+    static addListeners<T extends HTMLElement>(selector: string | NodeListOf<T> | T[], events: string, handlerFactory: (element: T) => EventListenerOrEventListenerObject): UFCallback;
     /**
      * Gets the value of an attribute.
      *
-     * @param anElement
+     * @param element
      *   Element to get attribute from
-     * @param aName
+     * @param name
      *   Name of attribute
-     * @param aDefault
+     * @param defaultValue
      *   Default value to return if no value could be determined (default = '')
      *
-     * @return the value of the attribute or `aDefault` if there is no value.
+     * @returns the value of the attribute or `aDefault` if there is no value.
      */
-    static getAttribute(anElement: HTMLElement, aName: string, aDefault?: string): string;
+    static getAttribute(element: HTMLElement, name: string, defaultValue?: string): string;
     /**
      * Gets an element for a selector. If the selector is an element, it just returns the element.
      *
@@ -171,113 +191,119 @@ export declare class UFHtml {
      *
      * If no element can be found or the selector is a null value, the method will throw an error.
      *
-     * @param aSelector
+     * @param selector
      *   Element, selector text or null
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
      *
-     * @return found element
+     * @returns found element
      *
      * @throws Error if no element can be found
      */
-    static get<T extends Element>(aSelector: string | T | null): T;
+    static get<T extends Element>(selector: string | T | null, container?: Element): T;
     /**
      * Gets an element for a dom ID and typecast it to a certain type.
      *
      * If no element can be found, the method will throw an error.
      *
-     * @param anId
+     * @param id
      *   Element, selector text or null
      *
-     * @return found element
+     * @returns found element
      *
      * @throws Error if no element can be found
      */
-    static getForId<T extends Element = HTMLElement>(anId: string): T;
+    static getForId<T extends Element = HTMLElement>(id: string): T;
     /**
      * Fades in an element by setting the styles opacity and transition.
      *
-     * @param anElement
+     * @param element
      *   Element to fade in
-     * @param aDuration
+     * @param duration
      *   Duration in millisecond for the fade in transition (default = 400)
      */
-    static fadeIn(anElement: HTMLElement, aDuration?: number): void;
+    static fadeIn(element: HTMLElement, duration?: number): void;
     /**
      * Fades out an element by setting the styles opacity and transition.
      *
-     * @param anElement
+     * @param element
      *   Element to fade out
-     * @param aDuration
+     * @param duration
      *   Duration in millisecond for the fade in transition (default = 400)
      */
-    static fadeOut(anElement: HTMLElement, aDuration?: number): void;
+    static fadeOut(element: HTMLElement, duration?: number): void;
     /**
      * Creates an element by parsing a piece of html.
      *
-     * @param aHtml
+     * @param html
      *   Html to parse
      *
-     * @return created element; the element is removed from the document before it is returned.
+     * @returns created element; the element is removed from the document before it is returned.
      */
-    static createAs<T extends Element>(aHtml: string): T;
+    static createAs<T extends Element>(html: string): T;
     /**
      * Removes all child elements from an element.
      *
-     * @param anElement
+     * @param element
      *   Element to remove all children of.
      */
-    static empty(anElement: Element): void;
+    static empty(element: Element): void;
     /**
      * Gets the first parent element of the element that matches the selector.
      *
-     * @param anElement
+     * @param element
      *   Element to get the parent (or grandparent or great-grandparent) of
-     * @param aSelector
+     * @param selector
      *  Selector to filter the parent with
      *
-     * @return the parent element that matches the selector or null if no parent could be found
+     * @returns the parent element that matches the selector or null if no parent could be found
      *
      * @deprecated Use built-in `Element.closest()` instead
      */
-    static getFirstParent(anElement: HTMLElement, aSelector: string): HTMLElement | null;
+    static getFirstParent(element: HTMLElement, selector: string): HTMLElement | null;
     /**
      * Gets all parents of an element.
      *
-     * @param anElement
+     * @param element
      *   Element to get all parents for
-     * @param aSelector
+     * @param selector
      *   Optional selector to filter the parents with
      *
-     * @return all parent elements of the element (parent, grand parent, great grand parent, etc.)
+     * @returns all parent elements of the element (parent, grandparent, great-grandparent, etc.)
      */
-    static getParents(anElement: HTMLElement, aSelector?: string): HTMLElement[];
+    static getParents(element: HTMLElement, selector?: string): HTMLElement[];
     /**
      * Shows a element by updating the `display` style property.
      *
-     * @param anElement
+     * @param element
      *   Element to show
-     * @param aDisplay
+     * @param display
      *   When set use this value, else use the initial value which was copied with {@link hide}. If
      *   there is no initial value, use 'block'.
      */
-    static show(anElement: HTMLElement, aDisplay?: string): void;
+    static show(element: HTMLElement, display?: string): void;
     /**
      * Hides an element by updating the `display` style property. The current value is stored in the
      * element and is used by {@link show}. Then the value 'none' is assigned to `display` style.
      *
-     * @param anElement
+     * @param element
      *   Element to hide
      */
-    static hide(anElement: HTMLElement): void;
+    static hide(element: HTMLElement): void;
     /**
-     * Copies one or more attribute values to input elements.
+     * Copies one or more attribute values to elements. If the element is an input or select
+     * element, the value is set. Else the inner text is set.
      *
      * @param element
      *   Element to get the attributes from
      * @param map
-     *   The property names are used as attribute names and the values are used as selectors for the
-     *   input elements.
+     *   The field names are used as attribute names and the values are used as selectors for the
+     *   target elements. If the selector points to multiple elements, each element will get the
+     *   attribute value.
+     * @param container
+     *   Container to search the target elements in; if not set, the `document` is used.
      */
-    static copyAttributeToInput(element: Element, map: {
+    static copyAttributes(element: Element, map: {
         [key: string]: string;
-    }): void;
+    }, container?: Element): void;
 }

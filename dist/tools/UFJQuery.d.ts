@@ -52,7 +52,7 @@ export declare class UFJQuery {
      * @param aNamespace
      *   Namespace to add (without '.')
      *
-     * @return The events with namespace separated by a space characters.
+     * @returns The events with namespace separated by a space characters.
      */
     static addEventNamespace(anEvents: string, aNamespace: string): string;
 }

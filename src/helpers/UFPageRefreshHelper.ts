@@ -59,7 +59,7 @@ export class UFPageRefreshHelper extends UFHtmlHelper {
     const elements =
       document.querySelectorAll<HTMLSelectElement>('[' + DataAttribute.PageRefresh + ']');
     elements.forEach(
-      element => UFEventManager.instance.addForGroup(
+      element => UFEventManager.instance.addListenerForGroup(
         DataAttribute.PageRefresh, element, 'click', () => this.handleClick(element)
       )
     );

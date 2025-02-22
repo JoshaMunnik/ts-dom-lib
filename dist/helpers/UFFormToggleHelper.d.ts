@@ -166,7 +166,7 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      * @param data
      *   Data to update with
      *
-     * @return True if target matches the condition
+     * @returns True if target matches the condition
      */
     private isValidToggleTarget;
     /**
