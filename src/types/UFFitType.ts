@@ -25,6 +25,9 @@
  * SOFTWARE.
  */
 
+/**
+ * The various ways a child area can fit into a parent area.
+ */
 export enum UFFitType {
   Contain,
   Cover,

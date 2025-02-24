@@ -15,3 +15,15 @@ Some classes use `jQuery`.
 ## Documentation
 
 To view the generated documentation, visit: https://joshamunnik.github.io/ts-dom-lib/
+
+## Html helpers
+
+To load a compiled minified version of all the [UFHtmlHelpers](src/helpers), use the following 
+script tag:  
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/JoshaMunnik/uf-html-helpers@master/dist/uf-html-helpers.js"></script>
+```
+
+This compiled minified version is created by the
+[uf-html-helpers GitHub repository](https://github.com/JoshaMunnik/uf-html-helpers).

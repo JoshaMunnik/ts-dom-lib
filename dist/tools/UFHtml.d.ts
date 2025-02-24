@@ -94,7 +94,7 @@ export declare class UFHtml {
      */
     static toggleClasses(element: Element | null, classes: string | null, force?: boolean): void;
     /**
-     * Combines {@link addClasses} and {@link removeClasses}.
+     * Combines {@link UFHtml.addClasses} and {@link UFHtml.removeClasses}.
      *
      * @param element
      *   Element to add and remove the classes to and from; can be null, in that case nothing happens.

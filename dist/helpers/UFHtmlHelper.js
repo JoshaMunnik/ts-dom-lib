@@ -77,7 +77,7 @@ var Target;
  *
  * The code will assign `"none"` to the display style when hiding the element.
  *
- * Use {@link getTargetElements} to get the target element(s) from a source element.
+ * Use {@link UFHtmlHelper.getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
     constructor() {
@@ -168,8 +168,6 @@ export class UFHtmlHelper {
      *   Either one of the predefined values or a selector.
      *
      * @returns list of elements (can be empty)
-     *
-     * @private
      */
     getTargetElements(element, target) {
         var _a, _b;

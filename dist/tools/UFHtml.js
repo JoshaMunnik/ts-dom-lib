@@ -127,7 +127,7 @@ export class UFHtml {
         classes.split(' ').forEach(aClass => element.classList.toggle(aClass.trim(), force));
     }
     /**
-     * Combines {@link addClasses} and {@link removeClasses}.
+     * Combines {@link UFHtml.addClasses} and {@link UFHtml.removeClasses}.
      *
      * @param element
      *   Element to add and remove the classes to and from; can be null, in that case nothing happens.

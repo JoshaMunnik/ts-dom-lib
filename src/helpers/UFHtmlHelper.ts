@@ -86,7 +86,7 @@ enum Target {
  *
  * The code will assign `"none"` to the display style when hiding the element.
  *
- * Use {@link getTargetElements} to get the target element(s) from a source element.
+ * Use {@link UFHtmlHelper.getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
   // region private variables
@@ -202,8 +202,6 @@ export class UFHtmlHelper {
    *   Either one of the predefined values or a selector.
    *
    * @returns list of elements (can be empty)
-   *
-   * @private
    */
   protected getTargetElements(element: HTMLElement, target: string): HTMLElement[] {
     switch (target) {

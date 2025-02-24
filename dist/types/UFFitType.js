@@ -24,6 +24,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/**
+ * The various ways a child area can fit into a parent area.
+ */
 export var UFFitType;
 (function (UFFitType) {
     UFFitType[UFFitType["Contain"] = 0] = "Contain";
