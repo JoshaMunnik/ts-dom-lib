@@ -41,6 +41,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * - `show-non-modal`: Shows the target(s) as dialog. If the target is not a dialog element,
  *   nothing happens.
  * - `close`: Closes the target. If the target is not a dialog element, nothing happens.
+ * - 'set-attribute': Sets the attribute specified in `data-uf-click-attribute` to the value
+ *   specified in `data-uf-click-data` at the target(s).
  *
  * Use `data-uf-click-target` to specify another target then element itself. The value can either
  * be a selector or one of the predefined values:
@@ -53,6 +55,21 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * The implementation supports a selector that selects multiple elements.
  *
  * Use `data-uf-click-data` to specify data used by some of the actions.
+ *
+ * Use `data-uf-click-attribute` to specify the attribute to set in case of the
+ * `set-attribute` action.
+ *
+ * It is possible to specify multiple actions by adding a postfix to the data attributes:
+ * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes.
+ *
+ * @example
+ * <button
+ *   data-uf-click-action="hide" data-uf-click-target="_parent"
+ *   data-uf-click-action-1="hide" data-uf-click-target-1="#some-id"
+ *   data-uf-click-action-2="hide" data-uf-click-target-2="#another-id"
+ *   >
+ *   Hide element
+ * </button>
  */
 export declare class UFClickActionHelper extends UFHtmlHelper {
     /**
@@ -60,7 +77,24 @@ export declare class UFClickActionHelper extends UFHtmlHelper {
      */
     scan(): void;
     /**
+     * Processes the clickable elements that use attributes using postfix '-1' till '-20'.
+     *
+     * @private
+     */
+    private processWithPostfix;
+    /**
+     * Processes the clickable elements that do not use attributes with a postfix.
+     *
+     * @private
+     */
+    private processWithoutPostfix;
+    /**
      * Processes a clickable element.
+     *
+     * @param element
+     *   Element to process
+     * @param postFix
+     *   Postfix to add to the data attributes.
      *
      * @private
      */
@@ -76,6 +110,8 @@ export declare class UFClickActionHelper extends UFHtmlHelper {
      *   Either one of the predefined values or a selector.
      * @param data
      *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
      *
      * @private
      */
@@ -89,6 +125,8 @@ export declare class UFClickActionHelper extends UFHtmlHelper {
      *   Action to perform.
      * @param data
      *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
      *
      * @private
      */

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Set attribute</title>
+  </head>
+  <body>
+    <p>
+      <button
+        data-uf-click-action="set-attribute"
+        data-uf-click-target="#price"
+        data-uf-click-attribute="min"
+        data-uf-click-data="20"
+      >
+        Set new min
+      </button>
+    </p>
+    <p>
+      <label for="price"></label><br/>
+      <input type="number" id="price" min="10" max="100" value="30" />
+    </p>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

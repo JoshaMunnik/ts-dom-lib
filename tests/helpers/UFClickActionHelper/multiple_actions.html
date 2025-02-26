@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Multiple actions</title>
+  </head>
+  <body>
+    <p>
+      <button
+        data-uf-click-action="hide"
+        data-uf-click-target="#first"
+        data-uf-click-action-1="hide"
+        data-uf-click-target-1="#second"
+        data-uf-click-action-2="hide"
+        data-uf-click-target-2="#third"
+      >
+        Remove others
+      </button>
+    </p>
+    <p id="first">
+      This will be removed.
+    </p>
+    <p>
+      This will not be removed.
+    </p>
+    <p id="second">
+      This will be removed.
+    </p>
+    <p>
+      This will not be removed.
+    </p>
+    <p id="third">
+      This will be removed.
+    </p>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

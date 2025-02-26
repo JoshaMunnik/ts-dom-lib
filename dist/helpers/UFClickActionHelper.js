@@ -24,7 +24,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// region imports
 import { UFEventManager } from "../events/UFEventManager.js";
 import { UFHtml } from "../tools/UFHtml.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
@@ -35,6 +34,7 @@ var DataAttribute;
     DataAttribute["ClickAction"] = "data-uf-click-action";
     DataAttribute["ClickTarget"] = "data-uf-click-target";
     DataAttribute["ClickData"] = "data-uf-click-data";
+    DataAttribute["ClickAttribute"] = "data-uf-click-attribute";
 })(DataAttribute || (DataAttribute = {}));
 var Action;
 (function (Action) {
@@ -48,6 +48,7 @@ var Action;
     Action["ShowModal"] = "show-modal";
     Action["ShowNonModal"] = "show-non-modal";
     Action["Close"] = "close";
+    Action["SetAttribute"] = "set-attribute";
 })(Action || (Action = {}));
 // endregion
 // region exports
@@ -67,6 +68,8 @@ var Action;
  * - `show-non-modal`: Shows the target(s) as dialog. If the target is not a dialog element,
  *   nothing happens.
  * - `close`: Closes the target. If the target is not a dialog element, nothing happens.
+ * - 'set-attribute': Sets the attribute specified in `data-uf-click-attribute` to the value
+ *   specified in `data-uf-click-data` at the target(s).
  *
  * Use `data-uf-click-target` to specify another target then element itself. The value can either
  * be a selector or one of the predefined values:
@@ -79,6 +82,21 @@ var Action;
  * The implementation supports a selector that selects multiple elements.
  *
  * Use `data-uf-click-data` to specify data used by some of the actions.
+ *
+ * Use `data-uf-click-attribute` to specify the attribute to set in case of the
+ * `set-attribute` action.
+ *
+ * It is possible to specify multiple actions by adding a postfix to the data attributes:
+ * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes.
+ *
+ * @example
+ * <button
+ *   data-uf-click-action="hide" data-uf-click-target="_parent"
+ *   data-uf-click-action-1="hide" data-uf-click-target-1="#some-id"
+ *   data-uf-click-action-2="hide" data-uf-click-target-2="#another-id"
+ *   >
+ *   Hide element
+ * </button>
  */
 export class UFClickActionHelper extends UFHtmlHelper {
     // region UFHtmlHelper
@@ -87,22 +105,49 @@ export class UFClickActionHelper extends UFHtmlHelper {
      */
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.ClickAction);
-        const elements = document.querySelectorAll('[' + DataAttribute.ClickAction + ']');
-        elements.forEach(element => this.processClickableElement(element));
+        this.processWithoutPostfix();
+        this.processWithPostfix();
     }
     // endregion
     // region private methods
     /**
-     * Processes a clickable element.
+     * Processes the clickable elements that use attributes using postfix '-1' till '-20'.
      *
      * @private
      */
-    processClickableElement(element) {
-        const action = UFHtml.getAttribute(element, DataAttribute.ClickAction);
-        const target = UFHtml.getAttribute(element, DataAttribute.ClickTarget);
-        const data = UFHtml.getAttribute(element, DataAttribute.ClickData);
+    processWithPostfix() {
+        for (let groupIndex = 1; groupIndex <= 20; groupIndex++) {
+            const postFix = `-${groupIndex}`;
+            const elementsWithGroups = document.querySelectorAll(`[${DataAttribute.ClickAction}${postFix}]`);
+            elementsWithGroups.forEach(element => this.processClickableElement(element, postFix));
+        }
+    }
+    /**
+     * Processes the clickable elements that do not use attributes with a postfix.
+     *
+     * @private
+     */
+    processWithoutPostfix() {
+        const elements = document.querySelectorAll('[' + DataAttribute.ClickAction + ']');
+        elements.forEach(element => this.processClickableElement(element));
+    }
+    /**
+     * Processes a clickable element.
+     *
+     * @param element
+     *   Element to process
+     * @param postFix
+     *   Postfix to add to the data attributes.
+     *
+     * @private
+     */
+    processClickableElement(element, postFix = '') {
+        const action = UFHtml.getAttribute(element, DataAttribute.ClickAction + postFix);
+        const target = UFHtml.getAttribute(element, DataAttribute.ClickTarget + postFix);
+        const data = UFHtml.getAttribute(element, DataAttribute.ClickData + postFix);
+        const attribute = UFHtml.getAttribute(element, DataAttribute.ClickAttribute + postFix);
         //console.debug({element, action, target, data});
-        UFEventManager.instance.addListenerForGroup(DataAttribute.ClickAction, element, 'click', () => this.performAction(element, action, target, data));
+        UFEventManager.instance.addListenerForGroup(DataAttribute.ClickAction, element, 'click', () => this.performAction(element, action, target, data, attribute));
     }
     /**
      * Performs the click action.
@@ -115,12 +160,14 @@ export class UFClickActionHelper extends UFHtmlHelper {
      *   Either one of the predefined values or a selector.
      * @param data
      *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
      *
      * @private
      */
-    performAction(element, action, target, data) {
+    performAction(element, action, target, data, attribute) {
         const targetElements = this.getTargetElements(element, target);
-        targetElements.forEach(targetElement => this.performActionOnElement(targetElement, action, data));
+        targetElements.forEach(targetElement => this.performActionOnElement(targetElement, action, data, attribute));
     }
     /**
      * Performs the action on the target element.
@@ -131,10 +178,12 @@ export class UFClickActionHelper extends UFHtmlHelper {
      *   Action to perform.
      * @param data
      *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
      *
      * @private
      */
-    performActionOnElement(element, action, data) {
+    performActionOnElement(element, action, data, attribute) {
         switch (action) {
             case Action.RemoveFromDom:
                 element.remove();
@@ -171,6 +220,9 @@ export class UFClickActionHelper extends UFHtmlHelper {
                 if (element instanceof HTMLDialogElement) {
                     element.close();
                 }
+                break;
+            case Action.SetAttribute:
+                element.setAttribute(attribute, data);
                 break;
         }
     }

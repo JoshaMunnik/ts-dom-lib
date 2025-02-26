@@ -546,6 +546,23 @@ export class UFHtml {
       });
     }
   }
+
+  /**
+   * Gets all attribute names of an element.
+   *
+   * @param element
+   *   Element to get the attribute names from
+   *
+   * @returns all the names of attributes defined at the element
+   */
+  static getAttributeNames(element: HTMLElement): string[]  {
+    const result: string[] = [];
+    for (let index = 0; index < element.attributes.length; index++) {
+      const attribute = element.attributes[index];
+      result.push(attribute.name);
+    }
+    return result;
+  }
 }
 
 // endregion

@@ -306,4 +306,13 @@ export declare class UFHtml {
     static copyAttributes(element: Element, map: {
         [key: string]: string;
     }, container?: Element): void;
+    /**
+     * Gets all attribute names of an element.
+     *
+     * @param element
+     *   Element to get the attribute names from
+     *
+     * @returns all the names of attributes defined at the element
+     */
+    static getAttributeNames(element: HTMLElement): string[];
 }
