@@ -529,7 +529,7 @@ export class UFHtml {
     const targetContainer = container || document;
     for (const key in map) {
       const data = element.getAttribute(key);
-      if (!data) {
+      if (data === null) {
         continue;
       }
       const targets = targetContainer.querySelectorAll(map[key]);
