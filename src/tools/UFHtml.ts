@@ -509,8 +509,9 @@ export class UFHtml {
   }
 
   /**
-   * Copies one or more attribute values to elements. If the element is an input or select
-   * element, the value is set. Else the inner text is set.
+   * Copies one or more attribute values to elements. If the element is an input either the
+   * `checked` or `value` property is set (depending on the `type`), if the element is a select
+   * element the `value` is set. Else the inner text of the element is set.
    *
    * @param element
    *   Element to get the attributes from
@@ -537,7 +538,15 @@ export class UFHtml {
         continue;
       }
       targets.forEach(target => {
-        if ((target instanceof HTMLInputElement) || (target instanceof HTMLSelectElement)) {
+        if (target instanceof HTMLInputElement) {
+          if ((target.type === 'checkbox') || (target.type === 'radio')) {
+            target.checked = (data.toLowerCase() !== 'false') && (data !== '0');
+          }
+          else {
+            target.value = data;
+          }
+        }
+        else if (target instanceof HTMLSelectElement) {
           target.value = data;
         }
         else if (target instanceof HTMLElement) {

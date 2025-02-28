@@ -291,8 +291,9 @@ export declare class UFHtml {
      */
     static hide(element: HTMLElement): void;
     /**
-     * Copies one or more attribute values to elements. If the element is an input or select
-     * element, the value is set. Else the inner text is set.
+     * Copies one or more attribute values to elements. If the element is an input either the
+     * `checked` or `value` property is set (depending on the `type`), if the element is a select
+     * element the `value` is set. Else the inner text of the element is set.
      *
      * @param element
      *   Element to get the attributes from
