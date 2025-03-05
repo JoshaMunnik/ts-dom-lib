@@ -24,8 +24,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 // region imports
 import { UFFitType } from "../types/UFFitType.js";
+import { UFImageType } from "../types/UFImageType.js";
 /**
  * Support methods for canvas.
  */
@@ -41,26 +51,41 @@ export class UFCanvas {
     // endregion
     // region public methods
     /**
-     * Creates a canvas from an image, scaling it down if necessary.
+     * Creates a canvas from an image, scaling it down if necessary. If scaling occurs, the image is
+     * scaled while preserving the aspect ratio.
      *
-     * @param anImage
-     * @param aMaxWidth
-     * @param aMaxHeight
-     * @param anImageWidth
-     * @param anImageHeight
+     * @param image
+     *   Image to copy
+     * @param maxWidth
+     *   When set, limit the width of the created canvas
+     * @param maxHeight
+     *   When set, limit the height of the created canvas
+     * @param imageWidth
+     *   When set, use this width instead of the image width
+     * @param imageHeight
+     *  When set, use this height instead of the image height
      *
-     * @returns Created element
+     * @returns Created element or false if the canvas could not be created.
      */
-    static createFromImage(anImage, aMaxWidth, aMaxHeight, anImageWidth, anImageHeight) {
-        const sourceWidth = anImageWidth || anImage.width;
-        const sourceHeight = anImageHeight || anImage.height;
-        const scale = Math.max(sourceWidth / aMaxWidth, sourceHeight / aMaxHeight);
-        const targetWidth = scale < 0 ? aMaxWidth * scale : sourceWidth;
-        const targetHeight = scale < 0 ? aMaxHeight * scale : sourceHeight;
+    static createFromImage(image, maxWidth, maxHeight, imageWidth, imageHeight) {
+        const sourceWidth = imageWidth || image.width;
+        const sourceHeight = imageHeight || image.height;
+        const targetMaxWidth = maxWidth || sourceWidth;
+        const targetMaxHeight = maxHeight || sourceHeight;
+        const scale = Math.max(sourceWidth / targetMaxWidth, sourceHeight / targetMaxHeight);
+        const targetWidth = scale < 0 ? targetMaxWidth * scale : sourceWidth;
+        const targetHeight = scale < 0 ? targetMaxHeight * scale : sourceHeight;
         const result = document.createElement('canvas');
+        if (!result) {
+            return false;
+        }
         result.width = targetWidth;
         result.height = targetHeight;
-        result.getContext('2d').drawImage(anImage, 0, 0, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
+        const context = result.getContext('2d');
+        if (!context) {
+            return false;
+        }
+        context.drawImage(image, 0, 0, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
         return result;
     }
     /**
@@ -242,6 +267,48 @@ export class UFCanvas {
             aContext.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
             aContext.drawImage(anImage, 0, 0);
             aContext.restore();
+        });
+    }
+    /**
+     * Creates a blob from a canvas.
+     *
+     * @param canvas
+     *   Canvas to create blob from
+     * @param imageType
+     *   Image type to convert canvas to
+     *
+     * @returns Blob or null if the blob could not be created.
+     */
+    static toBlob(canvas_1) {
+        return __awaiter(this, arguments, void 0, function* (canvas, imageType = UFImageType.Png) {
+            return yield new Promise((resolve) => canvas.toBlob(resolve, imageType));
+        });
+    }
+    /**
+     * Copies the canvas to the clipboard.
+     *
+     * @param canvas
+     *   Canvas to copy
+     * @param imageType
+     *   Image type to copy to
+     *
+     * @returns True if the image was copied to the clipboard, false otherwise.
+     */
+    static copyToClipboard(canvas_1) {
+        return __awaiter(this, arguments, void 0, function* (canvas, imageType = UFImageType.Png) {
+            try {
+                const blob = yield this.toBlob(canvas);
+                if (!blob) {
+                    return false;
+                }
+                const item = new ClipboardItem({ [imageType]: blob });
+                yield navigator.clipboard.write([item]);
+                return true;
+            }
+            catch (error) {
+                console.error('Failed to copy image to clipboard', error);
+                return false;
+            }
         });
     }
 }

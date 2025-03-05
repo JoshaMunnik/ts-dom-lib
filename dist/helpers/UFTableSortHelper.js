@@ -43,7 +43,6 @@ var DataAttribute;
     DataAttribute["SortAscending"] = "data-uf-sort-ascending";
     DataAttribute["SortDescending"] = "data-uf-sort-descending";
     DataAttribute["StorageId"] = "data-uf-storage-id";
-    DataAttribute["NoCaching"] = "data-uf-no-caching";
 })(DataAttribute || (DataAttribute = {}));
 // The location of a row in a table.
 var SortLocation;
@@ -82,17 +81,6 @@ function getSortType(aHeaderCell) {
             return SortType.None;
     }
 }
-/**
- * Determines if the value of a cell should be cached.
- *
- * @param anElement
- *
- * @private
- */
-function cacheValue(anElement) {
-    const attribute = anElement.attributes.getNamedItem(DataAttribute.NoCaching);
-    return (attribute == null) || (attribute.value != '1');
-}
 // endregion
 // region private classes
 // Data for each row.
@@ -129,17 +117,11 @@ class RowData {
      *
      * @param aTypes
      *   {@link SortType} for each column
-     * @param aCacheValues
      */
-    buildColumnData(aTypes, aCacheValues) {
+    buildColumnData(aTypes) {
         this.m_columnData.length = 0;
         this.m_element.querySelectorAll('td').forEach((cell, index) => {
-            if (aCacheValues[index] && cacheValue(cell)) {
-                this.m_columnData.push(this.getColumnValue(cell, aTypes[index]));
-            }
-            else {
-                this.m_columnData.push(() => this.getColumnValue(cell, aTypes[index]));
-            }
+            this.m_columnData.push(() => this.getColumnValue(cell, aTypes[index]));
         });
     }
     /**
@@ -296,7 +278,7 @@ class TableData {
  *
  * Add `data-uf-sort-ascending` and `data-uf-sort-descending` attributes to the `table` element
  * to specify one or more css classes to add to the `th` element that is used for sorting. When
- * missing, no css classes will be set.
+ * the attribute is missing, no css classes will be set.
  *
  * Add `data-uf-storage-id` to the table element to store the selected column choice in the local
  * storage and use it when the page with the table is shown again. The value of this attribute
@@ -310,11 +292,8 @@ class TableData {
  * If there are multiple table rows for a location, they will still be sorted within that location.
  * When this attribute is not specified the classes `middle` as default location.
  *
- * During initialization the code checks every cell and stores the value that should be used to sort
- * with. Add `data-uf-no-caching` to a `th` or `td` element to disable caching this column or value
- * and instead determine the value every time the cell is accessed while sorting.
- *
- * When the rows are resorted the class will dispatch an event "tableSorted" on the table element.
+ * When the rows are resorted the class will dispatch an event `"tableSorted"` on the
+ * `table` element.
  */
 export class UFTableSortHelper extends UFHtmlHelper {
     // endregion
@@ -555,9 +534,7 @@ export class UFTableSortHelper extends UFHtmlHelper {
         const tableData = TableData.get(aTable);
         let firstSelectable = -1;
         const types = [];
-        const cacheValues = [];
         headerRow.querySelectorAll('th').forEach((cell, index) => {
-            cacheValues.push(cacheValue(cell));
             const sortType = getSortType(cell);
             if (sortType != SortType.None) {
                 // store as first sortable column
@@ -586,9 +563,8 @@ export class UFTableSortHelper extends UFHtmlHelper {
         if (firstSelectable < 0) {
             return;
         }
-        // to speed things up, store for every row the text contents of every column in an array (so there is no 
-        // need to query column elements when sorting)
-        aTable.querySelectorAll('tr').forEach(row => RowData.get(row).buildColumnData(types, cacheValues));
+        // add sort metadata to each row
+        aTable.querySelectorAll('tr').forEach(row => RowData.get(row).buildColumnData(types));
         // perform initial sort
         this.sortTable(aTable);
         // and update visual

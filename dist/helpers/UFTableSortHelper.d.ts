@@ -42,7 +42,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *
  * Add `data-uf-sort-ascending` and `data-uf-sort-descending` attributes to the `table` element
  * to specify one or more css classes to add to the `th` element that is used for sorting. When
- * missing, no css classes will be set.
+ * the attribute is missing, no css classes will be set.
  *
  * Add `data-uf-storage-id` to the table element to store the selected column choice in the local
  * storage and use it when the page with the table is shown again. The value of this attribute
@@ -56,11 +56,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * If there are multiple table rows for a location, they will still be sorted within that location.
  * When this attribute is not specified the classes `middle` as default location.
  *
- * During initialization the code checks every cell and stores the value that should be used to sort
- * with. Add `data-uf-no-caching` to a `th` or `td` element to disable caching this column or value
- * and instead determine the value every time the cell is accessed while sorting.
- *
- * When the rows are resorted the class will dispatch an event "tableSorted" on the table element.
+ * When the rows are resorted the class will dispatch an event `"tableSorted"` on the
+ * `table` element.
  */
 export declare class UFTableSortHelper extends UFHtmlHelper {
     /**

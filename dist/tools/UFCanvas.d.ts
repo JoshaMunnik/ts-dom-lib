@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 import { UFFitType } from "../types/UFFitType.js";
+import { UFImageType } from "../types/UFImageType.js";
 /**
  * Defines the border radius for a rectangle for each corner.
  */
@@ -63,17 +64,23 @@ export declare class UFCanvas {
      */
     private constructor();
     /**
-     * Creates a canvas from an image, scaling it down if necessary.
+     * Creates a canvas from an image, scaling it down if necessary. If scaling occurs, the image is
+     * scaled while preserving the aspect ratio.
      *
-     * @param anImage
-     * @param aMaxWidth
-     * @param aMaxHeight
-     * @param anImageWidth
-     * @param anImageHeight
+     * @param image
+     *   Image to copy
+     * @param maxWidth
+     *   When set, limit the width of the created canvas
+     * @param maxHeight
+     *   When set, limit the height of the created canvas
+     * @param imageWidth
+     *   When set, use this width instead of the image width
+     * @param imageHeight
+     *  When set, use this height instead of the image height
      *
-     * @returns Created element
+     * @returns Created element or false if the canvas could not be created.
      */
-    static createFromImage(anImage: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | ImageBitmap | OffscreenCanvas, aMaxWidth: number, aMaxHeight: number, anImageWidth?: number, anImageHeight?: number): HTMLCanvasElement;
+    static createFromImage(image: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | ImageBitmap | OffscreenCanvas, maxWidth?: number, maxHeight?: number, imageWidth?: number, imageHeight?: number): HTMLCanvasElement | false;
     /**
      * Gets the contents of a canvas as base64 encoded jpeg image.
      *
@@ -156,4 +163,26 @@ export declare class UFCanvas {
      *   When true draw circles at vertexes
      */
     static drawTexture(aContext: CanvasRenderingContext2D, anImage: CanvasImageSource, aPoints: UFSquareTextureMapping, aDebug?: boolean): void;
+    /**
+     * Creates a blob from a canvas.
+     *
+     * @param canvas
+     *   Canvas to create blob from
+     * @param imageType
+     *   Image type to convert canvas to
+     *
+     * @returns Blob or null if the blob could not be created.
+     */
+    static toBlob(canvas: HTMLCanvasElement, imageType?: UFImageType): Promise<Blob | null>;
+    /**
+     * Copies the canvas to the clipboard.
+     *
+     * @param canvas
+     *   Canvas to copy
+     * @param imageType
+     *   Image type to copy to
+     *
+     * @returns True if the image was copied to the clipboard, false otherwise.
+     */
+    static copyToClipboard(canvas: HTMLCanvasElement, imageType?: UFImageType): Promise<boolean>;
 }

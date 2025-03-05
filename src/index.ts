@@ -51,6 +51,7 @@ export * from './tools/UFNode.js';
 
 export * from './types/UFFetchMethod.js';
 export * from "./types/UFFitType.js";
+export * from "./types/UFImageType.js";
 
 // views
 

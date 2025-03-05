@@ -28,6 +28,7 @@
 // region imports
 
 import {UFFitType} from "../types/UFFitType.js";
+import {UFImageType} from "../types/UFImageType.js";
 
 // endregion
 
@@ -82,33 +83,48 @@ export class UFCanvas {
   // region public methods
 
   /**
-   * Creates a canvas from an image, scaling it down if necessary.
+   * Creates a canvas from an image, scaling it down if necessary. If scaling occurs, the image is
+   * scaled while preserving the aspect ratio.
    *
-   * @param anImage
-   * @param aMaxWidth
-   * @param aMaxHeight
-   * @param anImageWidth
-   * @param anImageHeight
+   * @param image
+   *   Image to copy
+   * @param maxWidth
+   *   When set, limit the width of the created canvas
+   * @param maxHeight
+   *   When set, limit the height of the created canvas
+   * @param imageWidth
+   *   When set, use this width instead of the image width
+   * @param imageHeight
+   *  When set, use this height instead of the image height
    *
-   * @returns Created element
+   * @returns Created element or false if the canvas could not be created.
    */
   static createFromImage(
-    anImage: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | ImageBitmap | OffscreenCanvas,
-    aMaxWidth: number,
-    aMaxHeight: number,
-    anImageWidth?: number,
-    anImageHeight?: number
-  ): HTMLCanvasElement {
-    const sourceWidth = anImageWidth || anImage.width;
-    const sourceHeight = anImageHeight || anImage.height;
-    const scale = Math.max(sourceWidth / aMaxWidth, sourceHeight / aMaxHeight);
-    const targetWidth = scale < 0 ? aMaxWidth * scale : sourceWidth;
-    const targetHeight = scale < 0 ? aMaxHeight * scale : sourceHeight;
+    image: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | ImageBitmap | OffscreenCanvas,
+    maxWidth?: number,
+    maxHeight?: number,
+    imageWidth?: number,
+    imageHeight?: number
+  ): HTMLCanvasElement | false {
+    const sourceWidth = imageWidth || image.width;
+    const sourceHeight = imageHeight || image.height;
+    const targetMaxWidth = maxWidth || sourceWidth;
+    const targetMaxHeight = maxHeight || sourceHeight;
+    const scale = Math.max(sourceWidth / targetMaxWidth, sourceHeight / targetMaxHeight);
+    const targetWidth = scale < 0 ? targetMaxWidth * scale : sourceWidth;
+    const targetHeight = scale < 0 ? targetMaxHeight * scale : sourceHeight;
     const result = document.createElement('canvas');
+    if (!result) {
+      return false;
+    }
     result.width = targetWidth;
     result.height = targetHeight;
-    result.getContext('2d')!.drawImage(
-      anImage, 0, 0, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight
+    const context = result.getContext('2d');
+    if (!context) {
+      return false;
+    }
+    context.drawImage(
+      image, 0, 0, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight
     );
     return result;
   }
@@ -157,20 +173,20 @@ export class UFCanvas {
    *   Determines how to fit the image within the area
    * @param anHorizontalPosition
    *   Determines the relative horizontal position in case aFit is either {@link UFFitType.Contain}
-   *   or {@link UFFitType.Cover}. 
+   *   or {@link UFFitType.Cover}.
    * @param aVerticalPosition
    *   Determines the relative vertical position in case aFit is either {@link UFFitType.Contain}
    *   or {@link UFFitType.Cover}. When missing use the value of aHorizontalPosition.
    */
   static drawImage(
-    aContext: CanvasRenderingContext2D, 
-    anImage: HTMLImageElement, 
-    aX: number, 
-    aY: number, 
+    aContext: CanvasRenderingContext2D,
+    anImage: HTMLImageElement,
+    aX: number,
+    aY: number,
     aWidth: number,
-    anHeight: number, 
+    anHeight: number,
     aFit: UFFitType,
-    anHorizontalPosition: number = 0.5, 
+    anHorizontalPosition: number = 0.5,
     aVerticalPosition?: number
   ) {
     aVerticalPosition = aVerticalPosition || anHorizontalPosition;
@@ -215,13 +231,13 @@ export class UFCanvas {
    *   Whether to draw a stroke with the rectangle.
    */
   static drawRoundRect(
-    aContext: CanvasRenderingContext2D, 
-    aX: number, 
+    aContext: CanvasRenderingContext2D,
+    aX: number,
     aY: number,
-    aWidth: number, 
-    anHeight: number, 
+    aWidth: number,
+    anHeight: number,
     aRadius: number | UFBorderRadius = 5,
-    aFill: boolean = false, 
+    aFill: boolean = false,
     aStroke: boolean = true
   ): void {
     if (typeof aRadius === 'number') {
@@ -268,9 +284,9 @@ export class UFCanvas {
    *   When true draw circles at vertexes
    */
   static drawTexture(
-    aContext: CanvasRenderingContext2D, 
-    anImage: CanvasImageSource, 
-    aPoints: UFSquareTextureMapping, 
+    aContext: CanvasRenderingContext2D,
+    anImage: CanvasImageSource,
+    aPoints: UFSquareTextureMapping,
     aDebug: boolean = false
   ) {
     // split the square in two triangles (clockwise order)
@@ -327,6 +343,49 @@ export class UFCanvas {
       aContext.drawImage(anImage, 0, 0);
       aContext.restore();
     });
+  }
+
+  /**
+   * Creates a blob from a canvas.
+   *
+   * @param canvas
+   *   Canvas to create blob from
+   * @param imageType
+   *   Image type to convert canvas to
+   *
+   * @returns Blob or null if the blob could not be created.
+   */
+  static async toBlob(canvas: HTMLCanvasElement, imageType: UFImageType = UFImageType.Png): Promise<Blob|null> {
+    return await new Promise(
+      (resolve) => canvas.toBlob(resolve, imageType)
+    );
+  }
+
+  /**
+   * Copies the canvas to the clipboard.
+   *
+   * @param canvas
+   *   Canvas to copy
+   * @param imageType
+   *   Image type to copy to
+   *
+   * @returns True if the image was copied to the clipboard, false otherwise.
+   */
+  static async copyToClipboard(
+    canvas: HTMLCanvasElement, imageType: UFImageType = UFImageType.Png
+  ): Promise<boolean> {
+    try {
+      const blob = await this.toBlob(canvas);
+      if (!blob) {
+        return false;
+      }
+      const item = new ClipboardItem({[imageType]: blob});
+      await navigator.clipboard.write([item]);
+      return true;
+    } catch (error) {
+      console.error('Failed to copy image to clipboard', error);
+      return false;
+    }
   }
 
   // endregion
