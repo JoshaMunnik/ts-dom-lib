@@ -106,8 +106,12 @@ export class UFCanvas {
     imageWidth?: number,
     imageHeight?: number
   ): HTMLCanvasElement | false {
-    const sourceWidth = imageWidth || image.width;
-    const sourceHeight = imageHeight || image.height;
+    const sourceWidth = imageWidth || (image instanceof HTMLImageElement)
+      ? (image as HTMLImageElement).naturalWidth
+      : image.width;
+    const sourceHeight = imageHeight || (image instanceof HTMLImageElement)
+      ? (image as HTMLImageElement).naturalHeight
+      : image.height;
     const targetMaxWidth = maxWidth || sourceWidth;
     const targetMaxHeight = maxHeight || sourceHeight;
     const scale = Math.max(sourceWidth / targetMaxWidth, sourceHeight / targetMaxHeight);
@@ -355,7 +359,7 @@ export class UFCanvas {
    *
    * @returns Blob or null if the blob could not be created.
    */
-  static async toBlob(canvas: HTMLCanvasElement, imageType: UFImageType = UFImageType.Png): Promise<Blob|null> {
+  static async toBlob(canvas: HTMLCanvasElement, imageType: UFImageType = UFImageType.Png): Promise<Blob | null> {
     return await new Promise(
       (resolve) => canvas.toBlob(resolve, imageType)
     );

@@ -68,8 +68,12 @@ export class UFCanvas {
      * @returns Created element or false if the canvas could not be created.
      */
     static createFromImage(image, maxWidth, maxHeight, imageWidth, imageHeight) {
-        const sourceWidth = imageWidth || image.width;
-        const sourceHeight = imageHeight || image.height;
+        const sourceWidth = imageWidth || (image instanceof HTMLImageElement)
+            ? image.naturalWidth
+            : image.width;
+        const sourceHeight = imageHeight || (image instanceof HTMLImageElement)
+            ? image.naturalHeight
+            : image.height;
         const targetMaxWidth = maxWidth || sourceWidth;
         const targetMaxHeight = maxHeight || sourceHeight;
         const scale = Math.max(sourceWidth / targetMaxWidth, sourceHeight / targetMaxHeight);
