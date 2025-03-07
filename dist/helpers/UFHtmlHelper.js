@@ -77,7 +77,7 @@ var Target;
  *
  * The code will assign `"none"` to the display style when hiding the element.
  *
- * Use {@link UFHtmlHelper.getTargetElements} to get the target element(s) from a source element.
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
     constructor() {
@@ -158,6 +158,30 @@ export class UFHtmlHelper {
         }
         const display = UFObject.getAttachedAs(anElement, 'UFDisplayValue', () => displayValue == 'auto' ? anElement.style.display : displayValue);
         anElement.style.display = aShow ? display : 'none';
+    }
+    /**
+     * Finds elements that reference a certain data attribute. Search also for data attributes with
+     * postfixes '-1' till the number as set with "max".
+     *
+     * @param dataAttribute
+     *  The data attribute to use.
+     * @param callback
+     *   The callback to call for each element.
+     * @param max
+     *   The maximum postfix number to use.
+     *
+     * @private
+     */
+    processDataAttributeWithPostfix(dataAttribute, callback, max = 20) {
+        const elements = document
+            .querySelectorAll('[' + dataAttribute + ']');
+        elements.forEach(element => callback(element, ''));
+        for (let groupIndex = 1; groupIndex <= max; groupIndex++) {
+            const postFix = `-${groupIndex}`;
+            const elementsWithGroups = document
+                .querySelectorAll(`[${dataAttribute}${postFix}]`);
+            elementsWithGroups.forEach(element => callback(element, postFix));
+        }
     }
     /**
      * Gets the target element(s).

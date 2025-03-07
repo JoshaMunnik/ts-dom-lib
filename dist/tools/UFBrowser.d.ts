@@ -52,7 +52,7 @@ export declare class UFBrowser {
      * Defines the event to listen for clicks on elements. Its value is either `click`
      * or `touchstart`.
      */
-    static get ClickEvent(): "click" | "touchstart";
+    static get ClickEvent(): "touchstart" | "click";
     /**
      * Defines the event to listen for down events on elements. Its value is either
      * `mousedown` or `touchstart`.

@@ -316,4 +316,12 @@ export declare class UFHtml {
      * @returns all the names of attributes defined at the element
      */
     static getAttributeNames(element: HTMLElement): string[];
+    /**
+     * Reloads the current page. It removes the current page from the history and then reloads the
+     * page. Any post data is no longer used and the page with the post data is no longer in the
+     * history.
+     *
+     * Source: https://stackoverflow.com/a/570069/968451
+     */
+    static reload(): void;
 }

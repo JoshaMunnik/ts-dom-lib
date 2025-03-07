@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Set attribute</title>
+  </head>
+  <body>
+    <p>
+      <button
+        data-uf-click-action="show-modal"
+        data-uf-click-target="#dialog"
+      >
+        Show dialog
+      </button>
+    </p>
+    <h2 data-uf-display-value="block" id="message" style="display: none;">Showing dialog</h2>
+    <dialog
+      id="dialog"
+      data-uf-event-action="reload"
+      data-uf-event-events="close"
+    >
+      <h3>dialog</h3>
+      <button
+        data-uf-click-action="close"
+        data-uf-click-target="_dialog"
+      >
+        close
+      </button>
+    </dialog>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
+type ProcessWithPostfixCallback = (element: HTMLElement, postfix: string) => void;
 /**
  * Base class for all HTML helper classes. Subclasses should override the {@link scan} method to
  * perform initialization.
@@ -54,7 +55,7 @@ import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
  *
  * The code will assign `"none"` to the display style when hiding the element.
  *
- * Use {@link UFHtmlHelper.getTargetElements} to get the target element(s) from a source element.
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export declare class UFHtmlHelper {
     /**
@@ -109,6 +110,20 @@ export declare class UFHtmlHelper {
      */
     protected showElement(anElement: HTMLElement, aShow: boolean): void;
     /**
+     * Finds elements that reference a certain data attribute. Search also for data attributes with
+     * postfixes '-1' till the number as set with "max".
+     *
+     * @param dataAttribute
+     *  The data attribute to use.
+     * @param callback
+     *   The callback to call for each element.
+     * @param max
+     *   The maximum postfix number to use.
+     *
+     * @private
+     */
+    protected processDataAttributeWithPostfix(dataAttribute: string, callback: ProcessWithPostfixCallback, max?: number): void;
+    /**
      * Gets the target element(s).
      *
      * @param element
@@ -158,3 +173,4 @@ export declare class UFHtmlHelper {
      */
     private handleDomContentLoaded;
 }
+export {};

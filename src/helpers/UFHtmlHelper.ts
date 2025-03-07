@@ -53,6 +53,8 @@ enum Target {
   Dialog = '_dialog',
 }
 
+type ProcessWithPostfixCallback = (element: HTMLElement, postfix: string) => void;
+
 // endregion
 
 // region exports
@@ -86,7 +88,7 @@ enum Target {
  *
  * The code will assign `"none"` to the display style when hiding the element.
  *
- * Use {@link UFHtmlHelper.getTargetElements} to get the target element(s) from a source element.
+ * Use {@link getTargetElements} to get the target element(s) from a source element.
  */
 export class UFHtmlHelper {
   // region private variables
@@ -191,6 +193,37 @@ export class UFHtmlHelper {
       () => displayValue == 'auto' ? anElement.style.display : displayValue
     );
     anElement.style.display = aShow ? display : 'none';
+  }
+
+  /**
+   * Finds elements that reference a certain data attribute. Search also for data attributes with
+   * postfixes '-1' till the number as set with "max".
+   *
+   * @param dataAttribute
+   *  The data attribute to use.
+   * @param callback
+   *   The callback to call for each element.
+   * @param max
+   *   The maximum postfix number to use.
+   *
+   * @private
+   */
+  protected processDataAttributeWithPostfix(
+    dataAttribute: string, callback: ProcessWithPostfixCallback, max: number = 20
+  ): void {
+    const elements = document
+      .querySelectorAll<HTMLElement>('[' + dataAttribute + ']');
+    elements.forEach(
+      element => callback(element, '')
+    );
+    for (let groupIndex: number = 1; groupIndex <= max; groupIndex++) {
+      const postFix = `-${groupIndex}`;
+      const elementsWithGroups = document
+        .querySelectorAll<HTMLElement>(`[${dataAttribute}${postFix}]`);
+      elementsWithGroups.forEach(
+        element => callback(element, postFix)
+      );
+    }
   }
 
   /**

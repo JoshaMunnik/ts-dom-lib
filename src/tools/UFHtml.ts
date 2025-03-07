@@ -206,7 +206,9 @@ export class UFHtml {
     }
     const eventsList = events.split(' ').filter(event => event.trim().length > 0);
     eventsList.forEach(event => targetElement.addEventListener(event, listener));
-    return () => eventsList.forEach(event => targetElement.removeEventListener(event, listener));
+    return () => {
+      eventsList.forEach(event => targetElement.removeEventListener(event, listener));
+    }
   }
 
   /**
@@ -571,6 +573,21 @@ export class UFHtml {
       result.push(attribute.name);
     }
     return result;
+  }
+
+  /**
+   * Reloads the current page. It removes the current page from the history and then reloads the
+   * page. Any post data is no longer used and the page with the post data is no longer in the
+   * history.
+   *
+   * Source: https://stackoverflow.com/a/570069/968451
+   */
+  static reload(): void {
+    if (window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.href);
+    }
+    // noinspection SillyAssignmentJS
+    window.location.href = window.location.href;
   }
 }
 
