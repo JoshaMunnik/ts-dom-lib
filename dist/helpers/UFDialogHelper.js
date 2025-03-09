@@ -96,26 +96,6 @@ export class UFDialogHelper extends UFHtmlHelper {
         }
         return dialog;
     }
-    /**
-     * Builds a map of data attributes from the clickable element.
-     *
-     * @param element
-     *
-     * @private
-     */
-    buildMap(element) {
-        const map = {};
-        for (let index = 0; index < element.attributes.length; index++) {
-            const name = element.attributes[index].name;
-            if (name.startsWith('data-uf-')) {
-                continue;
-            }
-            if (name.startsWith('data-')) {
-                map[name] = `[${name}]`;
-            }
-        }
-        return map;
-    }
     // endregion
     // region event handlers
     /**
@@ -131,7 +111,7 @@ export class UFDialogHelper extends UFHtmlHelper {
         if (!dialog) {
             return;
         }
-        const map = this.buildMap(element);
+        const map = UFHtml.buildDataAttributesMap(element);
         UFHtml.copyAttributes(element, map, dialog);
         dialog.showModal();
     }

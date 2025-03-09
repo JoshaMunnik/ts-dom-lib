@@ -576,6 +576,38 @@ export class UFHtml {
   }
 
   /**
+   * Builds a map of data attributes from the element. The method will skip data attributes that
+   * start with 'data-uf-'.
+   *
+   * The result can be used with {@link UFHtml.copyAttributes}.
+   *
+   * @param element
+   *   Element to get data attributes from.
+   *
+   * @returns an object where the keys are the attribute names and the values are the attribute
+   *   enclosed by square brackets.
+   *
+   * @example
+   * // <button id="foobar" data-foo data-bar></button>
+   * const element = document.getElementById('foobar');
+   * const map = UFHtml.buildDataAttributesMap(element);
+   * // map is { 'data-foo': '[data-foo]', 'data-bar': '[data-bar]' }
+   */
+  static buildDataAttributesMap(element: HTMLElement): { [key: string]: string } {
+    const map: { [key: string]: string } = {};
+    for (let index = 0; index < element.attributes.length; index++) {
+      const name = element.attributes[index].name;
+      if (name.startsWith('data-uf-')) {
+        continue;
+      }
+      if (name.startsWith('data-')) {
+        map[name] = `[${name}]`;
+      }
+    }
+    return map;
+  }
+
+  /**
    * Reloads the current page. It removes the current page from the history and then reloads the
    * page. Any post data is no longer used and the page with the post data is no longer in the
    * history.

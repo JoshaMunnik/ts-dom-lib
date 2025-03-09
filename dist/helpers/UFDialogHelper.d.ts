@@ -69,14 +69,6 @@ export declare class UFDialogHelper extends UFHtmlHelper {
      */
     private getDialog;
     /**
-     * Builds a map of data attributes from the clickable element.
-     *
-     * @param element
-     *
-     * @private
-     */
-    private buildMap;
-    /**
      * Handles the click event on a clickable element.
      *
      * @param element
