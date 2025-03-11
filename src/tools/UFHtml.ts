@@ -530,7 +530,7 @@ export class UFHtml {
   static copyAttributes(
     element: Element,
     map: { [key: string]: string },
-    container?: Element
+    container?: Element | DocumentFragment
   ): void {
     const targetContainer = container || document;
     for (const key in map) {
