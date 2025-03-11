@@ -37,10 +37,15 @@ var DataAttribute;
     DataAttribute["EventTarget"] = "data-uf-event-target";
     DataAttribute["EventData"] = "data-uf-event-data";
     DataAttribute["EventAttribute"] = "data-uf-event-attribute";
+    DataAttribute["EventState"] = "data-uf-event-state";
     DataAttribute["ClickAction"] = "data-uf-click-action";
     DataAttribute["ClickTarget"] = "data-uf-click-target";
     DataAttribute["ClickData"] = "data-uf-click-data";
     DataAttribute["ClickAttribute"] = "data-uf-click-attribute";
+    DataAttribute["LoadAction"] = "data-uf-load-action";
+    DataAttribute["LoadTarget"] = "data-uf-load-target";
+    DataAttribute["LoadData"] = "data-uf-load-data";
+    DataAttribute["LoadAttribute"] = "data-uf-load-attribute";
 })(DataAttribute || (DataAttribute = {}));
 var Action;
 (function (Action) {
@@ -83,24 +88,36 @@ var Action;
  * is one or multiple events separated by a space. This attribute is required. When missing,
  * nothing happens.
  *
- * Use `data-uf-event-target` to specify another target then element itself. The value can either
- * be a selector (for one or multiple elements) or one of the predefined values:
+ * Use `data-uf-event-target` to specify a target. The value can either be a selector (for one
+ * or multiple elements) or one of the predefined values:
+ * - `"_self"`: The clickable element itself.
  * - `"_parent"`: The parent element of the clickable element.
  * - `"_next"`: The next sibling of the clickable element.
  * - `"_previous"`: The previous sibling of the clickable element.
  * - `"_grandparent"`: The parent element of the parent of the clickable element.
  * - `"_dialog"`: The nearest dialog element that contains the clickable element.
  *
+ * If `data-uf-event-target` is missing, the `"_self"` value is used as default unless the action
+ * is `"close"` than `"_dialog"` is used as default.
+ *
  * Use `data-uf-event-data` to specify data used by some of the actions.
  *
  * Use `data-uf-event-attribute` to specify the attribute to set in case of the
  * `"set-attribute"` action.
  *
- * It is possible to specify multiple actions by adding a postfix to the data attributes:
- * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes.
+ * Use `data-uf-event-state` to specify the state to check when listening for events that have
+ * a `newState` property. Use this attribute with the value "open" together with the "toggle" event
+ * to perform an action when for example a dialog is being opened.
  *
- * This helper also supports `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data`
- * and `data-uf-click-attribute` to perform actions on click events.
+ * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and
+ * `data-uf-click-attribute` as shortcuts for "click" events.
+ *
+ * Use `data-uf-load-action`, `data-uf-load-target`, `data-uf-load-data` and
+ * `data-uf-load-attribute` to perform actions when the document is loaded.
+ *
+ * It is possible to specify multiple actions by adding a postfix to the data attributes:
+ * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes. The postfix
+ * works for `data-uf-event-xxxx`, `data-uf-click-xxxx`, `data-uf-load-xxxx`,
  *
  * @example
  * <button
@@ -121,15 +138,26 @@ var Action;
  * </dialog>
  */
 export class UFEventActionHelper extends UFHtmlHelper {
+    constructor() {
+        // region private variables
+        super(...arguments);
+        this.m_hasLoaded = false;
+        // endregion
+    }
+    // endregion
     // region UFHtmlHelper
     /**
      * @inheritDoc
      */
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.EventAction);
-        UFEventManager.instance.removeAllForGroup(DataAttribute.ClickAction);
         this.processDataAttributeWithPostfix(DataAttribute.EventAction, (element, postfix) => this.processEventElement(element, postfix));
         this.processDataAttributeWithPostfix(DataAttribute.ClickAction, (element, postfix) => this.processClickableElement(element, postfix));
+        // when rescanning do not call the load action again.
+        if (!this.m_hasLoaded) {
+            this.processDataAttributeWithPostfix(DataAttribute.LoadAction, (element, postfix) => this.processLoadElement(element, postfix));
+            this.m_hasLoaded = true;
+        }
     }
     // endregion
     // region private methods
@@ -149,10 +177,11 @@ export class UFEventActionHelper extends UFHtmlHelper {
         const target = UFHtml.getAttribute(element, DataAttribute.EventTarget + postFix);
         const data = UFHtml.getAttribute(element, DataAttribute.EventData + postFix);
         const attribute = UFHtml.getAttribute(element, DataAttribute.EventAttribute + postFix);
+        const state = UFHtml.getAttribute(element, DataAttribute.EventState + postFix);
         if (!events || !action) {
             return;
         }
-        UFEventManager.instance.addListenerForGroup(DataAttribute.EventAction, element, events, () => this.performAction(element, action, target, data, attribute));
+        UFEventManager.instance.addListenerForGroup(DataAttribute.EventAction, element, events, (event) => this.performActionForEvent(event, element, action, target, data, attribute, state));
     }
     /**
      * Processes a clickable element.
@@ -172,10 +201,59 @@ export class UFEventActionHelper extends UFHtmlHelper {
         if (!action) {
             return;
         }
-        UFEventManager.instance.addListenerForGroup(DataAttribute.ClickAction, element, 'click', () => this.performAction(element, action, target, data, attribute));
+        UFEventManager.instance.addListenerForGroup(DataAttribute.EventAction, element, 'click', () => this.performAction(element, action, target, data, attribute));
     }
     /**
-     * Performs the click action.
+     * Processes an element that wants to perform an action when the document is loaded.
+     *
+     * @param element
+     *   Element to process
+     * @param postFix
+     *   Postfix to add to the data attributes.
+     *
+     * @private
+     */
+    processLoadElement(element, postFix = '') {
+        const action = UFHtml.getAttribute(element, DataAttribute.LoadAction + postFix);
+        const target = UFHtml.getAttribute(element, DataAttribute.LoadTarget + postFix);
+        const data = UFHtml.getAttribute(element, DataAttribute.LoadData + postFix);
+        const attribute = UFHtml.getAttribute(element, DataAttribute.LoadAttribute + postFix);
+        if (!action) {
+            return;
+        }
+        // scan gets called when the document is loaded, so just call the action directly.
+        this.performAction(element, action, target, data, attribute);
+    }
+    /**
+     * Performs an action for an event.
+     *
+     * @param event
+     *   Event that was fired.
+     * @param element
+     *   Element to get target element(s) from.
+     * @param action
+     *   Action to perform.
+     * @param target
+     *   Either one of the predefined values or a selector.
+     * @param data
+     *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
+     * @param state
+     *   State to check if the event is a `ToggleEvent`.
+     *
+     * @private
+     */
+    performActionForEvent(event, element, action, target, data, attribute, state) {
+        if (event instanceof ToggleEvent) {
+            if (state && state !== event.newState) {
+                return;
+            }
+        }
+        this.performAction(element, action, target, data, attribute);
+    }
+    /**
+     * Performs an action.
      *
      * @param element
      *   Element to get target element(s) from.
@@ -191,6 +269,9 @@ export class UFEventActionHelper extends UFHtmlHelper {
      * @private
      */
     performAction(element, action, target, data, attribute) {
+        if (target === '') {
+            target = action === Action.Close ? '_dialog' : '_self';
+        }
         const targetElements = this.getTargetElements(element, target);
         targetElements.forEach(targetElement => this.performActionOnElement(targetElement, action, data, attribute));
     }

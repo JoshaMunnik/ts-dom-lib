@@ -39,7 +39,7 @@ var DataAttribute;
 // the predefined targets
 var Target;
 (function (Target) {
-    Target["Self"] = "";
+    Target["Self"] = "_self";
     Target["Parent"] = "_parent";
     Target["Next"] = "_next";
     Target["Previous"] = "_previous";
@@ -196,6 +196,7 @@ export class UFHtmlHelper {
     getTargetElements(element, target) {
         var _a, _b;
         switch (target) {
+            case '':
             case Target.Self:
                 return [element];
             case Target.Parent:

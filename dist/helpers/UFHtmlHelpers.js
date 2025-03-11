@@ -30,7 +30,6 @@ import { UFEventActionHelper } from "./UFEventActionHelper.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
-import { UFLoadActionHelper } from "./UFLoadActionHelper.js";
 import { UFPopupHelper } from "./UFPopupHelper.js";
 import { UFSetFormFieldHelper } from "./UFSetFormFieldHelper.js";
 import { UFTableSortHelper } from "./UFTableSortHelper.js";
@@ -82,7 +81,6 @@ export class UFHtmlHelpers extends UFHtmlHelper {
         this.registerHelper(new UFPopupHelper());
         this.registerHelper(new UFEventActionHelper());
         this.registerHelper(new UFDialogHelper());
-        this.registerHelper(new UFLoadActionHelper());
     }
     // endregion
     // region public methods

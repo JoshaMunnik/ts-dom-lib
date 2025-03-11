@@ -45,7 +45,7 @@ enum DataAttribute {
 
 // the predefined targets
 enum Target {
-  Self = '',
+  Self = '_self',
   Parent = '_parent',
   Next = '_next',
   Previous = '_previous',
@@ -238,6 +238,7 @@ export class UFHtmlHelper {
    */
   protected getTargetElements(element: HTMLElement, target: string): HTMLElement[] {
     switch (target) {
+      case '':
       case Target.Self:
         return [element];
       case Target.Parent:

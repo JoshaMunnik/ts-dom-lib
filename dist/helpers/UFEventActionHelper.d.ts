@@ -49,24 +49,36 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * is one or multiple events separated by a space. This attribute is required. When missing,
  * nothing happens.
  *
- * Use `data-uf-event-target` to specify another target then element itself. The value can either
- * be a selector (for one or multiple elements) or one of the predefined values:
+ * Use `data-uf-event-target` to specify a target. The value can either be a selector (for one
+ * or multiple elements) or one of the predefined values:
+ * - `"_self"`: The clickable element itself.
  * - `"_parent"`: The parent element of the clickable element.
  * - `"_next"`: The next sibling of the clickable element.
  * - `"_previous"`: The previous sibling of the clickable element.
  * - `"_grandparent"`: The parent element of the parent of the clickable element.
  * - `"_dialog"`: The nearest dialog element that contains the clickable element.
  *
+ * If `data-uf-event-target` is missing, the `"_self"` value is used as default unless the action
+ * is `"close"` than `"_dialog"` is used as default.
+ *
  * Use `data-uf-event-data` to specify data used by some of the actions.
  *
  * Use `data-uf-event-attribute` to specify the attribute to set in case of the
  * `"set-attribute"` action.
  *
- * It is possible to specify multiple actions by adding a postfix to the data attributes:
- * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes.
+ * Use `data-uf-event-state` to specify the state to check when listening for events that have
+ * a `newState` property. Use this attribute with the value "open" together with the "toggle" event
+ * to perform an action when for example a dialog is being opened.
  *
- * This helper also supports `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data`
- * and `data-uf-click-attribute` to perform actions on click events.
+ * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and
+ * `data-uf-click-attribute` as shortcuts for "click" events.
+ *
+ * Use `data-uf-load-action`, `data-uf-load-target`, `data-uf-load-data` and
+ * `data-uf-load-attribute` to perform actions when the document is loaded.
+ *
+ * It is possible to specify multiple actions by adding a postfix to the data attributes:
+ * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes. The postfix
+ * works for `data-uf-event-xxxx`, `data-uf-click-xxxx`, `data-uf-load-xxxx`,
  *
  * @example
  * <button
@@ -87,6 +99,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * </dialog>
  */
 export declare class UFEventActionHelper extends UFHtmlHelper {
+    private m_hasLoaded;
     /**
      * @inheritDoc
      */
@@ -114,7 +127,39 @@ export declare class UFEventActionHelper extends UFHtmlHelper {
      */
     private processClickableElement;
     /**
-     * Performs the click action.
+     * Processes an element that wants to perform an action when the document is loaded.
+     *
+     * @param element
+     *   Element to process
+     * @param postFix
+     *   Postfix to add to the data attributes.
+     *
+     * @private
+     */
+    private processLoadElement;
+    /**
+     * Performs an action for an event.
+     *
+     * @param event
+     *   Event that was fired.
+     * @param element
+     *   Element to get target element(s) from.
+     * @param action
+     *   Action to perform.
+     * @param target
+     *   Either one of the predefined values or a selector.
+     * @param data
+     *   Data used by some of the actions.
+     * @param attribute
+     *   Attribute used by the `set-attribute` action.
+     * @param state
+     *   State to check if the event is a `ToggleEvent`.
+     *
+     * @private
+     */
+    private performActionForEvent;
+    /**
+     * Performs an action.
      *
      * @param element
      *   Element to get target element(s) from.
