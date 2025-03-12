@@ -53,20 +53,20 @@ export class UFNetwork {
   /**
    * Starts console group.
    *
-   * @param aTitle
+   * @param title
    *   Opening title
-   * @param aMethod
+   * @param method
    *   Method used
-   * @param aPath
+   * @param path
    *   Path to API call
    */
-  static startApiGroup(aTitle: string, aMethod: UFFetchMethod, aPath: string) {
+  static startApiGroup(title: string, method: UFFetchMethod, path: string) {
     const now = new Date();
     const minutes = UFText.twoDigits(now.getMinutes());
     const seconds = UFText.twoDigits(now.getSeconds());
     const timeStamp = `${now.getHours()}:${minutes}:${seconds}.${now.getMilliseconds()}`;
     console.group(
-      '%c' + aTitle + ' %c' + aMethod + ' %c' + aPath + ' %c @ ' + timeStamp,
+      '%c' + title + ' %c' + method + ' %c' + path + ' %c @ ' + timeStamp,
       'color: gray; font-weight: normal;',
       'color: teal',
       'color: black',
@@ -77,94 +77,95 @@ export class UFNetwork {
   /**
    * Closes the group.
    *
-   * @param aPath
+   * @param path
    *   Path to API call
    */
-  static endApiGroup(aPath: string) {
+  static endApiGroup(path: string) {
     console.groupEnd();
   }
 
   /**
    * Send the IO result to the console and closes the group.
    *
-   * @param aResponse
-   * @param aMethod
+   * @param response
+   * @param method
    *   Method used
-   * @param aPath
+   * @param path
    *   Path to API call
-   * @param aReceivedBody
+   * @param receivedBody
    *   Body data received
    */
   static logApiResult(
-    aResponse: Response,
-    aMethod: UFFetchMethod,
-    aPath: string,
-    aReceivedBody: string | object | null = null
+    response: Response,
+    method: UFFetchMethod,
+    path: string,
+    receivedBody: string | object | null = null
   ) {
-    this.startApiGroup('API result', aMethod, aPath);
-    console.log('status', aResponse.status, aResponse.statusText);
-    if (aReceivedBody) {
-      console.log('received', aReceivedBody);
+    this.startApiGroup('API result', method, path);
+    console.log('status', response.status, response.statusText);
+    if (receivedBody) {
+      console.log('received', receivedBody);
     }
-    this.endApiGroup(aPath);
+    this.endApiGroup(path);
   }
 
   /**
    * Sends an IO error to the console and closes the group.
    *
-   * @param anError
+   * @param error
    *   Exception error
-   * @param aMethod
+   * @param method
    *   Method used
-   * @param aPath
+   * @param path
    *   Path to API call
    */
-  static logApiError(anError: Error, aMethod: UFFetchMethod, aPath: string) {
-    this.startApiGroup('API server error', aMethod, aPath);
-    console.log('error', anError.message);
-    this.endApiGroup(aPath);
+  static logApiError(error: Error, method: UFFetchMethod, path: string) {
+    this.startApiGroup('API server error', method, path);
+    console.log('error', error.message);
+    this.endApiGroup(path);
   }
 
   /**
    * Build the options for `fetch`.
    *
-   * @param aMethod
+   * @param method
    *   Method to use
-   * @param anUrl
+   * @param url
    *   Url to call
-   * @param aBodyData
+   * @param bodyData
    *   Optional body data; if it is a `FormData` instance it just get set, else the data is
    *   sent as JSON.
-   * @param anUpdateHeaders
+   * @param updateHeadersCallback
    *   Optional callback to add additional headers.
    *
    * @returns options for use with `fetch`
    */
   static buildFetchOptions(
-    aMethod: UFFetchMethod, anUrl: string, aBodyData?: object | FormData | null,
-    anUpdateHeaders?: (headers: Headers) => any
+    method: UFFetchMethod, url: string,
+    bodyData?: object | FormData | null,
+    updateHeadersCallback?: (headers: Headers) => any
   ): RequestInit {
-    this.startApiGroup('API', aMethod, anUrl);
+    this.startApiGroup('API', method, url);
     const headers = new Headers();
     const options: RequestInit = {
-      method: aMethod
+      method: method
     };
-    if (aBodyData) {
-      if (aBodyData instanceof FormData) {
-        options.body = aBodyData;
+    if (bodyData) {
+      if (bodyData instanceof FormData) {
+        options.body = bodyData;
       }
       else {
         headers.append("Content-Type", 'application/json');
         headers.append("Accept", 'application/json');
-        options.body = JSON.stringify(aBodyData);
+        options.body = JSON.stringify(bodyData);
       }
-      console.log('body', aBodyData);
+      console.log('body', bodyData);
     }
-    if (anUpdateHeaders) {
-      anUpdateHeaders(headers);
+    if (updateHeadersCallback) {
+      updateHeadersCallback(headers);
     }
     options.headers = headers;
-    this.endApiGroup(anUrl);
+    this.endApiGroup(url);
     return options;
   }
 

@@ -39,17 +39,17 @@ export class UFAudio {
    * Based on:
    * https://stackoverflow.com/a/46117824/968451
    *
-   * @param anAudio
+   * @param audio
    *   Audio to check
    *
    * @returns True when playing
    */
-  static isPlaying(anAudio: HTMLAudioElement): boolean {
-    return anAudio
-      && anAudio.currentTime > 0
-      && !anAudio.paused
-      && !anAudio.ended
-      && anAudio.readyState > 2;
+  static isPlaying(audio: HTMLAudioElement): boolean {
+    return audio
+      && audio.currentTime > 0
+      && !audio.paused
+      && !audio.ended
+      && audio.readyState > 2;
   }
 
   /**
@@ -58,17 +58,17 @@ export class UFAudio {
    * Based on:
    * https://stackoverflow.com/a/46117824/968451
    *
-   * @param anAudio
+   * @param audio
    *   Audio to check
    *
    * @returns True when playing
    */
-  static isPaused(anAudio: HTMLAudioElement): boolean {
-    return anAudio
-      && anAudio.currentTime > 0
-      && anAudio.paused
-      && !anAudio.ended
-      && anAudio.readyState > 2;
+  static isPaused(audio: HTMLAudioElement): boolean {
+    return audio
+      && audio.currentTime > 0
+      && audio.paused
+      && !audio.ended
+      && audio.readyState > 2;
   }
 
   // endregion

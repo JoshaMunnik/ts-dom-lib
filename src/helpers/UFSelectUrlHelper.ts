@@ -74,10 +74,10 @@ export class UFSelectUrlHelper extends UFHtmlHelper {
    *
    * @private
    */
-  private handleSelectUrl(anElement: HTMLSelectElement) {
-    const selectUrl = UFHtml.getAttribute(anElement, DataAttribute.SelectUrl);
+  private handleSelectUrl(element: HTMLSelectElement) {
+    const selectUrl = UFHtml.getAttribute(element, DataAttribute.SelectUrl);
     if (selectUrl) {
-      window.location.href = selectUrl.replace(/\$value\$/g, anElement.value);
+      window.location.href = selectUrl.replace(/\$value\$/g, element.value);
     }
   }
 

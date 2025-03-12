@@ -65,6 +65,7 @@ enum Action {
   Close = 'close',
   SetAttribute = 'set-attribute',
   Reload = 'reload',
+  SetValue = 'set-value',
 }
 
 // endregion
@@ -90,6 +91,11 @@ enum Action {
  * - `"set-attribute"`: Sets the attribute specified in `data-uf-event-attribute` to the value
  *   specified in `data-uf-event-data` at the target(s).
  * - `"reload"`: Reloads the web page.
+ * - `"set-value"`: Sets the value of the target(s) to the value specified in `data-uf-event-data`.
+ *   The target(s) must be an input, textarea or select element. If no value is specified, the
+ *   target will be set to an empty string or unchecked state. To set checkbox to a checked state
+ *   use the values 'true', '1' or 'checked'. After setting the value, the code will fire a
+ *   `"change"` and (when applicable) an `"input"` event.
  *
  * Use `data-uf-event-events` to specify the events that should trigger the action. The value
  * is one or multiple events separated by a space. This attribute is required. When missing,
@@ -103,7 +109,7 @@ enum Action {
  * - `"_previous"`: The previous sibling of the clickable element.
  * - `"_grandparent"`: The parent element of the parent of the clickable element.
  * - `"_dialog"`: The nearest dialog element that contains the clickable element.
- * 
+ *
  * If `data-uf-event-target` is missing, the `"_self"` value is used as default unless the action
  * is `"close"` than `"_dialog"` is used as default.
  *
@@ -116,16 +122,16 @@ enum Action {
  * a `newState` property. Use this attribute with the value "open" together with the "toggle" event
  * to perform an action when for example a dialog is being opened.
  *
- * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and 
+ * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and
  * `data-uf-click-attribute` as shortcuts for "click" events.
  *
  * Use `data-uf-load-action`, `data-uf-load-target`, `data-uf-load-data` and
- * `data-uf-load-attribute` to perform actions when the document is loaded.  
+ * `data-uf-load-attribute` to perform actions when the document is loaded.
  *
  * It is possible to specify multiple actions by adding a postfix to the data attributes:
  * ('-1', '-2', etc., till '-20'). The postfix should be added to all data attributes. The postfix
  * works for `data-uf-event-xxxx`, `data-uf-click-xxxx`, `data-uf-load-xxxx`,
- * 
+ *
  * @example
  * <button
  *   data-uf-event-action="hide" data-uf-event-events="click" data-uf-event-target="_parent"
@@ -379,8 +385,12 @@ export class UFEventActionHelper extends UFHtmlHelper {
       case Action.Reload:
         UFHtml.reload();
         break;
+      case Action.SetValue:
+        UFHtml.assignValue(element, data);
+        break;
     }
   }
+
 
   // endregion
 }

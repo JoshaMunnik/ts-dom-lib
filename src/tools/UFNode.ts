@@ -48,14 +48,16 @@ export class UFNode {
   /**
    * Gets the index of a node within its parent.
    *
-   * @param aNode
+   * @param node
    *   Node to check
    *
    * @returns index
    */
-  static getNodeIndex(aNode: Node): number {
+  static getNodeIndex(node: Node): number {
     let result: number = 0;
-    for (let node: Node | null = aNode; node; node = node.previousSibling) {
+    for (
+      let nodeIndex: Node | null = node; nodeIndex != null; nodeIndex = nodeIndex.previousSibling
+    ) {
       result++;
     }
     return result;
@@ -71,28 +73,28 @@ export class UFNode {
    * - offset: position within the text of the found element
    * - node: dom node the position is pointing to
    *
-   * @param aDocument
+   * @param document
    *   Document of contents
-   * @param aX
+   * @param x
    *   X position in screen
-   * @param aY
+   * @param y
    *   Y position in screen
-   * @param anUsePrecedingPosition
+   * @param usePrecedingPosition
    *   When true select element before else select element after if position is in between two
    *   elements.
    *
    * @returns An object with two properties or null if no element could be found at the location.
    */
   static positionFromPoint(
-    aDocument: Document, aX: number, aY: number, anUsePrecedingPosition: boolean
+    document: Document, x: number, y: number, usePrecedingPosition: boolean
   ): { offset: number, node: Node } | null {
     // get element at location (if any)
-    const element = aDocument.elementFromPoint(aX, aY);
+    const element = document.elementFromPoint(x, y);
     if (!element) {
       return null;
     }
     // use Range to find offset within element
-    const range: Range = aDocument.createRange();
+    const range: Range = document.createRange();
     range.selectNodeContents(element);
     range.collapse(true);
     // start with first child in the element
@@ -102,7 +104,7 @@ export class UFNode {
       // return parent and index of this node in the parent node
       node = element.parentNode;
       let offset: number = this.getNodeIndex(element);
-      if (!anUsePrecedingPosition) {
+      if (!usePrecedingPosition) {
         offset++;
       }
       return {offset: offset, node: node!};
@@ -116,10 +118,10 @@ export class UFNode {
         for (let offset = 0; offset <= textLength; ++offset) {
           range.setEnd(node, offset);
           const rect = this.getLastRangeRect(range);
-          if (rect && this.pointIsInOrAboveRect(aX, aY, rect)) {
+          if (rect && this.pointIsInOrAboveRect(x, y, rect)) {
             // gone past the point; check which side (left or right) of the character the point
             // is nearer to
-            if (rect.right - aX > aX - rect.left) {
+            if (rect.right - x > x - rect.left) {
               --offset;
             }
             return {offset: offset, node: node};
@@ -130,9 +132,9 @@ export class UFNode {
         // handle elements
         range.setEndAfter(node);
         const rect = this.getLastRangeRect(range);
-        if (rect && this.pointIsInOrAboveRect(aX, aY, rect)) {
+        if (rect && this.pointIsInOrAboveRect(x, y, rect)) {
           let offset = this.getNodeIndex(node);
-          if (!anUsePrecedingPosition) {
+          if (!usePrecedingPosition) {
             ++offset;
           }
           return {offset: offset, node: node};
@@ -149,17 +151,17 @@ export class UFNode {
   /**
    * Gets the index of a node inside the parent node.
    *
-   * @param aParent
+   * @param parentNode
    *   Parent node
-   * @param aNode
+   * @param childNode
    *   Node to get index of
    *
    * @returns index or -1 if not found
    */
-  static getIndex(aParent: Node, aNode: Node): number {
-    const list: NodeListOf<ChildNode> = aParent.childNodes;
+  static getIndex(parentNode: Node, childNode: Node): number {
+    const list: NodeListOf<ChildNode> = parentNode.childNodes;
     for (let index: number = list.length - 1; index >= 0; index--) {
-      if (list[index] === aNode) {
+      if (list[index] === childNode) {
         return index;
       }
     }
@@ -169,31 +171,31 @@ export class UFNode {
   /**
    * Removes a css class from a node. The css class is only removed if the node is an element.
    *
-   * @param aNode
+   * @param node
    *   Node to remove css class from
-   * @param aClass
+   * @param cssClass
    *   Css class to remove
    */
-  static removeClassFromNode(aNode: Node, aClass: string): void {
-    if (aNode instanceof Element) {
-      aNode.classList.remove(aClass);
+  static removeClassFromNode(node: Node, cssClass: string): void {
+    if (node instanceof Element) {
+      node.classList.remove(cssClass);
     }
   }
 
   /**
    * Recursively removes css class from a nodes children (and grandchildren).
    *
-   * @param aNode
+   * @param parentNode
    *   Node to start with
-   * @param aClass
+   * @param cssClass
    *   Class to remove
    */
-  static removeClassFromChildren(aNode: Node, aClass: string) {
-    for (let index = aNode.childNodes.length - 1; index >= 0; index--) {
-      const child: ChildNode = aNode.childNodes[index];
+  static removeClassFromChildren(parentNode: Node, cssClass: string) {
+    for (let index = parentNode.childNodes.length - 1; index >= 0; index--) {
+      const child: ChildNode = parentNode.childNodes[index];
       if (child instanceof Element) {
-        child.classList.remove(aClass);
-        this.removeClassFromChildren(child, aClass);
+        child.classList.remove(cssClass);
+        this.removeClassFromChildren(child, cssClass);
       }
     }
   }
@@ -201,29 +203,31 @@ export class UFNode {
   /**
    * Remove a css class from a node and previous siblings.
    *
-   * @param aNode
+   * @param node
    *   Node to start with
-   * @param aClass
+   * @param cssClass
    *   Css class to remove
-   * @param anOneSelf
+   * @param oneSelf
    *   When true remove class from node, else skip oneself.
-   * @param aChildren
+   * @param children
    *   When true remove class from the children as well
    */
   static removeClassFromPreviousSiblings(
-    aNode: Node, aClass: string, anOneSelf: boolean, aChildren: boolean
+    node: Node, cssClass: string, oneSelf: boolean, children: boolean
   ) {
-    for (let node: Node | null = aNode; node; node = node.previousSibling) {
-      if (anOneSelf) {
-        if (node instanceof Element) {
-          node.classList.remove(aClass);
+    for (
+      let nodeIndex: Node | null = node; nodeIndex != null; nodeIndex = nodeIndex.previousSibling
+    ) {
+      if (oneSelf) {
+        if (nodeIndex instanceof Element) {
+          nodeIndex.classList.remove(cssClass);
         }
       }
-      if (aChildren) {
-        this.removeClassFromChildren(node, aClass);
+      if (children) {
+        this.removeClassFromChildren(nodeIndex, cssClass);
       }
-      anOneSelf = true;
-      aChildren = true;
+      oneSelf = true;
+      children = true;
     }
   }
 
@@ -231,44 +235,46 @@ export class UFNode {
    * Removes a css class from a node, its siblings and the siblings of all
    * parents but not the parents itself.
    *
-   * @param aNode
+   * @param node
    *   Node to remove class from
-   * @param aClass
+   * @param cssClass
    *   Css class to remove
-   * @param anOneSelf
+   * @param oneSelf
    *   True to remove class from oneself also.
    */
-  static removeClassFromAllBefore(aNode: Node, aClass: string, anOneSelf: boolean): void {
-    if (!(aNode instanceof Element)) {
+  static removeClassFromAllBefore(node: Node, cssClass: string, oneSelf: boolean): void {
+    if (!(node instanceof Element)) {
       return;
     }
     let children: boolean = true;
-    let node: Element | null = aNode;
-    while (node && (node.tagName !== 'BODY')) {
-      this.removeClassFromPreviousSiblings(node, aClass, anOneSelf, children);
-      anOneSelf = true;
+    let element: Element | null = node;
+    while (element && (element.tagName !== 'BODY')) {
+      this.removeClassFromPreviousSiblings(element, cssClass, oneSelf, children);
+      oneSelf = true;
       children = false;
-      node = node.parentElement;
+      element = element.parentElement;
     }
   }
 
   /**
    * Remove a css class from a node and next siblings.
    *
-   * @param aNode
+   * @param node
    *   Node to start with
-   * @param aClass
+   * @param cssClass
    *   Css class to remove
-   * @param anOneSelf
+   * @param oneSelf
    *   When true remove class from node, else skip oneself.
    */
-  static removeClassFromNextSiblings(aNode: Node, aClass: string, anOneSelf: boolean): void {
-    for (let node: Node | null = aNode; node; node = node.nextSibling) {
-      if (anOneSelf) {
-        this.removeClassFromNode(node, aClass);
-        this.removeClassFromChildren(node, aClass);
+  static removeClassFromNextSiblings(node: Node, cssClass: string, oneSelf: boolean): void {
+    for (
+      let nodeIndex: Node | null = node; nodeIndex != null; nodeIndex = nodeIndex.nextSibling
+    ) {
+      if (oneSelf) {
+        this.removeClassFromNode(nodeIndex, cssClass);
+        this.removeClassFromChildren(nodeIndex, cssClass);
       }
-      anOneSelf = true;
+      oneSelf = true;
     }
   }
 
@@ -276,24 +282,24 @@ export class UFNode {
    * Removes a css class from a node, its siblings and the siblings of all
    * parents but not the parents itself.
    *
-   * @param aNode
+   * @param node
    *    Node to remove class from
-   * @param aClass
+   * @param cssClass
    *   class to remove
-   * @param anOneSelf
+   * @param oneSelf
    *   True to remove class from oneself also.
    */
-  static removeClassFromAllAfter(aNode: Node, aClass: string, anOneSelf: boolean): void {
-    if (!(aNode instanceof Element)) {
+  static removeClassFromAllAfter(node: Node, cssClass: string, oneSelf: boolean): void {
+    if (!(node instanceof Element)) {
       return;
     }
     for (
-      let node: Element | null = aNode;
-      node && (node.tagName !== 'BODY');
-      node = node.parentElement
+      let element: Element | null = node;
+      element && (element.tagName !== 'BODY');
+      element = element.parentElement
     ) {
-      this.removeClassFromNextSiblings(node, aClass, anOneSelf);
-      anOneSelf = false;
+      this.removeClassFromNextSiblings(element, cssClass, oneSelf);
+      oneSelf = false;
     }
   }
 
@@ -301,41 +307,41 @@ export class UFNode {
    * Replace all replacement nodes with their originals. Then it will set the length property to 0,
    * clearing all stored values.
    *
-   * @param aBackupList
+   * @param backupList
    *   Array of backup entries as created by the addXXXX methods.
    */
-  static restoreNodes(aBackupList: UFNodeBackup[]) {
-    aBackupList.forEach((data) => {
+  static restoreNodes(backupList: UFNodeBackup[]) {
+    backupList.forEach((data) => {
       data.replacement.parentNode?.replaceChild(data.original, data.replacement);
     });
-    aBackupList.length = 0;
+    backupList.length = 0;
   }
 
   /**
    * Wraps a text node with a span element.
    *
-   * @param aNode
+   * @param node
    *   Node to wrap into a span element.
-   * @param aClasses
+   * @param cssClasses
    *   Optional css classes to use for span
    *
    * @returns New span element
    */
-  static wrapTextNode(aNode: Node, aClasses?: string): HTMLSpanElement {
-    if (!aNode.ownerDocument) {
+  static wrapTextNode(node: Node, cssClasses?: string): HTMLSpanElement {
+    if (!node.ownerDocument) {
       throw new Error('Node does not have an owning document');
     }
-    if (!aNode.parentNode) {
+    if (!node.parentNode) {
       throw new Error('Node does not have a parent node');
     }
     // create wrapper
-    const span = aNode.ownerDocument.createElement('span');
-    span.appendChild(aNode.ownerDocument.createTextNode(aNode.nodeValue ?? ''));
+    const span = node.ownerDocument.createElement('span');
+    span.appendChild(node.ownerDocument.createTextNode(node.nodeValue ?? ''));
     // assign class
-    if (aClasses) {
-      UFHtml.addClasses(span, aClasses);
+    if (cssClasses) {
+      UFHtml.addClasses(span, cssClasses);
     }
-    aNode.parentNode.replaceChild(span, aNode);
+    node.parentNode.replaceChild(span, node);
     // return new node
     return span;
   }
@@ -344,40 +350,40 @@ export class UFNode {
    * Adds style rule to class attribute. If the node is a text node, it will be wrapped by a span
    * using {@link wrapTextNode}.
    *
-   * If aBackupList is set, the method will store the original text node and newly created wrapper
+   * If backupList is set, the method will store the original text node and newly created wrapper
    * node in the list. Use {@link restoreNodes} to restore the original nodes.
    *
-   * @param aNode
+   * @param node
    *   Node to add class to
-   * @param aClasses
+   * @param cssClasses
    *   Css classes to add
-   * @param aSkipEmpty
+   * @param skipEmpty
    *   True to skip empty text nodes
-   * @param aBackupList
+   * @param backupList
    *   Optional backup list
    *
-   * @returns aNode or the new wrapping span node
+   * @returns node or the new wrapping span node
    */
   static addClassToNode(
-    aNode: Node, aClasses: string, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]
+    node: Node, cssClasses: string, skipEmpty: boolean, backupList?: UFNodeBackup[]
   ): Node {
-    if (aNode.nodeType === 3) {
-      const text: string = aNode.nodeValue?.trim() || '';
-      if (!aSkipEmpty || text) {
-        const newNode = this.wrapTextNode(aNode, aClasses);
-        if (aBackupList) {
-          aBackupList.push({
-            original: aNode,
+    if (node.nodeType === 3) {
+      const text: string = node.nodeValue?.trim() || '';
+      if (!skipEmpty || text) {
+        const newNode = this.wrapTextNode(node, cssClasses);
+        if (backupList) {
+          backupList.push({
+            original: node,
             replacement: newNode
           });
         }
         return newNode;
       }
     }
-    else if (aNode.nodeType === 1) {
-      UFHtml.addClasses(aNode as Element, aClasses);
+    else if (node.nodeType === 1) {
+      UFHtml.addClasses(node as Element, cssClasses);
     }
-    return aNode;
+    return node;
   }
 
   /**
@@ -385,26 +391,26 @@ export class UFNode {
    * the child node is a text node, it will get replaced by a wrapping
    * span node with the specified class.
    *
-   * If aBackupList is set, the method will store the original text node and newly created wrapper
+   * If backupList is set, the method will store the original text node and newly created wrapper
    * nodes in the list. Use {@link restoreNodes} to restore the original nodes.
    *
-   * @param aNode
+   * @param parentNode
    *   Node to process its children of
-   * @param aClasses
+   * @param cssClasses
    *   Css classes to add
-   * @param aSkipEmpty
+   * @param skipEmpty
    *   True to skip empty text nodes
-   * @param aBackupList
+   * @param backupList
    *   Optional backup list
    */
   static addClassToChildren(
-    aNode: Node, aClasses: string, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]
+    parentNode: Node, cssClasses: string, skipEmpty: boolean, backupList?: UFNodeBackup[]
   ): void {
-    aNode.childNodes.forEach((child) => {
-      const newChild = this.addClassToNode(child, aClasses, aSkipEmpty, aBackupList);
+    parentNode.childNodes.forEach((child) => {
+      const newChild = this.addClassToNode(child, cssClasses, skipEmpty, backupList);
       // only process the child if not a new span wrapper was created
       if (newChild === child) {
-        this.addClassToChildren(child, aClasses, aSkipEmpty, aBackupList);
+        this.addClassToChildren(child, cssClasses, skipEmpty, backupList);
       }
     });
   }
@@ -412,32 +418,37 @@ export class UFNode {
   /**
    * Add css classes to a node and next siblings.
    *
-   * @param aNode
+   * @param node
    *   Node to start with
-   * @param aClasses
+   * @param cssClasses
    *   Css classes to add
-   * @param anOneSelf
+   * @param oneSelf
    *   When true add class to node, else skip oneself.
-   * @param aSkipEmpty
+   * @param skipEmpty
    *   True to skip empty text nodes
-   * @param aBackupList
+   * @param backupList
    *   Optional backup list
    */
   static addClassToSiblings(
-    aNode: Node, aClasses: string, anOneSelf: boolean, aSkipEmpty: boolean,
-    aBackupList?: UFNodeBackup[]
+    node: Node,
+    cssClasses: string,
+    oneSelf: boolean,
+    skipEmpty: boolean,
+    backupList?: UFNodeBackup[]
   ): void {
-    for (let node: Node | null = aNode; node; node = node.nextSibling) {
-      if (anOneSelf) {
-        const newNode = this.addClassToNode(node, aClasses, aSkipEmpty, aBackupList);
-        if (newNode === node) {
-          this.addClassToChildren(node, aClasses, aSkipEmpty, aBackupList);
+    for (
+      let nodeIndex: Node | null = node; nodeIndex != null; nodeIndex = nodeIndex.nextSibling
+    ) {
+      if (oneSelf) {
+        const newNode = this.addClassToNode(nodeIndex, cssClasses, skipEmpty, backupList);
+        if (newNode === nodeIndex) {
+          this.addClassToChildren(nodeIndex, cssClasses, skipEmpty, backupList);
         }
         else {
-          node = newNode;
+          nodeIndex = newNode;
         }
       }
-      anOneSelf = true;
+      oneSelf = true;
     }
   }
 
@@ -445,31 +456,30 @@ export class UFNode {
    * Adds css classes to a node, its siblings and the siblings of all parents but not the parents
    * itself.
    *
-   * @param aNode
+   * @param node
    *   Node to add class to
-   * @param aClass
+   * @param cssClass
    *   Class to add
-   * @param anOneSelf
+   * @param oneSelf
    *   True to add class to oneself also.
-   * @param aSkipEmpty
+   * @param skipEmpty
    *   True to skip empty text nodes
-   * @param aBackupList
+   * @param backupList
    *   Optional backup list
    */
   static addClassToAllAfter(
-    aNode: Node, aClass: string, anOneSelf: boolean, aSkipEmpty: boolean,
-    aBackupList?: UFNodeBackup[]
+    node: Node, cssClass: string, oneSelf: boolean, skipEmpty: boolean, backupList?: UFNodeBackup[]
   ): void {
-    if (!(aNode instanceof Element)) {
+    if (!(node instanceof Element)) {
       return;
     }
     for (
-      let node: Element | null = aNode;
-      node && (node.tagName !== 'BODY');
-      node = node.parentElement
+      let element: Element | null = node;
+      element && (element.tagName !== 'BODY');
+      element = element.parentElement
     ) {
-      this.addClassToSiblings(node, aClass, anOneSelf, aSkipEmpty, aBackupList);
-      anOneSelf = false;
+      this.addClassToSiblings(element, cssClass, oneSelf, skipEmpty, backupList);
+      oneSelf = false;
     }
   }
 
@@ -482,13 +492,13 @@ export class UFNode {
    *
    * @private
    *
-   * @param aRange
+   * @param range
    *   Range object to process
    *
    * @returns Last rect or null if none exist.
    */
-  private static getLastRangeRect(aRange: Range): DOMRect | null {
-    const rects = aRange.getClientRects();
+  private static getLastRangeRect(range: Range): DOMRect | null {
+    const rects = range.getClientRects();
     return (rects.length > 0) ? rects[rects.length - 1] : null;
   }
 
@@ -498,17 +508,17 @@ export class UFNode {
    *
    * @private
    *
-   * @param aX
+   * @param x
    *   X coordinate
-   * @param aY
+   * @param y
    *   Y coordinate
-   * @param aRect
+   * @param rect
    *   Rectangle to test against
    *
    * @returns True when point is above or inside the rect
    */
-  private static pointIsInOrAboveRect(aX: number, aY: number, aRect: DOMRect): boolean {
-    return (aY < aRect.bottom) && (aX >= aRect.left) && (aX <= aRect.right);
+  private static pointIsInOrAboveRect(x: number, y: number, rect: DOMRect): boolean {
+    return (y < rect.bottom) && (x >= rect.left) && (x <= rect.right);
   }
 
   // endregion

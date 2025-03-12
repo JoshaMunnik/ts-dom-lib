@@ -85,13 +85,13 @@ export class UFHtml {
    *
    * Based on code from answer: https://stackoverflow.com/a/4835406/968451
    *
-   * @param aText
+   * @param text
    *   Text to convert
    *
    * @returns Html formatted plain text
    */
-  static escapeHtml(aText: string): string {
-    return aText.replace(/[&<>"'\n\t\r]/g, character => this.s_escapeHtmlMap.get(character) as string);
+  static escapeHtml(text: string): string {
+    return text.replace(/[&<>"'\n\t\r]/g, character => this.s_escapeHtmlMap.get(character) as string);
   }
 
   /**
@@ -514,8 +514,9 @@ export class UFHtml {
    * Copies one or more attribute values to elements. Depending on the type of the element the value
    * gets handled as follows:
    * - `input`:  the `checked` or `value` property is set (depending on the `type`).
-   * - `select`: the `value` is set.
-   * - `img`: the `src` is set.
+   * - `textarea`:  the `value` property is set.
+   * - `select`: the `value` property is set.
+   * - `img`: the `src` property is set.
    * - any other element: the inner text of the element is set.
    *
    * @param element
@@ -543,18 +544,10 @@ export class UFHtml {
         continue;
       }
       targets.forEach(target => {
-        if (target instanceof HTMLInputElement) {
-          if ((target.type === 'checkbox') || (target.type === 'radio')) {
-            target.checked = (data.toLowerCase() !== 'false') && (data !== '0');
-          }
-          else {
-            target.value = data;
-          }
+        if (this.assignValue(target, data)) {
+          return;
         }
-        else if (target instanceof HTMLSelectElement) {
-          target.value = data;
-        }
-        else if (target instanceof HTMLImageElement) {
+        if (target instanceof HTMLImageElement) {
           target.src = data;
         }
         else if (target instanceof HTMLElement) {
@@ -626,6 +619,45 @@ export class UFHtml {
     }
     // noinspection SillyAssignmentJS
     window.location.href = window.location.href;
+  }
+
+  /**
+   * Assigns a value to a form field element and triggers the `"input"` and `"change"` events.
+   *
+   * With checkbox/radio elements the following values will set the checked state to true:
+   * 'true', '1', 'checked'. Any other value will set the checked state to false.
+   *
+   * If the element is not a form field element, nothing happens.
+   *
+   * @param element
+   *   Element to assign to
+   * @param value
+   *   Value to assign
+   *
+   * @returns `true` if the value could be assigned, `false` if the element is not a form field.
+   */
+  static assignValue(element: Element, value: string): boolean {
+    if (element instanceof HTMLInputElement) {
+      if ((element.type === 'checkbox') || (element.type === 'radio')) {
+        element.checked = (value === 'true') || (value === '1') || (value === 'checked');
+      }
+      else {
+        element.value = value;
+        element.dispatchEvent(new InputEvent('input'));
+      }
+    }
+    else if (element instanceof HTMLTextAreaElement) {
+      element.value = value;
+      element.dispatchEvent(new InputEvent('input'));
+    }
+    else if (element instanceof HTMLSelectElement) {
+      element.value = value;
+    }
+    else {
+      return false;
+    }
+    element.dispatchEvent(new Event('change'));
+    return true;
   }
 }
 
