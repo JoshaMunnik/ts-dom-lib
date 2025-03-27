@@ -36,17 +36,17 @@ export class UFAudio {
      * Based on:
      * https://stackoverflow.com/a/46117824/968451
      *
-     * @param anAudio
+     * @param audio
      *   Audio to check
      *
      * @returns True when playing
      */
-    static isPlaying(anAudio) {
-        return anAudio
-            && anAudio.currentTime > 0
-            && !anAudio.paused
-            && !anAudio.ended
-            && anAudio.readyState > 2;
+    static isPlaying(audio) {
+        return audio
+            && audio.currentTime > 0
+            && !audio.paused
+            && !audio.ended
+            && audio.readyState > 2;
     }
     /**
      * Checks if an audio is paused.
@@ -54,17 +54,17 @@ export class UFAudio {
      * Based on:
      * https://stackoverflow.com/a/46117824/968451
      *
-     * @param anAudio
+     * @param audio
      *   Audio to check
      *
      * @returns True when playing
      */
-    static isPaused(anAudio) {
-        return anAudio
-            && anAudio.currentTime > 0
-            && anAudio.paused
-            && !anAudio.ended
-            && anAudio.readyState > 2;
+    static isPaused(audio) {
+        return audio
+            && audio.currentTime > 0
+            && audio.paused
+            && !audio.ended
+            && audio.readyState > 2;
     }
 }
 // endregion

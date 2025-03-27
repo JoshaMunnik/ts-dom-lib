@@ -38,58 +38,58 @@ export declare class UFNetwork {
     /**
      * Starts console group.
      *
-     * @param aTitle
+     * @param title
      *   Opening title
-     * @param aMethod
+     * @param method
      *   Method used
-     * @param aPath
+     * @param path
      *   Path to API call
      */
-    static startApiGroup(aTitle: string, aMethod: UFFetchMethod, aPath: string): void;
+    static startApiGroup(title: string, method: UFFetchMethod, path: string): void;
     /**
      * Closes the group.
      *
-     * @param aPath
+     * @param path
      *   Path to API call
      */
-    static endApiGroup(aPath: string): void;
+    static endApiGroup(path: string): void;
     /**
      * Send the IO result to the console and closes the group.
      *
-     * @param aResponse
-     * @param aMethod
+     * @param response
+     * @param method
      *   Method used
-     * @param aPath
+     * @param path
      *   Path to API call
-     * @param aReceivedBody
+     * @param receivedBody
      *   Body data received
      */
-    static logApiResult(aResponse: Response, aMethod: UFFetchMethod, aPath: string, aReceivedBody?: string | object | null): void;
+    static logApiResult(response: Response, method: UFFetchMethod, path: string, receivedBody?: string | object | null): void;
     /**
      * Sends an IO error to the console and closes the group.
      *
-     * @param anError
+     * @param error
      *   Exception error
-     * @param aMethod
+     * @param method
      *   Method used
-     * @param aPath
+     * @param path
      *   Path to API call
      */
-    static logApiError(anError: Error, aMethod: UFFetchMethod, aPath: string): void;
+    static logApiError(error: Error, method: UFFetchMethod, path: string): void;
     /**
      * Build the options for `fetch`.
      *
-     * @param aMethod
+     * @param method
      *   Method to use
-     * @param anUrl
+     * @param url
      *   Url to call
-     * @param aBodyData
+     * @param bodyData
      *   Optional body data; if it is a `FormData` instance it just get set, else the data is
      *   sent as JSON.
-     * @param anUpdateHeaders
+     * @param updateHeadersCallback
      *   Optional callback to add additional headers.
      *
      * @returns options for use with `fetch`
      */
-    static buildFetchOptions(aMethod: UFFetchMethod, anUrl: string, aBodyData?: object | FormData | null, anUpdateHeaders?: (headers: Headers) => any): RequestInit;
+    static buildFetchOptions(method: UFFetchMethod, url: string, bodyData?: object | FormData | null, updateHeadersCallback?: (headers: Headers) => any): RequestInit;
 }

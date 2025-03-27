@@ -36,12 +36,12 @@ export declare class UFNode {
     /**
      * Gets the index of a node within its parent.
      *
-     * @param aNode
+     * @param node
      *   Node to check
      *
      * @returns index
      */
-    static getNodeIndex(aNode: Node): number;
+    static getNodeIndex(node: Node): number;
     /**
      * Gets the position inside an element for a specific location.
      *
@@ -52,192 +52,192 @@ export declare class UFNode {
      * - offset: position within the text of the found element
      * - node: dom node the position is pointing to
      *
-     * @param aDocument
+     * @param document
      *   Document of contents
-     * @param aX
+     * @param x
      *   X position in screen
-     * @param aY
+     * @param y
      *   Y position in screen
-     * @param anUsePrecedingPosition
+     * @param usePrecedingPosition
      *   When true select element before else select element after if position is in between two
      *   elements.
      *
      * @returns An object with two properties or null if no element could be found at the location.
      */
-    static positionFromPoint(aDocument: Document, aX: number, aY: number, anUsePrecedingPosition: boolean): {
+    static positionFromPoint(document: Document, x: number, y: number, usePrecedingPosition: boolean): {
         offset: number;
         node: Node;
     } | null;
     /**
      * Gets the index of a node inside the parent node.
      *
-     * @param aParent
+     * @param parentNode
      *   Parent node
-     * @param aNode
+     * @param childNode
      *   Node to get index of
      *
      * @returns index or -1 if not found
      */
-    static getIndex(aParent: Node, aNode: Node): number;
+    static getIndex(parentNode: Node, childNode: Node): number;
     /**
      * Removes a css class from a node. The css class is only removed if the node is an element.
      *
-     * @param aNode
+     * @param node
      *   Node to remove css class from
-     * @param aClass
+     * @param cssClass
      *   Css class to remove
      */
-    static removeClassFromNode(aNode: Node, aClass: string): void;
+    static removeClassFromNode(node: Node, cssClass: string): void;
     /**
      * Recursively removes css class from a nodes children (and grandchildren).
      *
-     * @param aNode
+     * @param parentNode
      *   Node to start with
-     * @param aClass
+     * @param cssClass
      *   Class to remove
      */
-    static removeClassFromChildren(aNode: Node, aClass: string): void;
+    static removeClassFromChildren(parentNode: Node, cssClass: string): void;
     /**
      * Remove a css class from a node and previous siblings.
      *
-     * @param aNode
+     * @param node
      *   Node to start with
-     * @param aClass
+     * @param cssClass
      *   Css class to remove
-     * @param anOneSelf
+     * @param oneSelf
      *   When true remove class from node, else skip oneself.
-     * @param aChildren
+     * @param children
      *   When true remove class from the children as well
      */
-    static removeClassFromPreviousSiblings(aNode: Node, aClass: string, anOneSelf: boolean, aChildren: boolean): void;
+    static removeClassFromPreviousSiblings(node: Node, cssClass: string, oneSelf: boolean, children: boolean): void;
     /**
      * Removes a css class from a node, its siblings and the siblings of all
      * parents but not the parents itself.
      *
-     * @param aNode
+     * @param node
      *   Node to remove class from
-     * @param aClass
+     * @param cssClass
      *   Css class to remove
-     * @param anOneSelf
+     * @param oneSelf
      *   True to remove class from oneself also.
      */
-    static removeClassFromAllBefore(aNode: Node, aClass: string, anOneSelf: boolean): void;
+    static removeClassFromAllBefore(node: Node, cssClass: string, oneSelf: boolean): void;
     /**
      * Remove a css class from a node and next siblings.
      *
-     * @param aNode
+     * @param node
      *   Node to start with
-     * @param aClass
+     * @param cssClass
      *   Css class to remove
-     * @param anOneSelf
+     * @param oneSelf
      *   When true remove class from node, else skip oneself.
      */
-    static removeClassFromNextSiblings(aNode: Node, aClass: string, anOneSelf: boolean): void;
+    static removeClassFromNextSiblings(node: Node, cssClass: string, oneSelf: boolean): void;
     /**
      * Removes a css class from a node, its siblings and the siblings of all
      * parents but not the parents itself.
      *
-     * @param aNode
+     * @param node
      *    Node to remove class from
-     * @param aClass
+     * @param cssClass
      *   class to remove
-     * @param anOneSelf
+     * @param oneSelf
      *   True to remove class from oneself also.
      */
-    static removeClassFromAllAfter(aNode: Node, aClass: string, anOneSelf: boolean): void;
+    static removeClassFromAllAfter(node: Node, cssClass: string, oneSelf: boolean): void;
     /**
      * Replace all replacement nodes with their originals. Then it will set the length property to 0,
      * clearing all stored values.
      *
-     * @param aBackupList
+     * @param backupList
      *   Array of backup entries as created by the addXXXX methods.
      */
-    static restoreNodes(aBackupList: UFNodeBackup[]): void;
+    static restoreNodes(backupList: UFNodeBackup[]): void;
     /**
      * Wraps a text node with a span element.
      *
-     * @param aNode
+     * @param node
      *   Node to wrap into a span element.
-     * @param aClasses
+     * @param cssClasses
      *   Optional css classes to use for span
      *
      * @returns New span element
      */
-    static wrapTextNode(aNode: Node, aClasses?: string): HTMLSpanElement;
+    static wrapTextNode(node: Node, cssClasses?: string): HTMLSpanElement;
     /**
      * Adds style rule to class attribute. If the node is a text node, it will be wrapped by a span
      * using {@link wrapTextNode}.
      *
-     * If aBackupList is set, the method will store the original text node and newly created wrapper
+     * If backupList is set, the method will store the original text node and newly created wrapper
      * node in the list. Use {@link restoreNodes} to restore the original nodes.
      *
-     * @param aNode
+     * @param node
      *   Node to add class to
-     * @param aClasses
+     * @param cssClasses
      *   Css classes to add
-     * @param aSkipEmpty
+     * @param skipEmpty
      *   True to skip empty text nodes
-     * @param aBackupList
+     * @param backupList
      *   Optional backup list
      *
-     * @returns aNode or the new wrapping span node
+     * @returns node or the new wrapping span node
      */
-    static addClassToNode(aNode: Node, aClasses: string, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]): Node;
+    static addClassToNode(node: Node, cssClasses: string, skipEmpty: boolean, backupList?: UFNodeBackup[]): Node;
     /**
      * Recursively adds css classes to a nodes children (and grandchildren). If
      * the child node is a text node, it will get replaced by a wrapping
      * span node with the specified class.
      *
-     * If aBackupList is set, the method will store the original text node and newly created wrapper
+     * If backupList is set, the method will store the original text node and newly created wrapper
      * nodes in the list. Use {@link restoreNodes} to restore the original nodes.
      *
-     * @param aNode
+     * @param parentNode
      *   Node to process its children of
-     * @param aClasses
+     * @param cssClasses
      *   Css classes to add
-     * @param aSkipEmpty
+     * @param skipEmpty
      *   True to skip empty text nodes
-     * @param aBackupList
+     * @param backupList
      *   Optional backup list
      */
-    static addClassToChildren(aNode: Node, aClasses: string, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]): void;
+    static addClassToChildren(parentNode: Node, cssClasses: string, skipEmpty: boolean, backupList?: UFNodeBackup[]): void;
     /**
      * Add css classes to a node and next siblings.
      *
-     * @param aNode
+     * @param node
      *   Node to start with
-     * @param aClasses
+     * @param cssClasses
      *   Css classes to add
-     * @param anOneSelf
+     * @param oneSelf
      *   When true add class to node, else skip oneself.
-     * @param aSkipEmpty
+     * @param skipEmpty
      *   True to skip empty text nodes
-     * @param aBackupList
+     * @param backupList
      *   Optional backup list
      */
-    static addClassToSiblings(aNode: Node, aClasses: string, anOneSelf: boolean, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]): void;
+    static addClassToSiblings(node: Node, cssClasses: string, oneSelf: boolean, skipEmpty: boolean, backupList?: UFNodeBackup[]): void;
     /**
      * Adds css classes to a node, its siblings and the siblings of all parents but not the parents
      * itself.
      *
-     * @param aNode
+     * @param node
      *   Node to add class to
-     * @param aClass
+     * @param cssClass
      *   Class to add
-     * @param anOneSelf
+     * @param oneSelf
      *   True to add class to oneself also.
-     * @param aSkipEmpty
+     * @param skipEmpty
      *   True to skip empty text nodes
-     * @param aBackupList
+     * @param backupList
      *   Optional backup list
      */
-    static addClassToAllAfter(aNode: Node, aClass: string, anOneSelf: boolean, aSkipEmpty: boolean, aBackupList?: UFNodeBackup[]): void;
+    static addClassToAllAfter(node: Node, cssClass: string, oneSelf: boolean, skipEmpty: boolean, backupList?: UFNodeBackup[]): void;
     /**
      * Gets the last Rect in the Range object.
      *
      * @private
      *
-     * @param aRange
+     * @param range
      *   Range object to process
      *
      * @returns Last rect or null if none exist.
@@ -249,11 +249,11 @@ export declare class UFNode {
      *
      * @private
      *
-     * @param aX
+     * @param x
      *   X coordinate
-     * @param aY
+     * @param y
      *   Y coordinate
-     * @param aRect
+     * @param rect
      *   Rectangle to test against
      *
      * @returns True when point is above or inside the rect

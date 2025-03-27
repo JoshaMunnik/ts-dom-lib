@@ -67,8 +67,8 @@ export class UFDetailsHelper extends UFHtmlHelper {
     scan() {
         super.scan();
         this.clear();
-        this.addSourceAndTargetElements(DataAttribute.DetailsCollapse, this.m_clickableElements, this.m_collapsableElements, 'click', (aElement) => this.handleCollapseClick(aElement), DataAttribute.DetailsCollapse);
-        this.addSourceAndTargetElements(DataAttribute.DetailsExpand, this.m_clickableElements, this.m_expandableElements, 'click', (aElement) => this.handleExpandClick(aElement), DataAttribute.DetailsCollapse);
+        this.addSourceAndTargetElements(DataAttribute.DetailsCollapse, this.m_clickableElements, this.m_collapsableElements, 'click', (element) => this.handleCollapseClick(element), DataAttribute.DetailsCollapse);
+        this.addSourceAndTargetElements(DataAttribute.DetailsExpand, this.m_clickableElements, this.m_expandableElements, 'click', (element) => this.handleExpandClick(element), DataAttribute.DetailsCollapse);
     }
     // endregion
     // region private methods
@@ -86,24 +86,24 @@ export class UFDetailsHelper extends UFHtmlHelper {
     /**
      * Collapses the details elements.
      *
-     * @param anElement
+     * @param element
      */
-    handleCollapseClick(anElement) {
-        if (!this.m_collapsableElements.has(anElement)) {
+    handleCollapseClick(element) {
+        if (!this.m_collapsableElements.has(element)) {
             return;
         }
-        this.m_collapsableElements.get(anElement).forEach(aDetails => aDetails.open = false);
+        this.m_collapsableElements.get(element).forEach(details => details.open = false);
     }
     /**
      * Expands the details elements.
      *
-     * @param anElement
+     * @param element
      */
-    handleExpandClick(anElement) {
-        if (!this.m_expandableElements.has(anElement)) {
+    handleExpandClick(element) {
+        if (!this.m_expandableElements.has(element)) {
             return;
         }
-        this.m_expandableElements.get(anElement).forEach(aDetails => aDetails.open = true);
+        this.m_expandableElements.get(element).forEach(details => details.open = true);
     }
 }
 // endregion

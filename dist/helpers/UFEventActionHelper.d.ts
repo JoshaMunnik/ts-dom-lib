@@ -44,6 +44,11 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * - `"set-attribute"`: Sets the attribute specified in `data-uf-event-attribute` to the value
  *   specified in `data-uf-event-data` at the target(s).
  * - `"reload"`: Reloads the web page.
+ * - `"set-value"`: Sets the value of the target(s) to the value specified in `data-uf-event-data`.
+ *   The target(s) must be an input, textarea or select element. If no value is specified, the
+ *   target will be set to an empty string or unchecked state. To set checkbox to a checked state
+ *   use the values 'true', '1' or 'checked'. After setting the value, the code will fire a
+ *   `"change"` and (when applicable) an `"input"` event.
  *
  * Use `data-uf-event-events` to specify the events that should trigger the action. The value
  * is one or multiple events separated by a space. This attribute is required. When missing,

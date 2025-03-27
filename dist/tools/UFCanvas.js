@@ -95,55 +95,55 @@ export class UFCanvas {
     /**
      * Gets the contents of a canvas as base64 encoded jpeg image.
      *
-     * @param aCanvas
-     * @param aQuality A value between 0 (0%) and 1 (100%)
+     * @param canvas
+     * @param quality A value between 0 (0%) and 1 (100%)
      *
      * @returns Base 64 encoded string
      */
-    static getAsJpegBase64(aCanvas, aQuality = 0.85) {
-        const result = aCanvas.toDataURL('image/jpeg', aQuality);
+    static getAsJpegBase64(canvas, quality = 0.85) {
+        const result = canvas.toDataURL('image/jpeg', quality);
         return result.replace('data:image/jpeg;base64,', '');
     }
     /**
      * Gets the contents of a canvas as base64 encoded png image.
      *
-     * @param aCanvas
+     * @param canvas
      *
      * @returns Base 64 encoded string
      */
-    static getAsPngBase64(aCanvas) {
-        const result = aCanvas.toDataURL('image/png');
+    static getAsPngBase64(canvas) {
+        const result = canvas.toDataURL('image/png');
         return result.replace('data:image/png;base64,', '');
     }
     /**
      * Draws an image in an area in the canvas.
      *
-     * @param aContext
+     * @param context
      *   Context to draw in
-     * @param anImage
+     * @param image
      *   Image to draw
-     * @param aX
+     * @param x
      *   X position of area
-     * @param aY
+     * @param y
      *   Y position of area
-     * @param aWidth
+     * @param width
      *   Width of area
-     * @param anHeight
+     * @param height
      *   Height of area
-     * @param aFit
+     * @param fit
      *   Determines how to fit the image within the area
-     * @param anHorizontalPosition
-     *   Determines the relative horizontal position in case aFit is either {@link UFFitType.Contain}
+     * @param horizontalPosition
+     *   Determines the relative horizontal position in case fit is either {@link UFFitType.Contain}
      *   or {@link UFFitType.Cover}.
-     * @param aVerticalPosition
-     *   Determines the relative vertical position in case aFit is either {@link UFFitType.Contain}
+     * @param verticalPosition
+     *   Determines the relative vertical position in case fit is either {@link UFFitType.Contain}
      *   or {@link UFFitType.Cover}. When missing use the value of aHorizontalPosition.
      */
-    static drawImage(aContext, anImage, aX, aY, aWidth, anHeight, aFit, anHorizontalPosition = 0.5, aVerticalPosition) {
-        aVerticalPosition = aVerticalPosition || anHorizontalPosition;
-        let scaleX = aWidth / anImage.width;
-        let scaleY = anHeight / anImage.height;
-        switch (aFit) {
+    static drawImage(context, image, x, y, width, height, fit, horizontalPosition = 0.5, verticalPosition) {
+        verticalPosition = verticalPosition || horizontalPosition;
+        let scaleX = width / image.width;
+        let scaleY = height / image.height;
+        switch (fit) {
             case UFFitType.Contain:
                 scaleX = scaleY = Math.min(scaleX, scaleY);
                 break;
@@ -151,11 +151,11 @@ export class UFCanvas {
                 scaleX = scaleY = Math.max(scaleX, scaleY);
                 break;
         }
-        const imageWidth = aWidth / scaleX;
-        const imageHeight = anHeight / scaleY;
-        const imageX = (anImage.width - imageWidth) * anHorizontalPosition;
-        const imageY = (anImage.height - imageHeight) * aVerticalPosition;
-        aContext.drawImage(anImage, imageX, imageY, imageWidth, imageHeight, aX, aY, aWidth, anHeight);
+        const imageWidth = width / scaleX;
+        const imageHeight = height / scaleY;
+        const imageX = (image.width - imageWidth) * horizontalPosition;
+        const imageY = (image.height - imageHeight) * verticalPosition;
+        context.drawImage(image, imageX, imageY, imageWidth, imageHeight, x, y, width, height);
     }
     /**
      * Draws a rounded rectangle using the current state of the canvas.
@@ -163,47 +163,47 @@ export class UFCanvas {
      * Source:
      * http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
      *
-     * @param aContext
+     * @param context
      *   Context to draw rectangle in
-     * @param aX
+     * @param x
      *   The top left x coordinate
      * @param aY
      *   The top left y coordinate
-     * @param aWidth
+     * @param width
      *   The width of the rectangle
-     * @param anHeight
+     * @param height
      *   The height of the rectangle
-     * @param aRadius
+     * @param radius
      *   The corner radius.
-     * @param aFill
+     * @param fill
      *   Whether to fill the rectangle.
-     * @param aStroke
+     * @param stroke
      *   Whether to draw a stroke with the rectangle.
      */
-    static drawRoundRect(aContext, aX, aY, aWidth, anHeight, aRadius = 5, aFill = false, aStroke = true) {
-        if (typeof aRadius === 'number') {
-            aRadius = { topLeft: aRadius, topRight: aRadius, bottomLeft: aRadius, bottomRight: aRadius };
+    static drawRoundRect(context, x, aY, width, height, radius = 5, fill = false, stroke = true) {
+        if (typeof radius === 'number') {
+            radius = { topLeft: radius, topRight: radius, bottomLeft: radius, bottomRight: radius };
         }
         else {
             // make sure aRadius contains all 4 corner properties
-            aRadius = $.extend(aRadius, { topLeft: 0, topRight: 0, bottomRight: 0, bottomLeft: 0 });
+            radius = $.extend(radius, { topLeft: 0, topRight: 0, bottomRight: 0, bottomLeft: 0 });
         }
-        aContext.beginPath();
-        aContext.moveTo(aX + aRadius.topLeft, aY);
-        aContext.lineTo(aX + aWidth - aRadius.topRight, aY);
-        aContext.quadraticCurveTo(aX + aWidth, aY, aX + aWidth, aY + aRadius.topRight);
-        aContext.lineTo(aX + aWidth, aY + anHeight - aRadius.bottomRight);
-        aContext.quadraticCurveTo(aX + aWidth, aY + anHeight, aX + aWidth - aRadius.bottomRight, aY + anHeight);
-        aContext.lineTo(aX + aRadius.bottomLeft, aY + anHeight);
-        aContext.quadraticCurveTo(aX, aY + anHeight, aX, aY + anHeight - aRadius.bottomLeft);
-        aContext.lineTo(aX, aY + aRadius.topLeft);
-        aContext.quadraticCurveTo(aX, aY, aX + aRadius.topLeft, aY);
-        aContext.closePath();
-        if (aFill) {
-            aContext.fill();
+        context.beginPath();
+        context.moveTo(x + radius.topLeft, aY);
+        context.lineTo(x + width - radius.topRight, aY);
+        context.quadraticCurveTo(x + width, aY, x + width, aY + radius.topRight);
+        context.lineTo(x + width, aY + height - radius.bottomRight);
+        context.quadraticCurveTo(x + width, aY + height, x + width - radius.bottomRight, aY + height);
+        context.lineTo(x + radius.bottomLeft, aY + height);
+        context.quadraticCurveTo(x, aY + height, x, aY + height - radius.bottomLeft);
+        context.lineTo(x, aY + radius.topLeft);
+        context.quadraticCurveTo(x, aY, x + radius.topLeft, aY);
+        context.closePath();
+        if (fill) {
+            context.fill();
         }
-        if (aStroke) {
-            aContext.stroke();
+        if (stroke) {
+            context.stroke();
         }
     }
     /**
@@ -212,20 +212,20 @@ export class UFCanvas {
      * Source:
      * http://stackoverflow.com/questions/4774172/image-manipulation-and-texture-mapping-using-html5-canvas
      *
-     * @param aContext
+     * @param context
      *   Canvas context
-     * @param anImage
+     * @param image
      *   Image/Canvas/Video object
-     * @param aPoints
+     * @param points
      *   Maps the 4 corners of the image to the 4 corners of the area.
-     * @param aDebug
+     * @param debug
      *   When true draw circles at vertexes
      */
-    static drawTexture(aContext, anImage, aPoints, aDebug = false) {
+    static drawTexture(context, image, points, debug = false) {
         // split the square in two triangles (clockwise order)
         const triangles = [
-            [aPoints.topLeft, aPoints.topRight, aPoints.bottomRight],
-            [aPoints.bottomRight, aPoints.bottomLeft, aPoints.topLeft]
+            [points.topLeft, points.topRight, points.bottomRight],
+            [points.bottomRight, points.bottomLeft, points.topLeft]
         ];
         // draw each triangle
         triangles.forEach((triangleVertex) => {
@@ -233,30 +233,30 @@ export class UFCanvas {
             const { x: x0, y: y0, u: u0, v: v0 } = point0;
             const { x: x1, y: y1, u: u1, v: v1 } = point1;
             const { x: x2, y: y2, u: u2, v: v2 } = point2;
-            if (aDebug) {
+            if (debug) {
                 // show dots at vertexes
-                aContext.save();
-                aContext.fillStyle = 'red';
-                aContext.beginPath();
-                aContext.arc(x0, y0, 5, 0, 2 * Math.PI);
-                aContext.fill();
-                aContext.beginPath();
-                aContext.arc(x1, y1, 5, 0, 2 * Math.PI);
-                aContext.fill();
-                aContext.beginPath();
-                aContext.arc(x2, y2, 5, 0, 2 * Math.PI);
-                aContext.fill();
-                aContext.restore();
+                context.save();
+                context.fillStyle = 'red';
+                context.beginPath();
+                context.arc(x0, y0, 5, 0, 2 * Math.PI);
+                context.fill();
+                context.beginPath();
+                context.arc(x1, y1, 5, 0, 2 * Math.PI);
+                context.fill();
+                context.beginPath();
+                context.arc(x2, y2, 5, 0, 2 * Math.PI);
+                context.fill();
+                context.restore();
             }
             // set clipping area so that only pixels inside the triangle will be affected by the image 
             // drawing operation
-            aContext.save();
-            aContext.beginPath();
-            aContext.moveTo(x0, y0);
-            aContext.lineTo(x1, y1);
-            aContext.lineTo(x2, y2);
-            aContext.closePath();
-            aContext.clip();
+            context.save();
+            context.beginPath();
+            context.moveTo(x0, y0);
+            context.lineTo(x1, y1);
+            context.lineTo(x2, y2);
+            context.closePath();
+            context.clip();
             // compute matrix transform
             const delta = u0 * v1 + v0 * u2 + u1 * v2 - v1 * u2 - v0 * u1 - u0 * v2;
             const deltaA = x0 * v1 + v0 * x2 + x1 * v2 - v1 * x2 - v0 * x1 - x0 * v2;
@@ -268,9 +268,9 @@ export class UFCanvas {
             const deltaF = u0 * v1 * y2 + v0 * y1 * u2 + y0 * u1 * v2 - y0 * v1 * u2 - v0 * u1 * y2
                 - u0 * y1 * v2;
             // draw the transformed image
-            aContext.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
-            aContext.drawImage(anImage, 0, 0);
-            aContext.restore();
+            context.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
+            context.drawImage(image, 0, 0);
+            context.restore();
         });
     }
     /**

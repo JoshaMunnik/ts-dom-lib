@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Multiple radioes</title>
+  </head>
+  <body>
+    <form>
+      <input id="first" type="radio" name="test" value="1" />1<br/>
+      <input id="second" type="radio" name="test" value="2" />2<br/>
+      <input type="radio" name="test" value="3" />3<br/>
+      <input type="radio" name="test" value="4" />4<br/>
+      <input type="radio" name="test" value="5" />5<br/>
+    </form>
+    <div data-uf-toggle-selector="#first">
+      1 selected
+    </div>
+    <div data-uf-toggle-selector="#second">
+      2 selected
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

@@ -103,31 +103,31 @@ export declare class UFBrowser {
     /**
      * Returns location from an event. It supports both touch and mouse events.
      *
-     * @param {jQuery.Event} anEvent
+     * @param {jQuery.Event} event
      *   jQuery event object
      *
      * @returns {{pageX: number, pageY: number}} object with position properties.
      */
-    static getPageXY(anEvent: Event): object;
+    static getPageXY(event: Event): object;
     /**
      * Return value of a query parameter
      *
-     * @param aName
+     * @param name
      *   Parameter name
      *
      * @returns part behind the = (till the next & or # character) or empty string if aName
      *   parameter is not found
      */
-    static getParameterByName(aName: string): string;
+    static getParameterByName(name: string): string;
     /**
      * Gets a css rule.
      *
-     * @param aSelector
+     * @param selector
      *   Name of rule (must match definition exactly)
      *
      * @returns Either false if no rule could be found or an object with rules.
      */
-    static getCssRule(aSelector: string): false | CSSRule;
+    static getCssRule(selector: string): false | CSSRule;
     /**
      * Gets the Internet Explorer version or false if it is not an Internet Explorer browser.
      *
@@ -146,33 +146,33 @@ export declare class UFBrowser {
     /**
      * Checks if an element is clicked upon or one of the children is clicked upon.
      *
-     * @param anElement
+     * @param element
      *   Element to check
-     * @param anEvent
+     * @param event
      *   Event object from click event
      *
      * @returns `true`: element is clicked upon, `false`: element is not clicked upon
      */
-    static isClicked(anElement: Element, anEvent: Event): boolean;
+    static isClicked(element: Element, event: Event): boolean;
     /**
      * Animates an element using css animation and calls a callback at the end. Assumes the css class
      * contains animate definitions that will start the animation.
      *
-     * The method will install an event listener for 'animationend', add the class to the element.
-     * When the event is fired, the method will remove the event listener, the css class and call the
-     * callback if any.
+     * The method will install an event listener for 'animationend', add the classes to the element.
+     * When the event is fired, the method will remove the event listener, the css classes and call
+     * the callback if any.
      *
      * The event listener will also check if the event was fired from the specified
      * element (in case there are more animations taking place)
      *
-     * @param anElement
+     * @param element
      *   Element to animate
-     * @param aClasses
+     * @param classes
      *   One or more css classes to add (separated by a space)
-     * @param aCallback
+     * @param callback
      *   Callback to call
      */
-    static animate(anElement: Element | string, aClasses: string, aCallback?: UFCallback): void;
+    static animate(element: Element | string, classes: string, callback?: UFCallback): void;
     /**
      * Adds a class to or removes a class from an element (using toggleClass), assuming this results
      * in a transition animation.
@@ -183,64 +183,64 @@ export declare class UFBrowser {
      * The event listener will also check if the event was fired from the specified element (in
      * case there are more transitions taking place)
      *
-     * @param anElement
+     * @param element
      *   Element to add class to or remove from
-     * @param aClasses
+     * @param classes
      *   One or more css classes to add or remove
-     * @param aCallback
+     * @param callback
      *   Callback to call
      */
-    static transition(anElement: string | Element, aClasses: string, aCallback?: UFCallback): void;
+    static transition(element: string | Element, classes: string, callback?: UFCallback): void;
     /**
      * Gets the url to the background image (if any).
      *
      * Based on answer:
      * https://stackoverflow.com/a/12784180/968451
      *
-     * @param anElement
+     * @param element
      *   Element to get background image url for
      *
      * @returns Background image or null if no image is used
      */
-    static getBackgroundImageUrl(anElement: HTMLElement | string): string | null;
+    static getBackgroundImageUrl(element: HTMLElement | string): string | null;
     /**
      * Finds a parent or (greater) grandparent that matches a test function.
      *
-     * @param anElement
+     * @param element
      *   Element to process
-     * @param aTest
+     * @param testCallback
      *   A function expecting one parameter and returning a boolean
      *
      * @returns The parent or null if none passed the test
      */
-    static findParent(anElement: Element | string, aTest: (element: HTMLElement) => boolean): null | HTMLElement;
+    static findParent(element: Element | string, testCallback: (element: HTMLElement) => boolean): null | HTMLElement;
     /**
      * Checks if an element is scrolled to the bottom.
      *
-     * @param anElement
+     * @param element
      *   Element to check
      *
      * @returns True if scrolled at the bottom
      */
-    static atBottom(anElement: string | Element): boolean;
+    static atBottom(element: string | Element): boolean;
     /**
      * Scrolls an element to the bottom.
      *
-     * @param anElement
+     * @param element
      *   Element to scroll
      */
-    static scrollToBottom(anElement: string | Element): void;
+    static scrollToBottom(element: string | Element): void;
     /**
      * Loads a new image.
      *
-     * @param anUrl
+     * @param url
      *   Url to image
-     * @param aSuccess
+     * @param successCallback
      *   Callback method when successful, will be passed the Image as parameter.
-     * @param anError
+     * @param errorCallback
      *   Callback method when error occurred, will be passed the Image as parameter.
      *
      * @returns Image dom object
      */
-    static loadImage(anUrl: string, aSuccess?: (image: HTMLImageElement) => void, anError?: (image: HTMLImageElement) => void): HTMLImageElement;
+    static loadImage(url: string, successCallback?: (image: HTMLImageElement) => void, errorCallback?: (image: HTMLImageElement) => void): HTMLImageElement;
 }

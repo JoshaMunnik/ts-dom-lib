@@ -53,13 +53,13 @@ export declare class UFDetailsHelper extends UFHtmlHelper {
     /**
      * Collapses the details elements.
      *
-     * @param anElement
+     * @param element
      */
     private handleCollapseClick;
     /**
      * Expands the details elements.
      *
-     * @param anElement
+     * @param element
      */
     private handleExpandClick;
 }

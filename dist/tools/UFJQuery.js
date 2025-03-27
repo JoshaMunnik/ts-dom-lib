@@ -40,29 +40,29 @@ export class UFJQuery {
     /**
      * Returns jQuery instance of an element.
      *
-     * @param anElement
+     * @param element
      *   Selector text or jQuery instance
      *
      * @returns anElement itself if it is an jQuery instance else the method returns `$(anElement)`.
      *   If anElement is a falsy, the method will return anElement.
      */
-    static get(anElement) {
-        return anElement ? ((anElement instanceof jQuery) ? anElement : $(anElement)) : anElement;
+    static get(element) {
+        return element ? ((element instanceof jQuery) ? element : $(element)) : element;
     }
     /**
      * Adds the name space to the event(s).
      *
-     * @param anEvents
+     * @param events
      *   One or more events separated by a space character
-     * @param aNamespace
+     * @param namespace
      *   Namespace to add (without '.')
      *
      * @returns The events with namespace separated by a space characters.
      */
-    static addEventNamespace(anEvents, aNamespace) {
-        return anEvents
+    static addEventNamespace(events, namespace) {
+        return events
             .split(' ')
-            .map(event => event.indexOf(aNamespace) < 0 ? event + '.' + aNamespace : event)
+            .map(event => event.indexOf(namespace) < 0 ? event + '.' + namespace : event)
             .join(' ');
     }
 }

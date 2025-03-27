@@ -34,22 +34,22 @@ export declare class UFAudio {
      * Based on:
      * https://stackoverflow.com/a/46117824/968451
      *
-     * @param anAudio
+     * @param audio
      *   Audio to check
      *
      * @returns True when playing
      */
-    static isPlaying(anAudio: HTMLAudioElement): boolean;
+    static isPlaying(audio: HTMLAudioElement): boolean;
     /**
      * Checks if an audio is paused.
      *
      * Based on:
      * https://stackoverflow.com/a/46117824/968451
      *
-     * @param anAudio
+     * @param audio
      *   Audio to check
      *
      * @returns True when playing
      */
-    static isPaused(anAudio: HTMLAudioElement): boolean;
+    static isPaused(audio: HTMLAudioElement): boolean;
 }

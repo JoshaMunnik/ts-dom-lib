@@ -35,22 +35,22 @@ export declare class UFJQuery {
     /**
      * Returns jQuery instance of an element.
      *
-     * @param anElement
+     * @param element
      *   Selector text or jQuery instance
      *
      * @returns anElement itself if it is an jQuery instance else the method returns `$(anElement)`.
      *   If anElement is a falsy, the method will return anElement.
      */
-    static get(anElement: any): JQuery | any;
+    static get(element: any): JQuery | any;
     /**
      * Adds the name space to the event(s).
      *
-     * @param anEvents
+     * @param events
      *   One or more events separated by a space character
-     * @param aNamespace
+     * @param namespace
      *   Namespace to add (without '.')
      *
      * @returns The events with namespace separated by a space characters.
      */
-    static addEventNamespace(anEvents: string, aNamespace: string): string;
+    static addEventNamespace(events: string, namespace: string): string;
 }
