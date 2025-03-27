@@ -661,13 +661,16 @@ export class UFFormToggleHelper extends UFHtmlHelper {
    * the event.
    *
    * @param elements
-   * @param skipElement
+   * @param sourceElement
    *
    * @private
    */
-  private fireChangeEvent(elements: HTMLInputElement[], skipElement: HTMLInputElement) {
+  private fireChangeEvent(elements: HTMLInputElement[], sourceElement: HTMLInputElement) {
+    if (!sourceElement.checked) {
+      return;
+    }
     elements.forEach(element => {
-      if (skipElement != element) {
+      if ((sourceElement != element) && !element.checked) {
         element.dispatchEvent(new Event('change'));
       }
     });

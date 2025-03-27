@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 // region imports
+import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFEventManager } from "../events/UFEventManager.js";
 import { UFHtml } from "../tools/UFHtml.js";
@@ -95,6 +96,11 @@ const ChangeEvents = 'click keyup keydown input change';
  * Use a combination of `data-uf-toggle-XXXX` at an element. It alters the element depending on
  * if one or more elements matches a condition or not.
  *
+ * If a targeted form element is a radio button, this class will install listeners on all radio
+ * buttons. When a radio button fires a change event, the code will dispatch a change event to all
+ * other radio buttons in the same group. This fixes the issue that radio buttons do not fire a
+ * change event when they are unselected.
+ *
  * The following data attributes can be added:
  *
  * - `data-uf-toggle-type` = 'auto' (default), 'value', 'valid', 'property'
@@ -118,7 +124,8 @@ const ChangeEvents = 'click keyup keydown input change';
  *   been set, ['true'] is used for the values list.
  *
  * - `data-uf-toggle-property` = string (default = 'checked')
- *   The property of the input element to get the value from.
+ *   The property of the input element to get the value from. With `checked` properties use `"true"`
+ *   and `"false"` as values.
  *
  * - `data-uf-toggle-selector` = string (default = '')
  *   To select the element or elements to check. If multiple elements are selected, the first
@@ -161,7 +168,8 @@ const ChangeEvents = 'click keyup keydown input change';
  *
  * - `data-uf-toggle-values` = string
  *   Contains multiple values separated by the separator text as set by
- *   `data-uf-toggle-values-separator`.
+ *   `data-uf-toggle-values-separator`. If both `data-uf-toggle-value` and `data-uf-toggle-values`
+ *   are not set and the `checked` property is tracked, the value `"true"` is used.
  *
  * - `data-uf-toggle-values-separator` = string (default = ',').
  *   Separator string to split the value of `data-uf-toggle-values` with.
@@ -177,20 +185,28 @@ const ChangeEvents = 'click keyup keydown input change';
  *   - any other value is interpreted as a selector and can select one or multiple elements.
  */
 export class UFFormToggleHelper extends UFHtmlHelper {
+    constructor() {
+        // region private variables
+        super(...arguments);
+        this.m_radioGroups = new UFMapOfSet();
+    }
+    // endregion
     // region UFHtmlHelper
     /**
      * @inheritDoc
      */
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.Type);
+        this.m_radioGroups.clear();
         const elements = document.querySelectorAll(ToggleDomSelectors);
         elements.forEach(element => {
             const data = this.buildToggleData(element);
             if (data) {
-                data.formElements.forEach(formElement => UFEventManager.instance.addListenerForGroup(DataAttribute.Type, formElement, ChangeEvents, () => this.updateToggleElement(element, data)));
+                data.formElements.forEach(formElement => this.initializeFormElement(formElement, element, data));
                 this.updateToggleElement(element, data);
             }
         });
+        this.installRadioGroupFix();
     }
     // endregion
     // region private methods
@@ -483,6 +499,74 @@ export class UFFormToggleHelper extends UFHtmlHelper {
                 UFObject.set(element, 'required', !valid);
                 break;
         }
+    }
+    /**
+     * Initializes a form element. Install listener and check if it is a radio button.
+     *
+     * @param formElement
+     * @param element
+     * @param data
+     *
+     * @private
+     */
+    initializeFormElement(formElement, element, data) {
+        UFEventManager.instance.addListenerForGroup(DataAttribute.Type, formElement, ChangeEvents, () => this.updateToggleElement(element, data));
+        if (formElement.tagName == "INPUT") {
+            this.checkRadioGroup(formElement);
+        }
+    }
+    /**
+     * Adds the radio element to the radio group if a name has been set.
+     *
+     * @param radioElement
+     *
+     * @private
+     */
+    checkRadioGroup(radioElement) {
+        if (radioElement.type === 'radio') {
+            const name = radioElement.name;
+            if (name) {
+                this.m_radioGroups.add(name, radioElement);
+            }
+        }
+    }
+    /**
+     * This method installs an event listener for every radio button in a radio group that will
+     * fire a change event to all other radio buttons in the group that have at least one toggle
+     * action attached to it.
+     *
+     * This fixes the problem that no event is fired for radio buttons in a group that get unselected
+     * because another radio button in the same group gets selected.
+     *
+     * @private
+     */
+    installRadioGroupFix() {
+        this.m_radioGroups.getKeys().forEach(name => {
+            const allRadios = document.querySelectorAll(`input[name="${name}"][type="radio"]`);
+            const usedRadios = this.m_radioGroups.get(name);
+            allRadios.forEach(radio => {
+                UFEventManager.instance.addListenerForGroup(DataAttribute.Type, radio, 'change', () => this.fireChangeEvent(usedRadios, radio));
+            });
+        });
+    }
+    /**
+     * Fires a change event to all elements in a list, except for the element that triggered
+     * the event.
+     *
+     * @param elements
+     * @param sourceElement
+     *
+     * @private
+     */
+    fireChangeEvent(elements, sourceElement) {
+        if (!sourceElement.checked) {
+            return;
+        }
+        elements.forEach(element => {
+            if ((sourceElement != element) && !element.checked) {
+                element.dispatchEvent(new Event('change'));
+            }
+        });
     }
 }
 // endregion

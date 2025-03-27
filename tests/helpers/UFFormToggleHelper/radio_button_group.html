@@ -18,6 +18,15 @@
     <div data-uf-toggle-selector="#second">
       2 selected
     </div>
+    <div data-uf-toggle-selector="[name='test'][value='3'],[name='test'][value='4']" data-uf-toggle-condition="any">
+      3 or 4 selected
+    </div>
+    <div data-uf-toggle-selector="[name='test'][value='4'],[name='test'][value='5']" data-uf-toggle-condition="any">
+      4 or 5 selected
+    </div>
+    <div data-uf-toggle-selector="[name='test'][value='5']">
+      5 selected
+    </div>
     <script src="../../../build/bundle.js" type="application/javascript"></script>
     <script type="application/javascript">
       lib.UFHtmlHelpers.instance.init();

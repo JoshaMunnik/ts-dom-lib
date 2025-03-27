@@ -32,6 +32,11 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * Use a combination of `data-uf-toggle-XXXX` at an element. It alters the element depending on
  * if one or more elements matches a condition or not.
  *
+ * If a targeted form element is a radio button, this class will install listeners on all radio
+ * buttons. When a radio button fires a change event, the code will dispatch a change event to all
+ * other radio buttons in the same group. This fixes the issue that radio buttons do not fire a
+ * change event when they are unselected.
+ *
  * The following data attributes can be added:
  *
  * - `data-uf-toggle-type` = 'auto' (default), 'value', 'valid', 'property'
@@ -55,7 +60,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *   been set, ['true'] is used for the values list.
  *
  * - `data-uf-toggle-property` = string (default = 'checked')
- *   The property of the input element to get the value from.
+ *   The property of the input element to get the value from. With `checked` properties use `"true"`
+ *   and `"false"` as values.
  *
  * - `data-uf-toggle-selector` = string (default = '')
  *   To select the element or elements to check. If multiple elements are selected, the first
@@ -98,7 +104,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *
  * - `data-uf-toggle-values` = string
  *   Contains multiple values separated by the separator text as set by
- *   `data-uf-toggle-values-separator`.
+ *   `data-uf-toggle-values-separator`. If both `data-uf-toggle-value` and `data-uf-toggle-values`
+ *   are not set and the `checked` property is tracked, the value `"true"` is used.
  *
  * - `data-uf-toggle-values-separator` = string (default = ',').
  *   Separator string to split the value of `data-uf-toggle-values` with.
@@ -114,6 +121,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *   - any other value is interpreted as a selector and can select one or multiple elements.
  */
 export declare class UFFormToggleHelper extends UFHtmlHelper {
+    private m_radioGroups;
     /**
      * @inheritDoc
      */
@@ -193,4 +201,43 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      * @private
      */
     private updateToggleTargetElement;
+    /**
+     * Initializes a form element. Install listener and check if it is a radio button.
+     *
+     * @param formElement
+     * @param element
+     * @param data
+     *
+     * @private
+     */
+    private initializeFormElement;
+    /**
+     * Adds the radio element to the radio group if a name has been set.
+     *
+     * @param radioElement
+     *
+     * @private
+     */
+    private checkRadioGroup;
+    /**
+     * This method installs an event listener for every radio button in a radio group that will
+     * fire a change event to all other radio buttons in the group that have at least one toggle
+     * action attached to it.
+     *
+     * This fixes the problem that no event is fired for radio buttons in a group that get unselected
+     * because another radio button in the same group gets selected.
+     *
+     * @private
+     */
+    private installRadioGroupFix;
+    /**
+     * Fires a change event to all elements in a list, except for the element that triggered
+     * the event.
+     *
+     * @param elements
+     * @param sourceElement
+     *
+     * @private
+     */
+    private fireChangeEvent;
 }
