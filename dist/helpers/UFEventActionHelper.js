@@ -62,6 +62,8 @@ var Action;
     Action["SetAttribute"] = "set-attribute";
     Action["Reload"] = "reload";
     Action["SetValue"] = "set-value";
+    Action["SetText"] = "set-text";
+    Action["SetHtml"] = "set-html";
 })(Action || (Action = {}));
 // endregion
 // region exports
@@ -89,6 +91,10 @@ var Action;
  *   target will be set to an empty string or unchecked state. To set checkbox to a checked state
  *   use the values 'true', '1' or 'checked'. After setting the value, the code will fire a
  *   `"change"` and (when applicable) an `"input"` event.
+ * - `"set-text"`: Sets the inner text content of the target(s) to the value specified in
+ *   `data-uf-event-data`.
+ * - `"set-html"`: Sets the inner HTML content of the target(s) to the value specified in
+ *   `data-uf-event-data`.
  *
  * Use `data-uf-event-events` to specify the events that should trigger the action. The value
  * is one or multiple events separated by a space. This attribute is required. When missing,
@@ -341,6 +347,12 @@ export class UFEventActionHelper extends UFHtmlHelper {
                 break;
             case Action.SetValue:
                 UFHtml.assignValue(element, data);
+                break;
+            case Action.SetText:
+                element.innerText = data;
+                break;
+            case Action.SetHtml:
+                element.innerHTML = data;
                 break;
         }
     }

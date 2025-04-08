@@ -650,7 +650,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
           DataAttribute.Type,
           radio,
           'change',
-          () => this.fireChangeEvent(usedRadios, radio)
+          () => this.dispatchChangeEvent(usedRadios, radio)
         );
       });
     });
@@ -665,7 +665,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
    *
    * @private
    */
-  private fireChangeEvent(elements: HTMLInputElement[], sourceElement: HTMLInputElement) {
+  private dispatchChangeEvent(elements: HTMLInputElement[], sourceElement: HTMLInputElement) {
     if (!sourceElement.checked) {
       return;
     }
