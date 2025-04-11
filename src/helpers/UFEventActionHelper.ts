@@ -42,6 +42,8 @@ enum DataAttribute {
   EventData = 'data-uf-event-data',
   EventAttribute = 'data-uf-event-attribute',
   EventState = 'data-uf-event-state',
+  EventKey = 'data-uf-event-key',
+  EventPreventDefault = 'data-uf-event-prevent-default',
   ClickAction = 'data-uf-click-action',
   ClickTarget = 'data-uf-click-target',
   ClickData = 'data-uf-click-data',
@@ -128,6 +130,13 @@ enum Action {
  * a `newState` property. Use this attribute with the value "open" together with the "toggle" event
  * to perform an action when for example a dialog is being opened.
  *
+ * Use `data-uf-event-key` to specify the key that should be pressed to trigger the action.
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key} for more possible
+ * values.
+ *
+ * Use `data-uf-event-prevent-default` to prevent the default action of the event if an action
+ * was triggered. The value of the attribute is ignored.
+ *
  * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and
  * `data-uf-click-attribute` as shortcuts for "click" events.
  *
@@ -209,6 +218,10 @@ export class UFEventActionHelper extends UFHtmlHelper {
     const data = UFHtml.getAttribute(element, DataAttribute.EventData + postFix);
     const attribute = UFHtml.getAttribute(element, DataAttribute.EventAttribute + postFix);
     const state = UFHtml.getAttribute(element, DataAttribute.EventState + postFix);
+    const key = UFHtml.getAttribute(element, DataAttribute.EventKey + postFix);
+    const preventDefault = UFHtml.hasAttribute(
+      element, DataAttribute.EventPreventDefault + postFix
+    );
     if (!events || !action) {
       return;
     }
@@ -217,7 +230,9 @@ export class UFEventActionHelper extends UFHtmlHelper {
       element,
       events,
       (event) =>
-        this.performActionForEvent(event, element, action, target, data, attribute, state)
+        this.performActionForEvent(
+          event, element, action, target, data, attribute, state, key, preventDefault
+        )
     );
   }
 
@@ -286,19 +301,31 @@ export class UFEventActionHelper extends UFHtmlHelper {
    *   Attribute used by the `set-attribute` action.
    * @param state
    *   State to check if the event is a `ToggleEvent`.
+   * @param key
+   *   Key to check if the event is a `KeyboardEvent`.
+   * @param preventDefault
+   *   When true, prevent the default action of the event.
    *
    * @private
    */
   private performActionForEvent(
     event: Event, element: HTMLElement, action: string, target: string, data: string,
-    attribute: string, state: string
+    attribute: string, state: string, key: string, preventDefault: boolean
   ) {
     if (event instanceof ToggleEvent) {
       if (state && state !== event.newState) {
         return;
       }
     }
+    else if (event instanceof KeyboardEvent) {
+      if (key !== event.key) {
+        return;
+      }
+    }
     this.performAction(element, action, target, data, attribute);
+    if (preventDefault) {
+      event.preventDefault();
+    }
   }
 
   /**
@@ -402,7 +429,6 @@ export class UFEventActionHelper extends UFHtmlHelper {
         break;
     }
   }
-
 
   // endregion
 }

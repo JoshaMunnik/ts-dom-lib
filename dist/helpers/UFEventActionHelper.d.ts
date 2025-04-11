@@ -49,6 +49,10 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *   target will be set to an empty string or unchecked state. To set checkbox to a checked state
  *   use the values 'true', '1' or 'checked'. After setting the value, the code will fire a
  *   `"change"` and (when applicable) an `"input"` event.
+ * - `"set-text"`: Sets the inner text content of the target(s) to the value specified in
+ *   `data-uf-event-data`.
+ * - `"set-html"`: Sets the inner HTML content of the target(s) to the value specified in
+ *   `data-uf-event-data`.
  *
  * Use `data-uf-event-events` to specify the events that should trigger the action. The value
  * is one or multiple events separated by a space. This attribute is required. When missing,
@@ -74,6 +78,13 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * Use `data-uf-event-state` to specify the state to check when listening for events that have
  * a `newState` property. Use this attribute with the value "open" together with the "toggle" event
  * to perform an action when for example a dialog is being opened.
+ *
+ * Use `data-uf-event-key` to specify the key that should be pressed to trigger the action.
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key} for more possible
+ * values.
+ *
+ * Use `data-uf-event-prevent-default` to prevent the default action of the event if an action
+ * was triggered. The value of the attribute is ignored.
  *
  * Use `data-uf-click-action`, `data-uf-click-target`, `data-uf-click-data` and
  * `data-uf-click-attribute` as shortcuts for "click" events.
@@ -159,6 +170,10 @@ export declare class UFEventActionHelper extends UFHtmlHelper {
      *   Attribute used by the `set-attribute` action.
      * @param state
      *   State to check if the event is a `ToggleEvent`.
+     * @param key
+     *   Key to check if the event is a `KeyboardEvent`.
+     * @param preventDefault
+     *   When true, prevent the default action of the event.
      *
      * @private
      */

@@ -239,5 +239,5 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      */
-    private fireChangeEvent;
+    private dispatchChangeEvent;
 }

@@ -545,7 +545,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             const allRadios = document.querySelectorAll(`input[name="${name}"][type="radio"]`);
             const usedRadios = this.m_radioGroups.get(name);
             allRadios.forEach(radio => {
-                UFEventManager.instance.addListenerForGroup(DataAttribute.Type, radio, 'change', () => this.fireChangeEvent(usedRadios, radio));
+                UFEventManager.instance.addListenerForGroup(DataAttribute.Type, radio, 'change', () => this.dispatchChangeEvent(usedRadios, radio));
             });
         });
     }
@@ -558,7 +558,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
      *
      * @private
      */
-    fireChangeEvent(elements, sourceElement) {
+    dispatchChangeEvent(elements, sourceElement) {
         if (!sourceElement.checked) {
             return;
         }

@@ -212,7 +212,7 @@ export class UFHtmlHelper {
     dataAttribute: string, callback: ProcessWithPostfixCallback, max: number = 20
   ): void {
     const elements = document
-      .querySelectorAll<HTMLElement>('[' + dataAttribute + ']');
+      .querySelectorAll<HTMLElement>(`[${dataAttribute}]`);
     elements.forEach(
       element => callback(element, '')
     );
