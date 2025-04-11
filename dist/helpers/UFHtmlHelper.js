@@ -174,7 +174,7 @@ export class UFHtmlHelper {
      */
     processDataAttributeWithPostfix(dataAttribute, callback, max = 20) {
         const elements = document
-            .querySelectorAll('[' + dataAttribute + ']');
+            .querySelectorAll(`[${dataAttribute}]`);
         elements.forEach(element => callback(element, ''));
         for (let groupIndex = 1; groupIndex <= max; groupIndex++) {
             const postFix = `-${groupIndex}`;

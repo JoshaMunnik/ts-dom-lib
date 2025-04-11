@@ -185,6 +185,17 @@ export declare class UFHtml {
      */
     static getAttribute(element: HTMLElement, name: string, defaultValue?: string): string;
     /**
+     * Checks if an element has an attribute.
+     *
+     * @param element
+     *   Element to check attribute for
+     * @param name
+     *   Name of attribute
+     *
+     * @returns `true` if the element has the attribute, `false` if not.
+     */
+    static hasAttribute(element: HTMLElement, name: string): boolean;
+    /**
      * Gets an element for a selector. If the selector is an element, it just returns the element.
      *
      * If the selector is a string, it will try to find the element in the document.

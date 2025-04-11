@@ -131,7 +131,7 @@ enum Action {
  * to perform an action when for example a dialog is being opened.
  *
  * Use `data-uf-event-key` to specify the key that should be pressed to trigger the action.
- * See {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key} for more possible
+ * See {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key} for possible
  * values.
  *
  * Use `data-uf-event-prevent-default` to prevent the default action of the event if an action
