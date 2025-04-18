@@ -309,7 +309,7 @@ export class UFHtml {
      * If no element can be found, the method will throw an error.
      *
      * @param id
-     *   Element, selector text or null
+     *   The dom id of element
      *
      * @returns found element
      *
@@ -575,6 +575,34 @@ export class UFHtml {
             return false;
         }
         element.dispatchEvent(new Event('change'));
+        return true;
+    }
+    /**
+     * Checks if an element is visible, that it is not hidden by some styling and the element has
+     * some size.
+     *
+     * @param element
+     *   Element to check
+     * @param checkParent
+     *   True to check the parents of the element as well, false to only check the element itself.
+     *
+     * @returns `true` if the element is visible, `false` if not. Note that if only element itself
+     *   is checked, it does not take into account of any parent is not visible.
+     */
+    static isVisible(element, checkParent = true) {
+        const style = window.getComputedStyle(element);
+        // hidden via styling
+        if ((style.display === 'none') || (style.visibility === 'hidden') || (style.opacity === '0')) {
+            return false;
+        }
+        // element has no dimensions
+        if ((element.offsetWidth === 0) && (element.offsetHeight === 0)) {
+            return false;
+        }
+        // check parents
+        if (checkParent && element.parentElement) {
+            return this.isVisible(element.parentElement);
+        }
         return true;
     }
 }

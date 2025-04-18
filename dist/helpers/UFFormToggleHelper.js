@@ -49,6 +49,7 @@ var DataAttribute;
     DataAttribute["ValuesSeparator"] = "data-uf-toggle-values-separator";
     DataAttribute["Required"] = "data-uf-toggle-required";
     DataAttribute["Target"] = "data-uf-toggle-target";
+    DataAttribute["Compare"] = "data-uf-toggle-compare";
 })(DataAttribute || (DataAttribute = {}));
 var ToggleType;
 (function (ToggleType) {
@@ -78,13 +79,24 @@ var ToggleRequired;
     ToggleRequired[ToggleRequired["Match"] = 1] = "Match";
     ToggleRequired[ToggleRequired["NoMatch"] = 2] = "NoMatch";
 })(ToggleRequired || (ToggleRequired = {}));
+var ToggleCompare;
+(function (ToggleCompare) {
+    ToggleCompare[ToggleCompare["Equal"] = 0] = "Equal";
+    ToggleCompare[ToggleCompare["Contain"] = 1] = "Contain";
+    ToggleCompare[ToggleCompare["Inside"] = 2] = "Inside";
+    ToggleCompare[ToggleCompare["LessThan"] = 3] = "LessThan";
+    ToggleCompare[ToggleCompare["LessThanOrEqual"] = 4] = "LessThanOrEqual";
+    ToggleCompare[ToggleCompare["GreaterThan"] = 5] = "GreaterThan";
+    ToggleCompare[ToggleCompare["GreaterThanOrEqual"] = 6] = "GreaterThanOrEqual";
+})(ToggleCompare || (ToggleCompare = {}));
 const ToggleDomSelectors = `
   [${DataAttribute.Type}], 
   [${DataAttribute.Selector}], 
   [${DataAttribute.Change}], 
   [${DataAttribute.Classes}], 
   [${DataAttribute.ClassesMatch}], 
-  [${DataAttribute.Condition}]
+  [${DataAttribute.Condition}],
+  [${DataAttribute.Compare}]
 `;
 const ChangeEvents = 'click keyup keydown input change';
 // endregion
@@ -109,7 +121,7 @@ const ChangeEvents = 'click keyup keydown input change';
  *      the input element is considered valid if the value is not empty.
  *   - 'valid' = the html5 validation result is used.
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
- the element.
+ *     the element.
  *   - 'auto' = select the type based on certain conditions:
  *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
  *       input element is a file input element.
@@ -161,6 +173,16 @@ const ChangeEvents = 'click keyup keydown input change';
  *   valid or be equal to the one of the specified values. With 'all' all elements must either be
  *   valid or be equal to one of the specified values. 'none' is the reverse of 'all', none of
  *   the elements must be valid or be equal to any of the specified values.
+ *
+ * - `data-uf-toggle-compare` = `equal` (default), `contain`, `inside`, `lt`, `lte`, `gt`, `gte`
+ *   Determines how to compare the value of an element with the values:
+ *   - `equal` = the value of the element must be equal to one of the values.
+ *   - `contain` = part of the value of the element must equal one of the values (case incentive).
+ *   - `inside` = part of one of the values must equal the value of the element (case incentive).
+ *   - `lt` = the value of the element must be less than one of the values (numeric).
+ *   - `lte` = the value of the element must be less than or equal to one of the values (numeric).
+ *   - `gt` = the value of the element must be greater than one of the values (numeric).
+ *   - `gte` = the value of the element must be greater than or equal to one of the values (numeric).
  *
  * - `data-uf-toggle-value` = string (single value)
  *   Alias for `data-uf-toggle-values`. If `data-uf-toggle-values` is also specified, this
@@ -267,6 +289,29 @@ export class UFFormToggleHelper extends UFHtmlHelper {
      * @param element
      * @private
      */
+    getToggleCompare(element) {
+        const compareText = UFHtml.getAttribute(element, DataAttribute.Compare);
+        switch (compareText) {
+            case 'contain':
+                return ToggleCompare.Contain;
+            case 'inside':
+                return ToggleCompare.Inside;
+            case 'lt':
+                return ToggleCompare.LessThan;
+            case 'lte':
+                return ToggleCompare.LessThanOrEqual;
+            case 'gt':
+                return ToggleCompare.GreaterThan;
+            case 'gte':
+                return ToggleCompare.GreaterThanOrEqual;
+            default:
+                return ToggleCompare.Equal;
+        }
+    }
+    /**
+     * @param element
+     * @private
+     */
     getToggleRequired(element) {
         const requiredText = UFHtml.getAttribute(element, DataAttribute.Required);
         switch (requiredText) {
@@ -329,6 +374,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
         const cssClassesNoMatch = UFHtml.getAttribute(element, DataAttribute.Classes);
         const cssClassesMatch = UFHtml.getAttribute(element, DataAttribute.ClassesMatch);
         const condition = this.getToggleCondition(element);
+        const compare = this.getToggleCompare(element);
         const property = UFHtml.getAttribute(element, DataAttribute.Property, 'checked');
         const separator = UFHtml.getAttribute(element, DataAttribute.ValuesSeparator, ',');
         const valuesText = UFHtml.getAttribute(element, DataAttribute.Values)
@@ -381,6 +427,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             cssClassesMatch,
             cssClassesNoMatch,
             condition,
+            compare,
             required,
             isForm,
             isImage,
@@ -420,10 +467,7 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             }
             // valid was not set, then value was set so validate value
             if (valid === null) {
-                // ignore the values array when the form element is an image
-                valid = (data.values.length > 0) && !data.isImage
-                    ? data.values.indexOf(value) >= 0
-                    : value.length > 0;
+                valid = this.isValidValue(value, data);
             }
             switch (data.condition) {
                 case ToggleCondition.Any:
@@ -448,6 +492,49 @@ export class UFFormToggleHelper extends UFHtmlHelper {
             return true;
         });
         return result;
+    }
+    /**
+     * Checks if the value of an element is valid, depending on the compare type.
+     *
+     * @param elementValue
+     * @param data
+     *
+     * @returns True if the value is valid.
+     *
+     * @private
+     */
+    isValidValue(elementValue, data) {
+        // ignore the values array when the form element is an image
+        if ((data.values.length == 0) || data.isImage) {
+            return elementValue.length > 0;
+        }
+        if (data.compare == ToggleCompare.Equal) {
+            return data.values.indexOf(elementValue) >= 0;
+        }
+        const textValue = elementValue.toString().toLowerCase();
+        if (data.compare == ToggleCompare.Inside) {
+            return data.values.some(value => textValue.includes(value.toString().toLowerCase()));
+        }
+        if (data.compare == ToggleCompare.Contain) {
+            return data.values.some(value => value.toString().toLowerCase().includes(textValue));
+        }
+        const numberValue = parseFloat(textValue);
+        if (isNaN(numberValue)) {
+            return false;
+        }
+        if (data.compare == ToggleCompare.LessThan) {
+            return data.values.some(value => numberValue < parseFloat(value));
+        }
+        if (data.compare == ToggleCompare.LessThanOrEqual) {
+            return data.values.some(value => numberValue <= parseFloat(value));
+        }
+        if (data.compare == ToggleCompare.GreaterThan) {
+            return data.values.some(value => numberValue > parseFloat(value));
+        }
+        if (data.compare == ToggleCompare.GreaterThanOrEqual) {
+            return data.values.some(value => numberValue >= parseFloat(value));
+        }
+        return false;
     }
     /**
      * Updates the state of an element based on the target matching the condition.

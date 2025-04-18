@@ -218,7 +218,7 @@ export declare class UFHtml {
      * If no element can be found, the method will throw an error.
      *
      * @param id
-     *   Element, selector text or null
+     *   The dom id of element
      *
      * @returns found element
      *
@@ -376,4 +376,17 @@ export declare class UFHtml {
      * @returns `true` if the value could be assigned, `false` if the element is not a form field.
      */
     static assignValue(element: Element, value: string): boolean;
+    /**
+     * Checks if an element is visible, that it is not hidden by some styling and the element has
+     * some size.
+     *
+     * @param element
+     *   Element to check
+     * @param checkParent
+     *   True to check the parents of the element as well, false to only check the element itself.
+     *
+     * @returns `true` if the element is visible, `false` if not. Note that if only element itself
+     *   is checked, it does not take into account of any parent is not visible.
+     */
+    static isVisible(element: HTMLElement, checkParent?: boolean): boolean;
 }

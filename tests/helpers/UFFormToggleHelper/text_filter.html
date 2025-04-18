@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Text filter</title>
+  </head>
+  <body>
+    <form>
+      <input id="filter" type="text" />
+    </form>
+    <div
+      data-uf-toggle-selector="#filter"
+      data-uf-toggle-compare="contain"
+      data-uf-toggle-value="John Smith"
+    >
+      John Smith
+    </div>
+    <div
+      data-uf-toggle-selector="#filter"
+      data-uf-toggle-compare="contain"
+      data-uf-toggle-value="Peter Parker"
+    >
+      Peter Parker
+    </div>
+    <div
+      data-uf-toggle-selector="#filter"
+      data-uf-toggle-compare="contain"
+      data-uf-toggle-value="Peter Smith"
+    >
+      Peter Smith
+    </div>
+    <div
+      data-uf-toggle-selector="#filter"
+      data-uf-toggle-compare="contain"
+      data-uf-toggle-value="Maria Stewart"
+    >
+      Maria Stewart
+    </div>
+    <div
+      data-uf-toggle-selector="#filter"
+      data-uf-toggle-compare="contain"
+      data-uf-toggle-values="Maria Stewart,Peter Parker"
+    >
+      Maria Stewart and Peter Parker
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

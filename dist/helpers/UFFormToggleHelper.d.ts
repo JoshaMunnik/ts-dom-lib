@@ -45,7 +45,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *      the input element is considered valid if the value is not empty.
  *   - 'valid' = the html5 validation result is used.
  *   - 'property' = works like 'value' but check the value of a property instead of the value of
- the element.
+ *     the element.
  *   - 'auto' = select the type based on certain conditions:
  *     - 'value' is selected if 'data-uf-toggle-value' or 'data-uf-toggle-values' is used or if the
  *       input element is a file input element.
@@ -98,6 +98,16 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *   valid or be equal to one of the specified values. 'none' is the reverse of 'all', none of
  *   the elements must be valid or be equal to any of the specified values.
  *
+ * - `data-uf-toggle-compare` = `equal` (default), `contain`, `inside`, `lt`, `lte`, `gt`, `gte`
+ *   Determines how to compare the value of an element with the values:
+ *   - `equal` = the value of the element must be equal to one of the values.
+ *   - `contain` = part of the value of the element must equal one of the values (case incentive).
+ *   - `inside` = part of one of the values must equal the value of the element (case incentive).
+ *   - `lt` = the value of the element must be less than one of the values (numeric).
+ *   - `lte` = the value of the element must be less than or equal to one of the values (numeric).
+ *   - `gt` = the value of the element must be greater than one of the values (numeric).
+ *   - `gte` = the value of the element must be greater than or equal to one of the values (numeric).
+ *
  * - `data-uf-toggle-value` = string (single value)
  *   Alias for `data-uf-toggle-values`. If `data-uf-toggle-values` is also specified, this
  *   attribute will be ignored.
@@ -145,6 +155,11 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      * @param element
      * @private
      */
+    private getToggleCompare;
+    /**
+     * @param element
+     * @private
+     */
     private getToggleRequired;
     /**
      * Gets the elements in the form that the element is in. If there is no selector, try to get
@@ -177,6 +192,17 @@ export declare class UFFormToggleHelper extends UFHtmlHelper {
      * @returns True if target matches the condition
      */
     private isValidToggleTarget;
+    /**
+     * Checks if the value of an element is valid, depending on the compare type.
+     *
+     * @param elementValue
+     * @param data
+     *
+     * @returns True if the value is valid.
+     *
+     * @private
+     */
+    private isValidValue;
     /**
      * Updates the state of an element based on the target matching the condition.
      *
