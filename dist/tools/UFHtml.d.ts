@@ -198,7 +198,7 @@ export declare class UFHtml {
     /**
      * Gets an element for a selector. If the selector is an element, it just returns the element.
      *
-     * If the selector is a string, it will try to find the element in the document.
+     * If the selector is a string, it will try to find the element in the document or container.
      *
      * If no element can be found or the selector is a null value, the method will throw an error.
      *
@@ -389,4 +389,47 @@ export declare class UFHtml {
      *   is checked, it does not take into account of any parent is not visible.
      */
     static isVisible(element: HTMLElement, checkParent?: boolean): boolean;
+    /**
+     * Gets an element for an attribute.
+     *
+     * If no element can be found the method will throw an error.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found element
+     *
+     * @throws Error if no element can be found
+     */
+    static getForAttribute<T extends Element>(name: string, value?: string, container?: Element): T;
+    /**
+     * Tries to find an element for an attribute.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found element or `null` if no element could be found
+     */
+    static findForAttribute<T extends Element>(name: string, value?: string, container?: Element): T | null;
+    /**
+     * Gets all elements for an attribute.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found elements
+     */
+    static findAllForAttribute<T extends Element>(name: string, value?: string, container?: Element): NodeListOf<T>;
 }

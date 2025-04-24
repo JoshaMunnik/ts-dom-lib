@@ -281,7 +281,7 @@ export class UFHtml {
     /**
      * Gets an element for a selector. If the selector is an element, it just returns the element.
      *
-     * If the selector is a string, it will try to find the element in the document.
+     * If the selector is a string, it will try to find the element in the document or container.
      *
      * If no element can be found or the selector is a null value, the method will throw an error.
      *
@@ -604,6 +604,71 @@ export class UFHtml {
             return this.isVisible(element.parentElement);
         }
         return true;
+    }
+    /**
+     * Gets an element for an attribute.
+     *
+     * If no element can be found the method will throw an error.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found element
+     *
+     * @throws Error if no element can be found
+     */
+    static getForAttribute(name, value, container) {
+        let attribute = name;
+        if ((value !== undefined) && (value !== null)) {
+            attribute += `="${value}"`;
+        }
+        const element = (container || document).querySelector(`[${attribute}]`);
+        if (element == null) {
+            throw new Error(`Can not find element for attribute ${attribute}`);
+        }
+        return element;
+    }
+    /**
+     * Tries to find an element for an attribute.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found element or `null` if no element could be found
+     */
+    static findForAttribute(name, value, container) {
+        let attribute = name;
+        if ((value !== undefined) && (value !== null)) {
+            attribute += `="${value}"`;
+        }
+        return (container || document).querySelector(`[${attribute}]`);
+    }
+    /**
+     * Gets all elements for an attribute.
+     *
+     * @param name
+     *   Attribute name
+     * @param value
+     *   Attribute value or use `null` to ignore value
+     * @param container
+     *   Container to search the element in; if not set, the document is used.
+     *
+     * @returns found elements
+     */
+    static findAllForAttribute(name, value, container) {
+        let attribute = name;
+        if ((value !== undefined) && (value !== null)) {
+            attribute += `="${value}"`;
+        }
+        return (container || document).querySelectorAll(`[${attribute}]`);
     }
 }
 // endregion

@@ -344,7 +344,7 @@ export class UFHtml {
   /**
    * Gets an element for a selector. If the selector is an element, it just returns the element.
    *
-   * If the selector is a string, it will try to find the element in the document.
+   * If the selector is a string, it will try to find the element in the document or container.
    *
    * If no element can be found or the selector is a null value, the method will throw an error.
    *
@@ -579,7 +579,7 @@ export class UFHtml {
    *
    * @returns all the names of attributes defined at the element
    */
-  static getAttributeNames(element: HTMLElement): string[]  {
+  static getAttributeNames(element: HTMLElement): string[] {
     const result: string[] = [];
     for (let index = 0; index < element.attributes.length; index++) {
       const attribute = element.attributes[index];
@@ -701,6 +701,78 @@ export class UFHtml {
       return this.isVisible(element.parentElement);
     }
     return true;
+  }
+
+  /**
+   * Gets an element for an attribute.
+   *
+   * If no element can be found the method will throw an error.
+   *
+   * @param name
+   *   Attribute name
+   * @param value
+   *   Attribute value or use `null` to ignore value
+   * @param container
+   *   Container to search the element in; if not set, the document is used.
+   *
+   * @returns found element
+   *
+   * @throws Error if no element can be found
+   */
+  static getForAttribute<T extends Element>(name: string, value?: string, container?: Element): T {
+    let attribute = name;
+    if ((value !== undefined) && (value !== null)) {
+      attribute += `="${value}"`;
+    }
+    const element: T | null = (container || document).querySelector<T>(`[${attribute}]`);
+    if (element == null) {
+      throw new Error(`Can not find element for attribute ${attribute}`);
+    }
+    return element;
+  }
+
+  /**
+   * Tries to find an element for an attribute.
+   *
+   * @param name
+   *   Attribute name
+   * @param value
+   *   Attribute value or use `null` to ignore value
+   * @param container
+   *   Container to search the element in; if not set, the document is used.
+   *
+   * @returns found element or `null` if no element could be found
+   */
+  static findForAttribute<T extends Element>(
+    name: string, value?: string, container?: Element
+  ): T | null {
+    let attribute = name;
+    if ((value !== undefined) && (value !== null)) {
+      attribute += `="${value}"`;
+    }
+    return (container || document).querySelector<T>(`[${attribute}]`);
+  }
+
+  /**
+   * Gets all elements for an attribute.
+   *
+   * @param name
+   *   Attribute name
+   * @param value
+   *   Attribute value or use `null` to ignore value
+   * @param container
+   *   Container to search the element in; if not set, the document is used.
+   *
+   * @returns found elements
+   */
+  static findAllForAttribute<T extends Element>(
+    name: string, value?: string, container?: Element
+  ): NodeListOf<T> {
+    let attribute = name;
+    if ((value !== undefined) && (value !== null)) {
+      attribute += `="${value}"`;
+    }
+    return (container || document).querySelectorAll<T>(`[${attribute}]`);
   }
 }
 
