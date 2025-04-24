@@ -405,7 +405,7 @@ export declare class UFHtml {
      *
      * @throws Error if no element can be found
      */
-    static getForAttribute<T extends Element>(name: string, value?: string, container?: Element): T;
+    static getForAttribute<T extends Element>(name: string, value?: string | null, container?: Element): T;
     /**
      * Tries to find an element for an attribute.
      *
@@ -418,7 +418,7 @@ export declare class UFHtml {
      *
      * @returns found element or `null` if no element could be found
      */
-    static findForAttribute<T extends Element>(name: string, value?: string, container?: Element): T | null;
+    static findForAttribute<T extends Element>(name: string, value?: string | null, container?: Element): T | null;
     /**
      * Gets all elements for an attribute.
      *
@@ -431,5 +431,5 @@ export declare class UFHtml {
      *
      * @returns found elements
      */
-    static findAllForAttribute<T extends Element>(name: string, value?: string, container?: Element): NodeListOf<T>;
+    static findAllForAttribute<T extends Element>(name: string, value?: string | null, container?: Element): NodeListOf<T>;
 }

@@ -621,9 +621,9 @@ export class UFHtml {
      *
      * @throws Error if no element can be found
      */
-    static getForAttribute(name, value, container) {
+    static getForAttribute(name, value = null, container) {
         let attribute = name;
-        if ((value !== undefined) && (value !== null)) {
+        if (value !== null) {
             attribute += `="${value}"`;
         }
         const element = (container || document).querySelector(`[${attribute}]`);
@@ -644,9 +644,9 @@ export class UFHtml {
      *
      * @returns found element or `null` if no element could be found
      */
-    static findForAttribute(name, value, container) {
+    static findForAttribute(name, value = null, container) {
         let attribute = name;
-        if ((value !== undefined) && (value !== null)) {
+        if (value !== null) {
             attribute += `="${value}"`;
         }
         return (container || document).querySelector(`[${attribute}]`);
@@ -663,9 +663,9 @@ export class UFHtml {
      *
      * @returns found elements
      */
-    static findAllForAttribute(name, value, container) {
+    static findAllForAttribute(name, value = null, container) {
         let attribute = name;
-        if ((value !== undefined) && (value !== null)) {
+        if (value !== null) {
             attribute += `="${value}"`;
         }
         return (container || document).querySelectorAll(`[${attribute}]`);

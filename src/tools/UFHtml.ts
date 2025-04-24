@@ -719,9 +719,11 @@ export class UFHtml {
    *
    * @throws Error if no element can be found
    */
-  static getForAttribute<T extends Element>(name: string, value?: string, container?: Element): T {
+  static getForAttribute<T extends Element>(
+    name: string, value: string | null = null, container?: Element
+  ): T {
     let attribute = name;
-    if ((value !== undefined) && (value !== null)) {
+    if (value !== null) {
       attribute += `="${value}"`;
     }
     const element: T | null = (container || document).querySelector<T>(`[${attribute}]`);
@@ -744,10 +746,10 @@ export class UFHtml {
    * @returns found element or `null` if no element could be found
    */
   static findForAttribute<T extends Element>(
-    name: string, value?: string, container?: Element
+    name: string, value: string | null = null, container?: Element
   ): T | null {
     let attribute = name;
-    if ((value !== undefined) && (value !== null)) {
+    if (value !== null) {
       attribute += `="${value}"`;
     }
     return (container || document).querySelector<T>(`[${attribute}]`);
@@ -766,10 +768,10 @@ export class UFHtml {
    * @returns found elements
    */
   static findAllForAttribute<T extends Element>(
-    name: string, value?: string, container?: Element
+    name: string, value: string | null = null, container?: Element
   ): NodeListOf<T> {
     let attribute = name;
-    if ((value !== undefined) && (value !== null)) {
+    if (value !== null) {
       attribute += `="${value}"`;
     }
     return (container || document).querySelectorAll<T>(`[${attribute}]`);
