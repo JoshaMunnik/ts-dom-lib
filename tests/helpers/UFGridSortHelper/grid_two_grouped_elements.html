@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Grid Grouped Elements</title>
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      [data-uf-sort-control] {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      [data-uf-sort-control="none"] {
+        cursor: default;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      .ascending {
+        &:after {
+          content: ' (up)';
+        }
+      }
+
+      .descending {
+        &:after {
+          content: ' (down)';
+        }
+      }
+
+      .data-group {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / 5;
+
+        &:nth-child(even) {
+          background-color: yellow;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="grid"
+      data-uf-grid-sorting
+      data-uf-sort-ascending="ascending"
+      data-uf-sort-descending="descending"
+    >
+      <div data-uf-sort-control="text">
+        Text
+      </div>
+      <div data-uf-sort-control="none">
+        Not
+      </div>
+      <div data-uf-sort-control="number">
+        Number
+      </div>
+      <div data-uf-sort-control="date">
+        Date
+      </div>
+      <div class="data-group">
+        <div data-uf-item-group="1">
+          Jan Smit
+        </div>
+        <div data-uf-item-group="1">
+          Lala
+        </div>
+        <div data-uf-item-group="1">
+          10
+        </div>
+        <div data-uf-item-group="1">
+          2025-01-01 12:00:00
+        </div>
+        <div data-uf-item-group="2">
+          Peter Jansen
+        </div>
+        <div data-uf-item-group="2">
+          12345
+        </div>
+        <div data-uf-item-group="2">
+          5
+        </div>
+        <div data-uf-item-group="2">
+          2024-06-01 12:00:00
+        </div>
+        <div data-uf-item-group="3">
+          Marie Peterson
+        </div>
+        <div data-uf-item-group="3">
+          10de
+        </div>
+        <div data-uf-item-group="3">
+          1
+        </div>
+        <div data-uf-item-group="3">
+          2024-10-01 12:00:00
+        </div>
+      </div>
+      <div class="data-group">
+        <div data-uf-item-group="4">
+          Kees Pronk
+        </div>
+        <div data-uf-item-group="4">
+          Blabla
+        </div>
+        <div data-uf-item-group="4">
+          7
+        </div>
+        <div data-uf-item-group="4">
+          2025-02-03 12:00:00
+        </div>
+        <div data-uf-item-group="5">
+          Suzan Doorn
+        </div>
+        <div data-uf-item-group="5">
+          12345
+        </div>
+        <div data-uf-item-group="5">
+          9
+        </div>
+        <div data-uf-item-group="5">
+          2024-07-01 12:00:00
+        </div>
+        <div data-uf-item-group="6">
+          Anna Smith
+        </div>
+        <div data-uf-item-group="6">
+          10de
+        </div>
+        <div data-uf-item-group="6">
+          3
+        </div>
+        <div data-uf-item-group="6">
+          2024-11-01 12:00:00
+        </div>
+      </div>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

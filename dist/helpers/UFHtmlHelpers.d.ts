@@ -59,6 +59,12 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      * @private
      */
     private readonly m_tableSortHelper;
+    /**
+     * The grid sort helper.
+     *
+     * @private
+     */
+    private readonly m_gridSortHelper;
     private constructor();
     /**
      * Returns the singleton instance. The first time the property is accessed the instance is
@@ -79,7 +85,14 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      *
      * @param table
      */
-    resort(table: HTMLTableElement): void;
+    resortTable(table: HTMLTableElement): void;
+    /**
+     * Resorts a grid using current selected control and sort direction. If the grid is not sorted
+     * or the grid sorting helper is not active nothing happens.
+     *
+     * @param grid
+     */
+    resortGrid(grid: HTMLElement): void;
     /**
      * Call the {@link UFHtmlHelper.scan} method for every registered helper.
      */

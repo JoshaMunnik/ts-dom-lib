@@ -670,6 +670,26 @@ export class UFHtml {
         }
         return (container || document).querySelectorAll(`[${attribute}]`);
     }
+    /**
+     * Inserts an element after another element.
+     *
+     * @param parent
+     *   Parent to insert the element in
+     * @param newElement
+     *   Element to insert
+     * @param referenceElement
+     *   Element to insert the new element after
+     */
+    static insertAfter(parent, newElement, referenceElement) {
+        if (referenceElement.nextElementSibling) {
+            parent.insertBefore(newElement, referenceElement.nextElementSibling);
+        }
+        else {
+            // there is no next sibling, so the reference element is the last child; so just append
+            // the new element which should place it after the reference element.
+            parent.appendChild(newElement);
+        }
+    }
 }
 // endregion
 // region private vars

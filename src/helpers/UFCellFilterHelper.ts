@@ -192,10 +192,7 @@ export class UFCellFilterHelper extends UFHtmlHelper {
         columnIndex++;
       });
       if (match) {
-        // only remove if it is there (else an exception is thrown)
-        if (row.attributes.getNamedItem(DataAttribute.RowNoMatch) != null) {
-          row.attributes.removeNamedItem(DataAttribute.RowNoMatch);
-        }
+        row.removeAttribute(DataAttribute.RowNoMatch);
       }
       else {
         row.attributes.setNamedItem(document.createAttribute(DataAttribute.RowNoMatch));

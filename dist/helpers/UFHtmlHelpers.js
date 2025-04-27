@@ -27,6 +27,8 @@
 // region imports
 import { UFDialogHelper } from "./UFDialogHelper.js";
 import { UFEventActionHelper } from "./UFEventActionHelper.js";
+import { UFFilterHelper } from "./UFFilterHelper.js";
+import { UFGridSortHelper } from "./UFGridSortHelper.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
@@ -79,6 +81,8 @@ export class UFHtmlHelpers extends UFHtmlHelper {
         this.registerHelper(new UFPopupHelper());
         this.registerHelper(new UFEventActionHelper());
         this.registerHelper(new UFDialogHelper());
+        this.registerHelper(new UFFilterHelper());
+        this.registerHelper(this.m_gridSortHelper = new UFGridSortHelper());
     }
     // endregion
     // region public methods
@@ -111,9 +115,20 @@ export class UFHtmlHelpers extends UFHtmlHelper {
      *
      * @param table
      */
-    resort(table) {
+    resortTable(table) {
         if (this.m_tableSortHelper) {
             this.m_tableSortHelper.resort(table);
+        }
+    }
+    /**
+     * Resorts a grid using current selected control and sort direction. If the grid is not sorted
+     * or the grid sorting helper is not active nothing happens.
+     *
+     * @param grid
+     */
+    resortGrid(grid) {
+        if (this.m_gridSortHelper) {
+            this.m_gridSortHelper.resort(grid);
         }
     }
     // endregion

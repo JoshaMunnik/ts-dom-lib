@@ -300,7 +300,7 @@ export class UFTableSortHelper extends UFHtmlHelper {
     // region UFHtmlHelper
     scan() {
         UFEventManager.instance.removeAllForGroup(DataAttribute.Sorting);
-        const tables = document.querySelectorAll(`[${DataAttribute.Sorting}]`);
+        const tables = document.querySelectorAll(`table[${DataAttribute.Sorting}]`);
         tables.forEach(table => this.initTable(table));
     }
     /**

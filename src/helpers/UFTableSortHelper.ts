@@ -414,8 +414,10 @@ export class UFTableSortHelper extends UFHtmlHelper {
 
   scan() {
     UFEventManager.instance.removeAllForGroup(DataAttribute.Sorting);
-    const tables = document.querySelectorAll(`[${DataAttribute.Sorting}]`);
-    tables.forEach(table => this.initTable(table as HTMLTableElement));
+    const tables = document.querySelectorAll<HTMLTableElement>(
+      `table[${DataAttribute.Sorting}]`
+    );
+    tables.forEach(table => this.initTable(table));
   }
 
   /**

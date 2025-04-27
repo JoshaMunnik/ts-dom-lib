@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Grid Grouped Elements</title>
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      [data-uf-sort-control] {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      [data-uf-sort-control="none"] {
+        cursor: default;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      .ascending {
+        &:after {
+          content: ' (up)';
+        }
+      }
+
+      .descending {
+        &:after {
+          content: ' (down)';
+        }
+      }
+
+      [data-uf-item-container] {
+        display: contents;
+        grid-template-columns: subgrid;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="grid"
+      data-uf-grid-sorting
+      data-uf-sort-ascending="ascending"
+      data-uf-sort-descending="descending"
+    >
+      <div data-uf-sort-control="text">
+        Text
+      </div>
+      <div data-uf-sort-control="none">
+        Not
+      </div>
+      <div data-uf-sort-control="number">
+        Number
+      </div>
+      <div data-uf-sort-control="date">
+        Date
+      </div>
+      <div data-uf-item-container>
+        <div>
+          Jan Smit
+        </div>
+        <div>
+          Lala
+        </div>
+        <div>
+          10
+        </div>
+        <div>
+          2025-01-01 12:00:00
+        </div>
+      </div>
+      <div data-uf-item-container>
+        <div>
+          Peter Jansen
+        </div>
+        <div>
+          12345
+        </div>
+        <div>
+          5
+        </div>
+        <div>
+          2024-06-01 12:00:00
+        </div>
+      </div>
+      <div data-uf-item-container>
+        <div>
+          Marie Peterson
+        </div>
+        <div>
+          10de
+        </div>
+        <div>
+          1
+        </div>
+        <div>
+          2024-10-01 12:00:00
+        </div>
+      </div>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>
