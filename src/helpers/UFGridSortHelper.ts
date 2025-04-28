@@ -42,12 +42,13 @@ enum DataAttribute {
   SortControl = 'data-uf-sort-control',
   SortButton = 'data-uf-sort-button',
   SortKey = 'data-uf-sort-key',
+  GroupSize = 'data-uf-group-size',
   ItemContainer = 'data-uf-item-container',
   ItemGroup = 'data-uf-item-group',
-  SortValue = "data-uf-sort-value",
-  SortAscending = "data-uf-sort-ascending",
-  SortDescending = "data-uf-sort-descending",
-  StorageId = "data-uf-storage-id",
+  SortValue = 'data-uf-sort-value',
+  SortAscending = 'data-uf-sort-ascending',
+  SortDescending = 'data-uf-sort-descending',
+  StorageId = 'data-uf-storage-id',
 }
 
 // The type of data in a column.
@@ -94,12 +95,20 @@ type GridEntry = {
   controls: SortControl[],
   itemContainers: DataContainer[],
   itemGroups: DataGroup[],
+  groupedItems: DataGroup[],
   sortInfo: SortInfo,
   ascendingClasses: string,
   descendingClasses: string,
 }
 
 // endregion
+
+// region private constants
+
+/**
+ * Selector to get child that is not using any special data attribute.
+ */
+const GROUPED_ITEM_SELECTOR: string = `:not([${DataAttribute.ItemContainer}],[${DataAttribute.ItemGroup}],[${DataAttribute.SortControl}])`
 
 // region private functions
 
@@ -176,10 +185,17 @@ function getSortType(control: HTMLElement): SortType {
  * To use containers, add `data-uf-item-container` to each container. The containers should not
  * have other elements in between them. The class will reorder the containers in the parent.
  *
- * To use siblings, add `data-uf-item-group` to the sibling elements. The value of the attribute
- * determines which group the siblings belong to. Each group should use a unique value. Make sure
- * the sibling elements do not have any other elements in between them. When reordering only
- * the elements using `data-uf-item-group` are reordered.
+ * To use siblings, either set `data-uf-group-size` with the container element or
+ * add `data-uf-item-group` to the sibling elements.
+ *
+ * With `data-uf-group-size` the children (that are not using `data-uf-grid-control`,
+ * `data-uf-item-container` and `data-uf-item-group`) are split into groups using the value
+ * of `data-uf-group-size`.
+ *
+ * With `data-uf-item-group` the value of the attribute determines which group the siblings belong
+ * to. Each group should use a unique value. When using `data-uf-item-group` make sure the sibling
+ * elements do not have any other elements in between them. When reordering only the elements
+ * using `data-uf-item-group` are reordered.
  *
  * Add`data-uf-sort-key` to a sortable element to link it to one of the controls. When missing the
  * relative sibling index of the element will be used. With `data-uf-item-group` the index is
@@ -268,10 +284,14 @@ export class UFGridSortHelper extends UFHtmlHelper {
     if (!controls.length) {
       return;
     }
+    const groupSize = parseInt(
+      UFHtml.getAttribute(grid, DataAttribute.GroupSize, '0')
+    );
     const itemContainers = this.getContainers(grid);
     const itemGroups = this.getGroups(grid);
+    const groupedItems = this.groupItems(grid, groupSize);
     // exit if there is no sortable data
-    if (itemContainers.length + itemGroups.length == 0) {
+    if (itemContainers.length + itemGroups.length + groupedItems.length == 0) {
       return;
     }
     const sortInfo = this.getSortInfo(grid, controls);
@@ -281,6 +301,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
       sortInfo,
       itemContainers,
       itemGroups,
+      groupedItems,
       ascendingClasses: UFHtml.getAttribute(grid, DataAttribute.SortAscending),
       descendingClasses: UFHtml.getAttribute(grid, DataAttribute.SortDescending),
     };
@@ -388,6 +409,34 @@ export class UFGridSortHelper extends UFHtmlHelper {
     return dataItemGroups.map(dataItemGroup => ({
       items: this.getDataItems(dataItemGroup)
     }));
+  }
+
+  /**
+   * Gets the data items for a grid, grouped by groups of equal size.
+   *
+   * @param grid
+   *   Grid to get groups for.
+   * @param size
+   *   Number of items in a group.
+   *
+   * @returns date items grouped by the group attribute value.
+   *
+   * @private
+   */
+  private groupItems(grid: HTMLElement, size: number): DataGroup[] {
+    // select all children that are not a item container, part of some item group or a sort control
+    const dataItems = Array.from(grid.querySelectorAll<HTMLElement>(
+      GROUPED_ITEM_SELECTOR
+    ));
+    // group the children into groups of size entries
+    const result: DataGroup[] = [];
+    for(let index = 0; index < dataItems.length; index += size) {
+      const group = dataItems.slice(index, index + size);
+      result.push({
+        items: this.getDataItems(group)
+      });
+    }
+    return result;
   }
 
   /**
@@ -515,8 +564,13 @@ export class UFGridSortHelper extends UFHtmlHelper {
       (first, second) =>
         direction * this.compareGroup(first, second, control)
     );
+    gridEntry.groupedItems.sort(
+      (first, second) =>
+        direction * this.compareGroup(first, second, control)
+    );
     this.reorderContainers(gridEntry.itemContainers);
-    this.reorderGroups(gridEntry.itemGroups);
+    this.reorderGroups(gridEntry.itemGroups, `[${DataAttribute.ItemGroup}]`);
+    this.reorderGroups(gridEntry.groupedItems, GROUPED_ITEM_SELECTOR);
   }
 
   /**
@@ -687,7 +741,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
     this.reorderElements(
       containers.map(container => container.containerElement),
       new Map<HTMLElement,HTMLElement>(),
-      DataAttribute.ItemContainer
+      `[${DataAttribute.ItemContainer}]`
     );
   }
 
@@ -696,16 +750,18 @@ export class UFGridSortHelper extends UFHtmlHelper {
    *
    * @param groups
    *   Groups to reorder.
+   * @param firstSelector
+   *   Selector to use to find the first child in the parent.
    *
    * @private
    */
-  private reorderGroups(groups: DataGroup[]): void {
+  private reorderGroups(groups: DataGroup[], firstSelector: string): void {
     const currentElements = new Map<HTMLElement,HTMLElement>();
     for(const group of groups) {
       this.reorderElements(
         group.items.map(item => item.element),
         currentElements,
-        DataAttribute.ItemGroup
+        firstSelector
       );
     }
   }
@@ -722,7 +778,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
    *   Elements to reorder
    * @param currentElements
    *   Map with that contains the last inserted element for every parent. The map will be updated.
-   * @param firstAttribute
+   * @param firstSelector
    *   Attribute to use to find the first child in the parent
    *
    * @private
@@ -730,9 +786,10 @@ export class UFGridSortHelper extends UFHtmlHelper {
   private reorderElements(
     elements: HTMLElement[],
     currentElements: Map<HTMLElement,HTMLElement>,
-    firstAttribute: string,
+    firstSelector: string,
   ): void {
     for(const element of elements) {
+      console.log(element.innerText);
       // get parent and exit if there is no parent (should not happen normally)
       const parent = element.parentElement;
       if (parent == null) {
@@ -741,7 +798,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
       // first time an element is readded to the parent?
       if (!currentElements.has(parent)) {
         // get the current first element with the correct attribute
-        const firstElement = UFHtml.findForAttribute<HTMLElement>(firstAttribute, null, parent);
+        const firstElement = parent.querySelector<HTMLElement>(firstSelector);
         // should never happen, but just in case
         if (firstElement == null) {
           continue;

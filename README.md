@@ -30,6 +30,9 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.87
+- added support for `data-uf-group-size` with `UFGridSortHelper`
+
 1.0.86
 - started version history
 - [BREAKING CHANGE] `UFTableSortHelper` uses `data-uf-table-sorting` instead of `data-uf-sorting` 
