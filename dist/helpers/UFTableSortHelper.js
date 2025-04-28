@@ -35,7 +35,7 @@ import { UFEventManager } from "../events/UFEventManager.js";
 // the data attributes used by this helper
 var DataAttribute;
 (function (DataAttribute) {
-    DataAttribute["Sorting"] = "data-uf-sorting";
+    DataAttribute["Sorting"] = "data-uf-table-sorting";
     DataAttribute["SortType"] = "data-uf-sort-type";
     DataAttribute["SortValue"] = "data-uf-sort-value";
     DataAttribute["SortLocation"] = "data-uf-sort-location";
@@ -265,8 +265,8 @@ class TableData {
  * This class adds sorting capability to a table.
  *
  * To add support sorting to a table, the following is required:
- * - add `data-uf-sorting` to a `table` element to add sorting support. The value of the attribute
- *   is not used.
+ * - add `data-uf-table-sorting` to a `table` element to add sorting support. The value
+ *   of the attribute is not used.
  * - the table should contain at least one header row with `th` elements.
  * - add `data-uf-header-row` attribute to the `tr` tag containing the `th` elements that should
  *   be clicked upon.

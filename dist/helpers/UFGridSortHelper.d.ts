@@ -39,7 +39,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * to specify one or more css classes to add to the control element that has been selected to
  * sort the data on. When one of the attributes is missing, no css classes will be set.
  *
- * Add `data-uf-storage-id` to the container element to store the selected header choice in the
+ * Add `data-uf-storage-id` to the container element to store the selected controller choice in the
  * local storage and use it when the page with the container is shown again. The value of this
  * attribute is used as key to store the data with.
  *
@@ -62,7 +62,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * link the data elements to the correct control element.
  *
  * The control elements can have sibling elements in between that do not use any of the attributes.
- * These will be ignored, they are also used when determining the relative sibling index.
+ * These will be ignored, they are also not used when determining the relative sibling index.
  *
  * The class supports two different ways of sorting the children:
  * - related sortable elements are placed in containers. The containers are reordered in the parent
@@ -79,7 +79,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * the elements using `data-uf-item-group` are reordered.
  *
  * Add`data-uf-sort-key` to a sortable element to link it to one of the controls. When missing the
- * relative sibling index of the element will be used.
+ * relative sibling index of the element will be used. With `data-uf-item-group` the index is
+ * relative to the first element with a certain group value.
  *
  * By default, the class uses the `innerText` from the element to determine the value for.
  * Add `data-uf-sort-value` to provide an alternative value to use when sorting.

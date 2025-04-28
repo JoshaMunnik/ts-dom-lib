@@ -27,3 +27,10 @@ script tag:
 
 This compiled minified version is created by the
 [uf-html-helpers GitHub repository](https://github.com/JoshaMunnik/uf-html-helpers).
+
+## Version history
+
+1.0.86
+- started version history
+- [BREAKING CHANGE] `UFTableSortHelper` uses `data-uf-table-sorting` instead of `data-uf-sorting` 
+- updated some comments
