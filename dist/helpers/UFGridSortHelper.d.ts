@@ -73,10 +73,17 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * To use containers, add `data-uf-item-container` to each container. The containers should not
  * have other elements in between them. The class will reorder the containers in the parent.
  *
- * To use siblings, add `data-uf-item-group` to the sibling elements. The value of the attribute
- * determines which group the siblings belong to. Each group should use a unique value. Make sure
- * the sibling elements do not have any other elements in between them. When reordering only
- * the elements using `data-uf-item-group` are reordered.
+ * To use siblings, either set `data-uf-group-size` with the container element or
+ * add `data-uf-item-group` to the sibling elements.
+ *
+ * With `data-uf-group-size` the children (that are not using `data-uf-grid-control`,
+ * `data-uf-item-container` and `data-uf-item-group`) are split into groups using the value
+ * of `data-uf-group-size`.
+ *
+ * With `data-uf-item-group` the value of the attribute determines which group the siblings belong
+ * to. Each group should use a unique value. When using `data-uf-item-group` make sure the sibling
+ * elements do not have any other elements in between them. When reordering only the elements
+ * using `data-uf-item-group` are reordered.
  *
  * Add`data-uf-sort-key` to a sortable element to link it to one of the controls. When missing the
  * relative sibling index of the element will be used. With `data-uf-item-group` the index is
@@ -170,6 +177,19 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      * @private
      */
     private getGroups;
+    /**
+     * Gets the data items for a grid, grouped by groups of equal size.
+     *
+     * @param grid
+     *   Grid to get groups for.
+     * @param size
+     *   Number of items in a group.
+     *
+     * @returns date items grouped by the group attribute value.
+     *
+     * @private
+     */
+    private groupItems;
     /**
      * Gets the sort info for a grid. This method tries to retrieve data stored in the local storage
      * else the first control is used.
@@ -333,6 +353,8 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      *
      * @param groups
      *   Groups to reorder.
+     * @param firstSelector
+     *   Selector to use to find the first child in the parent.
      *
      * @private
      */
@@ -349,7 +371,7 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      *   Elements to reorder
      * @param currentElements
      *   Map with that contains the last inserted element for every parent. The map will be updated.
-     * @param firstAttribute
+     * @param firstSelector
      *   Attribute to use to find the first child in the parent
      *
      * @private
