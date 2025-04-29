@@ -49,6 +49,7 @@ enum DataAttribute {
   SortAscending = 'data-uf-sort-ascending',
   SortDescending = 'data-uf-sort-descending',
   StorageId = 'data-uf-storage-id',
+  GridBody = 'data-uf-grid-body',
 }
 
 // The type of data in a column.
@@ -108,7 +109,7 @@ type GridEntry = {
 /**
  * Selector to get child that is not using any special data attribute.
  */
-const GROUPED_ITEM_SELECTOR: string = `:not([${DataAttribute.ItemContainer}],[${DataAttribute.ItemGroup}],[${DataAttribute.SortControl}])`
+const ITEM_SELECTOR: string = `:scope > :not([${DataAttribute.ItemContainer}],[${DataAttribute.ItemGroup}],[${DataAttribute.SortControl}])`
 
 // region private functions
 
@@ -175,7 +176,7 @@ function getSortType(control: HTMLElement): SortType {
  *
  * The control elements can have sibling elements in between that do not use any of the attributes.
  * These will be ignored, they are also not used when determining the relative sibling index.
- *
+ * 
  * The class supports two different ways of sorting the children:
  * - related sortable elements are placed in containers. The containers are reordered in the parent
  *   depending on the selected control element. For example a table row with table data entries.
@@ -188,9 +189,11 @@ function getSortType(control: HTMLElement): SortType {
  * To use siblings, either set `data-uf-group-size` with the container element or
  * add `data-uf-item-group` to the sibling elements.
  *
- * With `data-uf-group-size` the children (that are not using `data-uf-grid-control`,
- * `data-uf-item-container` and `data-uf-item-group`) are split into groups using the value
- * of `data-uf-group-size`.
+ * With `data-uf-group-size` the children of the grid element (that are not using
+ * `data-uf-grid-control`, `data-uf-item-container` and `data-uf-item-group`) are split into
+ * groups using the value of `data-uf-group-size`. It is also possible to place the child elements
+ * in a separate container (that is a child element of the grid). Add `data-uf-grid-body` to
+ * the container element that contains the children.
  *
  * With `data-uf-item-group` the value of the attribute determines which group the siblings belong
  * to. Each group should use a unique value. When using `data-uf-item-group` make sure the sibling
@@ -424,9 +427,11 @@ export class UFGridSortHelper extends UFHtmlHelper {
    * @private
    */
   private groupItems(grid: HTMLElement, size: number): DataGroup[] {
-    // select all children that are not a item container, part of some item group or a sort control
-    const dataItems = Array.from(grid.querySelectorAll<HTMLElement>(
-      GROUPED_ITEM_SELECTOR
+    // select all children that are not an item container, part of some item group or a sort control
+    const body =
+      UFHtml.findForAttribute<HTMLElement>(DataAttribute.GridBody, null, grid) ?? grid;
+    const dataItems = Array.from(body.querySelectorAll<HTMLElement>(
+      ITEM_SELECTOR
     ));
     // group the children into groups of size entries
     const result: DataGroup[] = [];
@@ -570,7 +575,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
     );
     this.reorderContainers(gridEntry.itemContainers);
     this.reorderGroups(gridEntry.itemGroups, `[${DataAttribute.ItemGroup}]`);
-    this.reorderGroups(gridEntry.groupedItems, GROUPED_ITEM_SELECTOR);
+    this.reorderGroups(gridEntry.groupedItems, ITEM_SELECTOR);
   }
 
   /**
@@ -779,7 +784,8 @@ export class UFGridSortHelper extends UFHtmlHelper {
    * @param currentElements
    *   Map with that contains the last inserted element for every parent. The map will be updated.
    * @param firstSelector
-   *   Attribute to use to find the first child in the parent
+   *   Selector to find the first child in the parent (only used if `currentElements` does not
+   *   contain the parent).
    *
    * @private
    */
@@ -789,7 +795,6 @@ export class UFGridSortHelper extends UFHtmlHelper {
     firstSelector: string,
   ): void {
     for(const element of elements) {
-      console.log(element.innerText);
       // get parent and exit if there is no parent (should not happen normally)
       const parent = element.parentElement;
       if (parent == null) {
