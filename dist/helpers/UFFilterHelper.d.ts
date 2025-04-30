@@ -41,7 +41,13 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * child elements using the same value. If any of the child elements in the group matches the
  * filter, all the child elements in the group will be shown.
  *
- * A child element is hidden by adding the attribute `data-uf-filter-no-match` to the child element.
+ * Filterable elements can also be grouped via a container element. Add the attribute
+ * `data-uf-filter-container` to a container element. The container element is shown or hidden
+ * depending on if any of the children matches the filter. Children that use the `data-uf-no-filter`
+ * attribute are skipped.
+ *
+ * A child or container element is hidden by adding the attribute `data-uf-filter-no-match` to
+ * the child or container element.
  *
  * This class will add a css style to hide all elements with that data attribute
  * (using `display: none`).
@@ -81,8 +87,10 @@ export declare class UFFilterHelper extends UFHtmlHelper {
      *
      * @param text
      *   Text to match
-     * @param containersChildren
-     *   The children per container, grouped by the group attribute
+     * @param parents
+     *   The children per parent, grouped by the group attribute
+     * @param containers
+     *   Containers that should be shown or hidden based on the filter and their children
      *
      * @private
      */
@@ -92,12 +100,12 @@ export declare class UFFilterHelper extends UFHtmlHelper {
      *
      * @param lowerText
      *   Lowercase version of the text to filter on
-     * @param containerChildren
+     * @param parent
      *   Children of the container to process, grouped by the group attribute.
      *
      * @private
      */
-    private applyFilterToContainer;
+    private applyFilterToParent;
     /**
      * Applies the filter to a group of children. All children in the group are shown if
      * any of the children matches the filter.
@@ -108,6 +116,16 @@ export declare class UFFilterHelper extends UFHtmlHelper {
      * @private
      */
     private applyFilterToGroupedChildren;
+    /**
+     * Apply filter to a container. The container is shown if any of the children matches the
+     * filter.
+     *
+     * @param lowerText
+     * @param container
+     *
+     * @private
+     */
+    private applyFilterToContainer;
     /**
      * Adds a style to hide elements that use the {@link DataAttribute.NoMatch} attribute.
      *

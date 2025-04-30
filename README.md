@@ -30,6 +30,18 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.92
+- with `UFGridSortHelper` handle parsed numbers and dates that result in a NaN value
+
+1.0.91
+- fixed bug: grid control with sort type are still used to determine group size
+
+1.0.90
+- added support for `data-uf-filter-container` with `UFFilterHelper`
+
+1.0.89 
+- when `data-uf-group-size` is missing, use the number of found controls
+
 1.0.88
 - added support for `data-uf-grid-body` with `UFGridSortHelper`
 

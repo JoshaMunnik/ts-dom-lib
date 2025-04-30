@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Filter containers</title>
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      .subgrid {
+        display: contents;
+        grid-template-columns: subgrid;
+      }
+
+      [data-uf-sort-control] {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      [data-uf-sort-control="none"] {
+        cursor: default;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      .ascending {
+        &:after {
+          content: ' (up)';
+        }
+      }
+
+      .descending {
+        &:after {
+          content: ' (down)';
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input data-uf-filter-input="#items"/>
+    </div>
+    <div
+      class="grid"
+      id="items"
+    >
+      <div data-uf-no-filter>
+        Text
+      </div>
+      <div data-uf-no-filter>
+        Not
+      </div>
+      <div data-uf-no-filter>
+        Number
+      </div>
+      <div data-uf-no-filter>
+        Date
+      </div>
+      <div class="subgrid" data-uf-filter-container>
+        <div data-uf-filter-group="1">
+          Jan Smit
+        </div>
+        <div data-uf-filter-group="1">
+          Lala
+        </div>
+        <div data-uf-filter-group="1">
+          10
+        </div>
+        <div data-uf-filter-group="1">
+          2025-01-01 12:00:00
+        </div>
+      </div>
+      <div class="subgrid" data-uf-filter-container>
+        <div data-uf-filter-group="2">
+          Peter Jansen
+        </div>
+        <div data-uf-filter-group="2">
+          12345
+        </div>
+        <div data-uf-filter-group="2">
+          5
+        </div>
+        <div data-uf-filter-group="2">
+          2024-06-01 12:00:00
+        </div>
+      </div>
+      <div class="subgrid" data-uf-filter-container>
+        <div data-uf-filter-group="3">
+          Marie Peterson
+        </div>
+        <div data-uf-filter-group="3">
+          10de
+        </div>
+        <div data-uf-filter-group="3">
+          1
+        </div>
+        <div data-uf-filter-group="3">
+          2024-10-01 12:00:00
+        </div>
+      </div>
+    </div>
+    <script src="../../../build/bundle.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      lib.UFHtmlHelpers.instance.init();
+    </script>
+  </body>
+</html>

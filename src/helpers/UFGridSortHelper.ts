@@ -176,7 +176,7 @@ function getSortType(control: HTMLElement): SortType {
  *
  * The control elements can have sibling elements in between that do not use any of the attributes.
  * These will be ignored, they are also not used when determining the relative sibling index.
- * 
+ *
  * The class supports two different ways of sorting the children:
  * - related sortable elements are placed in containers. The containers are reordered in the parent
  *   depending on the selected control element. For example a table row with table data entries.
@@ -187,7 +187,8 @@ function getSortType(control: HTMLElement): SortType {
  * have other elements in between them. The class will reorder the containers in the parent.
  *
  * To use siblings, either set `data-uf-group-size` with the container element or
- * add `data-uf-item-group` to the sibling elements.
+ * add `data-uf-item-group` to the sibling elements. If both attributes are missing, the number
+ * of siblings per group will be based on the number of controls.
  *
  * With `data-uf-group-size` the children of the grid element (that are not using
  * `data-uf-grid-control`, `data-uf-item-container` and `data-uf-item-group`) are split into
@@ -288,7 +289,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
       return;
     }
     const groupSize = parseInt(
-      UFHtml.getAttribute(grid, DataAttribute.GroupSize, '0')
+      UFHtml.getAttribute(grid, DataAttribute.GroupSize, controls.length.toString())
     );
     const itemContainers = this.getContainers(grid);
     const itemGroups = this.getGroups(grid);
@@ -309,11 +310,16 @@ export class UFGridSortHelper extends UFHtmlHelper {
       descendingClasses: UFHtml.getAttribute(grid, DataAttribute.SortDescending),
     };
     this.m_grids.set(grid, gridEntry);
-    controls.forEach(
-      control => UFEventManager.instance.addListenerForGroup(
-        DataAttribute.Sorting, control.button, 'click', () => this.handleControlClick(control, gridEntry)
-      )
-    );
+    controls
+      .filter(control => control.type != SortType.None)
+      .forEach(
+        control => UFEventManager.instance.addListenerForGroup(
+          DataAttribute.Sorting,
+          control.button,
+          'click',
+          () => this.handleControlClick(control, gridEntry)
+        )
+      );
     this.addClasses(gridEntry);
     this.sortGrid(gridEntry);
   }
@@ -342,9 +348,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
             ?? control,
           type: getSortType(control),
         })
-      )
-      // remove controls that are not sortable (only needed to get correct relative index)
-      .filter(control => control.type != SortType.None);
+      );
   }
 
   /**
@@ -435,7 +439,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
     ));
     // group the children into groups of size entries
     const result: DataGroup[] = [];
-    for(let index = 0; index < dataItems.length; index += size) {
+    for (let index = 0; index < dataItems.length; index += size) {
       const group = dataItems.slice(index, index + size);
       result.push({
         items: this.getDataItems(group)
@@ -701,6 +705,35 @@ export class UFGridSortHelper extends UFHtmlHelper {
     }
     const firstNumber = parseFloat(firstValue);
     const secondNumber = parseFloat(secondValue);
+    return this.compareParsedNumbers(firstNumber, secondNumber);
+  }
+
+  /**
+   * Compares two parsed numbers. Check if a number is a NaN value. NaN values come after valid
+   * numbers.
+   *
+   * @param firstNumber
+   *   First value to compare
+   * @param secondNumber
+   *   Second value to compare
+   *
+   * @returns 0 if both values are equal or both values are NaN. -1 if first value is smaller or
+   *   second value is a NaN. +1 if first value is a NaN or second value is smaller.
+   *
+   * @private
+   */
+  private compareParsedNumbers(firstNumber: number, secondNumber: number): number {
+    const firstNaN = Number.isNaN(firstNumber);
+    const secondNaN = Number.isNaN(secondNumber);
+    if (firstNaN && secondNaN) {
+      return 0;
+    }
+    if (firstNaN) {
+      return +1;
+    }
+    if (secondNaN) {
+      return -1;
+    }
     return firstNumber - secondNumber;
   }
 
@@ -728,10 +761,10 @@ export class UFGridSortHelper extends UFHtmlHelper {
     if (secondValue === null) {
       return -1;
     }
-    const firstDate = new Date(firstValue);
-    const secondDate = new Date(secondValue);
-    // sort dates in reverse order
-    return secondDate.getTime() - firstDate.getTime();
+    // sort dates in reverse order, so swap the values
+    const secondDate = Date.parse(firstValue);
+    const firstDate = Date.parse(secondValue);
+    return this.compareParsedNumbers(firstDate, secondDate);
   }
 
   /**
@@ -745,7 +778,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
   private reorderContainers(containers: DataContainer[]): void {
     this.reorderElements(
       containers.map(container => container.containerElement),
-      new Map<HTMLElement,HTMLElement>(),
+      new Map<HTMLElement, HTMLElement>(),
       `[${DataAttribute.ItemContainer}]`
     );
   }
@@ -761,8 +794,8 @@ export class UFGridSortHelper extends UFHtmlHelper {
    * @private
    */
   private reorderGroups(groups: DataGroup[], firstSelector: string): void {
-    const currentElements = new Map<HTMLElement,HTMLElement>();
-    for(const group of groups) {
+    const currentElements = new Map<HTMLElement, HTMLElement>();
+    for (const group of groups) {
       this.reorderElements(
         group.items.map(item => item.element),
         currentElements,
@@ -791,10 +824,10 @@ export class UFGridSortHelper extends UFHtmlHelper {
    */
   private reorderElements(
     elements: HTMLElement[],
-    currentElements: Map<HTMLElement,HTMLElement>,
+    currentElements: Map<HTMLElement, HTMLElement>,
     firstSelector: string,
   ): void {
-    for(const element of elements) {
+    for (const element of elements) {
       // get parent and exit if there is no parent (should not happen normally)
       const parent = element.parentElement;
       if (parent == null) {

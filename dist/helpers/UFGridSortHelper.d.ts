@@ -74,7 +74,8 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  * have other elements in between them. The class will reorder the containers in the parent.
  *
  * To use siblings, either set `data-uf-group-size` with the container element or
- * add `data-uf-item-group` to the sibling elements.
+ * add `data-uf-item-group` to the sibling elements. If both attributes are missing, the number
+ * of siblings per group will be based on the number of controls.
  *
  * With `data-uf-group-size` the children of the grid element (that are not using
  * `data-uf-grid-control`, `data-uf-item-container` and `data-uf-item-group`) are split into
@@ -327,6 +328,21 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      * @private
      */
     private compareNumber;
+    /**
+     * Compares two parsed numbers. Check if a number is a NaN value. NaN values come after valid
+     * numbers.
+     *
+     * @param firstNumber
+     *   First value to compare
+     * @param secondNumber
+     *   Second value to compare
+     *
+     * @returns 0 if both values are equal or both values are NaN. -1 if first value is smaller or
+     *   second value is a NaN. +1 if first value is a NaN or second value is smaller.
+     *
+     * @private
+     */
+    private compareParsedNumbers;
     /**
      * Compares two date values. Use `new Date()` to get the date value.
      * Null values are always bigger.

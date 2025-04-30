@@ -27,6 +27,7 @@
 
 // region imports
 
+import {UFHtml} from "../tools/UFHtml.js";
 import {UFHtmlHelper} from "./UFHtmlHelper.js";
 import {UFEventManager} from "../events/UFEventManager.js";
 
@@ -40,6 +41,7 @@ enum DataAttribute {
   FilterInput = 'data-uf-filter-input',
   NoMatch = 'data-uf-filter-no-match',
   Group = 'data-uf-filter-group',
+  Container = 'data-uf-filter-container',
 }
 
 // endregion
@@ -62,7 +64,13 @@ enum DataAttribute {
  * child elements using the same value. If any of the child elements in the group matches the
  * filter, all the child elements in the group will be shown.
  *
- * A child element is hidden by adding the attribute `data-uf-filter-no-match` to the child element.
+ * Filterable elements can also be grouped via a container element. Add the attribute
+ * `data-uf-filter-container` to a container element. The container element is shown or hidden
+ * depending on if any of the children matches the filter. Children that use the `data-uf-no-filter`
+ * attribute are skipped.
+ *
+ * A child or container element is hidden by adding the attribute `data-uf-filter-no-match` to
+ * the child or container element.
  *
  * This class will add a css style to hide all elements with that data attribute
  * (using `display: none`).
@@ -113,25 +121,28 @@ export class UFFilterHelper extends UFHtmlHelper {
    * @private
    */
   private initFilterInput(inputElement: HTMLInputElement): void {
-    const containerSelector = inputElement.getAttribute(DataAttribute.FilterInput);
-    if (!containerSelector) {
+    const parentSelector = inputElement.getAttribute(DataAttribute.FilterInput);
+    if (!parentSelector) {
       return;
     }
-    const containers = document.querySelectorAll<HTMLElement>(
-      containerSelector
+    const parents = document.querySelectorAll<HTMLElement>(
+      parentSelector
     );
-    if (!containers.length) {
-      return;
-    }
-    const containersChildren: HTMLElement[][][] = [];
-    containers.forEach(
-      container => containersChildren.push(this.getFilterableChildren(container))
+    const groupedChildren: HTMLElement[][][] = [];
+    const containers: HTMLElement[] = [];
+    parents.forEach(
+      parent => {
+        groupedChildren.push(this.getFilterableChildren(parent));
+        containers.push(
+          ...UFHtml.findAllForAttribute<HTMLElement>(DataAttribute.Container, null, parent)
+        );
+      }
     );
     UFEventManager.instance.addListenerForGroup(
       DataAttribute.FilterInput,
       inputElement,
       'input',
-      () => this.applyFilter(inputElement.value, containersChildren)
+      () => this.applyFilter(inputElement.value, groupedChildren, containers)
     );
   }
 
@@ -169,16 +180,21 @@ export class UFFilterHelper extends UFHtmlHelper {
    *
    * @param text
    *   Text to match
-   * @param containersChildren
-   *   The children per container, grouped by the group attribute
+   * @param parents
+   *   The children per parent, grouped by the group attribute
+   * @param containers
+   *   Containers that should be shown or hidden based on the filter and their children
    *
    * @private
    */
-  private applyFilter(text: string, containersChildren: HTMLElement[][][]): void {
+  private applyFilter(text: string, parents: HTMLElement[][][], containers: HTMLElement[]): void {
     const lowerText = text.toLowerCase();
-    containersChildren.forEach(
-      containerChildren => this.applyFilterToContainer(lowerText, containerChildren)
+    parents.forEach(
+      parent => this.applyFilterToParent(lowerText, parent)
     );
+    containers.forEach(
+      container => this.applyFilterToContainer(lowerText, container)
+    )
   }
 
   /**
@@ -186,13 +202,13 @@ export class UFFilterHelper extends UFHtmlHelper {
    *
    * @param lowerText
    *   Lowercase version of the text to filter on
-   * @param containerChildren
+   * @param parent
    *   Children of the container to process, grouped by the group attribute.
    *
    * @private
    */
-  private applyFilterToContainer(lowerText: string, containerChildren: HTMLElement[][]): void {
-    containerChildren.forEach(
+  private applyFilterToParent(lowerText: string, parent: HTMLElement[][]): void {
+    parent.forEach(
       groupedChildren => this.applyFilterToGroupedChildren(lowerText, groupedChildren)
     );
   }
@@ -209,7 +225,11 @@ export class UFFilterHelper extends UFHtmlHelper {
   private applyFilterToGroupedChildren(lowerText: string, groupedChildren: HTMLElement[]): void {
     let match = false;
     groupedChildren.forEach(
-      child => match ||= (child.innerText ?? '').toLowerCase().indexOf(lowerText) >= 0
+      child => {
+        if (!child.hasAttribute(DataAttribute.NoFilter)) {
+          match ||= (child.innerText ?? '').toLowerCase().indexOf(lowerText) >= 0;
+        }
+      }
     );
     groupedChildren.forEach(
       child => {
@@ -221,6 +241,29 @@ export class UFFilterHelper extends UFHtmlHelper {
         }
       }
     );
+  }
+
+  /**
+   * Apply filter to a container. The container is shown if any of the children matches the
+   * filter.
+   *
+   * @param lowerText
+   * @param container
+   *
+   * @private
+   */
+  private applyFilterToContainer(lowerText: string, container: HTMLElement): void {
+    let match = false;
+    const children = Array.from(container.children) as HTMLElement[];
+      children.forEach(
+      child => match ||= (child.innerText ?? '').toLowerCase().indexOf(lowerText) >= 0
+    );
+    if (match) {
+      container.removeAttribute(DataAttribute.NoMatch);
+    }
+    else {
+      container.attributes.setNamedItem(document.createAttribute(DataAttribute.NoMatch));
+    }
   }
 
   /**

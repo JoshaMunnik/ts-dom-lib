@@ -133,7 +133,8 @@ function getSortType(control) {
  * have other elements in between them. The class will reorder the containers in the parent.
  *
  * To use siblings, either set `data-uf-group-size` with the container element or
- * add `data-uf-item-group` to the sibling elements.
+ * add `data-uf-item-group` to the sibling elements. If both attributes are missing, the number
+ * of siblings per group will be based on the number of controls.
  *
  * With `data-uf-group-size` the children of the grid element (that are not using
  * `data-uf-grid-control`, `data-uf-item-container` and `data-uf-item-group`) are split into
@@ -218,7 +219,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
         if (!controls.length) {
             return;
         }
-        const groupSize = parseInt(UFHtml.getAttribute(grid, DataAttribute.GroupSize, '0'));
+        const groupSize = parseInt(UFHtml.getAttribute(grid, DataAttribute.GroupSize, controls.length.toString()));
         const itemContainers = this.getContainers(grid);
         const itemGroups = this.getGroups(grid);
         const groupedItems = this.groupItems(grid, groupSize);
@@ -238,7 +239,9 @@ export class UFGridSortHelper extends UFHtmlHelper {
             descendingClasses: UFHtml.getAttribute(grid, DataAttribute.SortDescending),
         };
         this.m_grids.set(grid, gridEntry);
-        controls.forEach(control => UFEventManager.instance.addListenerForGroup(DataAttribute.Sorting, control.button, 'click', () => this.handleControlClick(control, gridEntry)));
+        controls
+            .filter(control => control.type != SortType.None)
+            .forEach(control => UFEventManager.instance.addListenerForGroup(DataAttribute.Sorting, control.button, 'click', () => this.handleControlClick(control, gridEntry)));
         this.addClasses(gridEntry);
         this.sortGrid(gridEntry);
     }
@@ -264,9 +267,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
                 button: (_a = UFHtml.findForAttribute(DataAttribute.SortButton, null, control)) !== null && _a !== void 0 ? _a : control,
                 type: getSortType(control),
             });
-        })
-            // remove controls that are not sortable (only needed to get correct relative index)
-            .filter(control => control.type != SortType.None);
+        });
     }
     /**
      * Gets the item containers for a grid.
@@ -588,6 +589,34 @@ export class UFGridSortHelper extends UFHtmlHelper {
         }
         const firstNumber = parseFloat(firstValue);
         const secondNumber = parseFloat(secondValue);
+        return this.compareParsedNumbers(firstNumber, secondNumber);
+    }
+    /**
+     * Compares two parsed numbers. Check if a number is a NaN value. NaN values come after valid
+     * numbers.
+     *
+     * @param firstNumber
+     *   First value to compare
+     * @param secondNumber
+     *   Second value to compare
+     *
+     * @returns 0 if both values are equal or both values are NaN. -1 if first value is smaller or
+     *   second value is a NaN. +1 if first value is a NaN or second value is smaller.
+     *
+     * @private
+     */
+    compareParsedNumbers(firstNumber, secondNumber) {
+        const firstNaN = Number.isNaN(firstNumber);
+        const secondNaN = Number.isNaN(secondNumber);
+        if (firstNaN && secondNaN) {
+            return 0;
+        }
+        if (firstNaN) {
+            return +1;
+        }
+        if (secondNaN) {
+            return -1;
+        }
         return firstNumber - secondNumber;
     }
     /**
@@ -614,10 +643,10 @@ export class UFGridSortHelper extends UFHtmlHelper {
         if (secondValue === null) {
             return -1;
         }
-        const firstDate = new Date(firstValue);
-        const secondDate = new Date(secondValue);
-        // sort dates in reverse order
-        return secondDate.getTime() - firstDate.getTime();
+        // sort dates in reverse order, so swap the values
+        const secondDate = Date.parse(firstValue);
+        const firstDate = Date.parse(secondValue);
+        return this.compareParsedNumbers(firstDate, secondDate);
     }
     /**
      * Reorder the containers based on their current position within the array.

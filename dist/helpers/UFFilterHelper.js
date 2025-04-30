@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 // region imports
+import { UFHtml } from "../tools/UFHtml.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFEventManager } from "../events/UFEventManager.js";
 // endregion
@@ -36,6 +37,7 @@ var DataAttribute;
     DataAttribute["FilterInput"] = "data-uf-filter-input";
     DataAttribute["NoMatch"] = "data-uf-filter-no-match";
     DataAttribute["Group"] = "data-uf-filter-group";
+    DataAttribute["Container"] = "data-uf-filter-container";
 })(DataAttribute || (DataAttribute = {}));
 // endregion
 // region exports
@@ -55,7 +57,13 @@ var DataAttribute;
  * child elements using the same value. If any of the child elements in the group matches the
  * filter, all the child elements in the group will be shown.
  *
- * A child element is hidden by adding the attribute `data-uf-filter-no-match` to the child element.
+ * Filterable elements can also be grouped via a container element. Add the attribute
+ * `data-uf-filter-container` to a container element. The container element is shown or hidden
+ * depending on if any of the children matches the filter. Children that use the `data-uf-no-filter`
+ * attribute are skipped.
+ *
+ * A child or container element is hidden by adding the attribute `data-uf-filter-no-match` to
+ * the child or container element.
  *
  * This class will add a css style to hide all elements with that data attribute
  * (using `display: none`).
@@ -89,17 +97,18 @@ export class UFFilterHelper extends UFHtmlHelper {
      * @private
      */
     initFilterInput(inputElement) {
-        const containerSelector = inputElement.getAttribute(DataAttribute.FilterInput);
-        if (!containerSelector) {
+        const parentSelector = inputElement.getAttribute(DataAttribute.FilterInput);
+        if (!parentSelector) {
             return;
         }
-        const containers = document.querySelectorAll(containerSelector);
-        if (!containers.length) {
-            return;
-        }
-        const containersChildren = [];
-        containers.forEach(container => containersChildren.push(this.getFilterableChildren(container)));
-        UFEventManager.instance.addListenerForGroup(DataAttribute.FilterInput, inputElement, 'input', () => this.applyFilter(inputElement.value, containersChildren));
+        const parents = document.querySelectorAll(parentSelector);
+        const groupedChildren = [];
+        const containers = [];
+        parents.forEach(parent => {
+            groupedChildren.push(this.getFilterableChildren(parent));
+            containers.push(...UFHtml.findAllForAttribute(DataAttribute.Container, null, parent));
+        });
+        UFEventManager.instance.addListenerForGroup(DataAttribute.FilterInput, inputElement, 'input', () => this.applyFilter(inputElement.value, groupedChildren, containers));
     }
     /**
      * Gets all children that should be shown or hidden based on the filter. Group them by the
@@ -133,27 +142,30 @@ export class UFFilterHelper extends UFHtmlHelper {
      *
      * @param text
      *   Text to match
-     * @param containersChildren
-     *   The children per container, grouped by the group attribute
+     * @param parents
+     *   The children per parent, grouped by the group attribute
+     * @param containers
+     *   Containers that should be shown or hidden based on the filter and their children
      *
      * @private
      */
-    applyFilter(text, containersChildren) {
+    applyFilter(text, parents, containers) {
         const lowerText = text.toLowerCase();
-        containersChildren.forEach(containerChildren => this.applyFilterToContainer(lowerText, containerChildren));
+        parents.forEach(parent => this.applyFilterToParent(lowerText, parent));
+        containers.forEach(container => this.applyFilterToContainer(lowerText, container));
     }
     /**
      * Applies the filter to the children of a container.
      *
      * @param lowerText
      *   Lowercase version of the text to filter on
-     * @param containerChildren
+     * @param parent
      *   Children of the container to process, grouped by the group attribute.
      *
      * @private
      */
-    applyFilterToContainer(lowerText, containerChildren) {
-        containerChildren.forEach(groupedChildren => this.applyFilterToGroupedChildren(lowerText, groupedChildren));
+    applyFilterToParent(lowerText, parent) {
+        parent.forEach(groupedChildren => this.applyFilterToGroupedChildren(lowerText, groupedChildren));
     }
     /**
      * Applies the filter to a group of children. All children in the group are shown if
@@ -166,7 +178,12 @@ export class UFFilterHelper extends UFHtmlHelper {
      */
     applyFilterToGroupedChildren(lowerText, groupedChildren) {
         let match = false;
-        groupedChildren.forEach(child => { var _a; return match || (match = ((_a = child.innerText) !== null && _a !== void 0 ? _a : '').toLowerCase().indexOf(lowerText) >= 0); });
+        groupedChildren.forEach(child => {
+            var _a;
+            if (!child.hasAttribute(DataAttribute.NoFilter)) {
+                match || (match = ((_a = child.innerText) !== null && _a !== void 0 ? _a : '').toLowerCase().indexOf(lowerText) >= 0);
+            }
+        });
         groupedChildren.forEach(child => {
             if (match) {
                 child.removeAttribute(DataAttribute.NoMatch);
@@ -175,6 +192,26 @@ export class UFFilterHelper extends UFHtmlHelper {
                 child.attributes.setNamedItem(document.createAttribute(DataAttribute.NoMatch));
             }
         });
+    }
+    /**
+     * Apply filter to a container. The container is shown if any of the children matches the
+     * filter.
+     *
+     * @param lowerText
+     * @param container
+     *
+     * @private
+     */
+    applyFilterToContainer(lowerText, container) {
+        let match = false;
+        const children = Array.from(container.children);
+        children.forEach(child => { var _a; return match || (match = ((_a = child.innerText) !== null && _a !== void 0 ? _a : '').toLowerCase().indexOf(lowerText) >= 0); });
+        if (match) {
+            container.removeAttribute(DataAttribute.NoMatch);
+        }
+        else {
+            container.attributes.setNamedItem(document.createAttribute(DataAttribute.NoMatch));
+        }
     }
     /**
      * Adds a style to hide elements that use the {@link DataAttribute.NoMatch} attribute.
