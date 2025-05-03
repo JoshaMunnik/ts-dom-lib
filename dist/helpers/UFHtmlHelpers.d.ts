@@ -54,12 +54,6 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      */
     private static m_instance;
     /**
-     * The table sort helper.
-     *
-     * @private
-     */
-    private readonly m_tableSortHelper;
-    /**
      * The grid sort helper.
      *
      * @private
@@ -79,13 +73,6 @@ export declare class UFHtmlHelpers extends UFHtmlHelper {
      *   Additional helpers to use.
      */
     init(helpers?: UFHtmlHelper[]): void;
-    /**
-     * Resorts a table using current selected column and sort direction. If the table is not sorted
-     * or the table sorting helper is not active nothing happens.
-     *
-     * @param table
-     */
-    resortTable(table: HTMLTableElement): void;
     /**
      * Resorts a grid using current selected control and sort direction. If the grid is not sorted
      * or the grid sorting helper is not active nothing happens.

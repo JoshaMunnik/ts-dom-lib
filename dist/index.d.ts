@@ -20,7 +20,6 @@ export * from './helpers/UFPageRefreshHelper.js';
 export * from './helpers/UFPopupHelper.js';
 export * from './helpers/UFSelectUrlHelper.js';
 export * from './helpers/UFShareHoverHelper.js';
-export * from './helpers/UFTableSortHelper.js';
 export * from './models/UFStorableModel.js';
 export * from './tools/UFAudio.js';
 export * from './tools/UFBrowser.js';

@@ -5,11 +5,11 @@
     <title>No caching test</title>
   </head>
   <body>
-    <table data-uf-sorting data-uf-sorting-url="/sorting">
+    <table data-uf-grid-sorting>
         <tr data-uf-header-row>
-          <th data-uf-sort-type="text"><button>Cached data</button></th>
-          <th data-uf-sort-type="text" data-uf-no-cache><button>Not cached data</button></th>
-          <th data-uf-sort-type="number"><button>Mixed cached</button></th>
+          <th data-uf-sort-control="text"><button>Cached data</button></th>
+          <th data-uf-sort-control="text"><button>Not cached data</button></th>
+          <th data-uf-sort-control="number"><button>Mixed cached</button></th>
         </tr>
         <tr>
           <td data-first>John</td>
@@ -19,7 +19,7 @@
         <tr>
           <td data-first>Mike</td>
           <td data-second>Thompson</td>
-          <td data-third data-uf-no-cache>30</td>
+          <td data-third>30</td>
         </tr>
         <tr>
           <td data-first>Anna</td>

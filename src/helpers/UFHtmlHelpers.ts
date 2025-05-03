@@ -35,7 +35,6 @@ import {UFHtmlHelper} from "./UFHtmlHelper.js";
 import {UFDetailsHelper} from "./UFDetailsHelper.js";
 import {UFCellFilterHelper} from "./UFCellFilterHelper.js";
 import {UFPopupHelper} from "./UFPopupHelper.js";
-import {UFTableSortHelper} from "./UFTableSortHelper.js";
 import {UFImagePreviewHelper} from "./UFImagePreviewHelper.js";
 import {UFSelectUrlHelper} from "./UFSelectUrlHelper.js";
 import {UFShareHoverHelper} from "./UFShareHoverHelper.js";
@@ -80,13 +79,6 @@ export class UFHtmlHelpers extends UFHtmlHelper {
   private static m_instance: UFHtmlHelpers | null = null;
 
   /**
-   * The table sort helper.
-   *
-   * @private
-   */
-  private readonly m_tableSortHelper: UFTableSortHelper;
-
-  /**
    * The grid sort helper.
    *
    * @private
@@ -100,7 +92,6 @@ export class UFHtmlHelpers extends UFHtmlHelper {
   private constructor() {
     super();
     this.registerHelper(new UFCellFilterHelper());
-    this.registerHelper(this.m_tableSortHelper = new UFTableSortHelper());
     this.registerHelper(new UFImagePreviewHelper());
     this.registerHelper(new UFSelectUrlHelper());
     this.registerHelper(new UFShareHoverHelper());
@@ -142,18 +133,6 @@ export class UFHtmlHelpers extends UFHtmlHelper {
       this.registerHelper(helper);
     });
     super.init();
-  }
-
-  /**
-   * Resorts a table using current selected column and sort direction. If the table is not sorted
-   * or the table sorting helper is not active nothing happens.
-   *
-   * @param table
-   */
-  resortTable(table: HTMLTableElement) {
-    if (this.m_tableSortHelper) {
-      this.m_tableSortHelper.resort(table);
-    }
   }
 
   /**

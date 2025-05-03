@@ -30,6 +30,9 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.93
+- removed `UFTableSortHelper`, use `UFGridSortHelper` instead
+
 1.0.92
 - with `UFGridSortHelper` handle parsed numbers and dates that result in a NaN value
 

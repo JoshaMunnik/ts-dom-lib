@@ -34,7 +34,6 @@ export * from './helpers/UFPageRefreshHelper.js';
 export * from './helpers/UFPopupHelper.js';
 export * from './helpers/UFSelectUrlHelper.js';
 export * from './helpers/UFShareHoverHelper.js';
-export * from './helpers/UFTableSortHelper.js';
 
 // models
 
