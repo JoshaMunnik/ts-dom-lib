@@ -30,6 +30,12 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.96
+- NaN numbers are now sorted before normal numbers with `UFGridSortHelper`.
+ 
+1.0.94
+- dates are no longer sorted in reverse order with `UFGridSortHelper`.
+
 1.0.93
 - removed `UFTableSortHelper`, use `UFGridSortHelper` instead
 

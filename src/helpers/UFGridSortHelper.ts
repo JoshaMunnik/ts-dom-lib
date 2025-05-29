@@ -620,7 +620,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
     }
     return item.element.getAttribute(DataAttribute.SortValue) ?? item.element.innerText;
   }
-
+ 
   /**
    * Compares two data groups using the sort control. The method compares the children with the
    * correct key.
@@ -709,7 +709,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
   }
 
   /**
-   * Compares two parsed numbers. Check if a number is a NaN value. NaN values come after valid
+   * Compares two parsed numbers. Check if a number is a NaN value. NaN values come before valid
    * numbers.
    *
    * @param firstNumber
@@ -718,7 +718,7 @@ export class UFGridSortHelper extends UFHtmlHelper {
    *   Second value to compare
    *
    * @returns 0 if both values are equal or both values are NaN. -1 if first value is smaller or
-   *   second value is a NaN. +1 if first value is a NaN or second value is smaller.
+   *   is a NaN. +1 if second value is a NaN or the second value is smaller.
    *
    * @private
    */
@@ -729,10 +729,10 @@ export class UFGridSortHelper extends UFHtmlHelper {
       return 0;
     }
     if (firstNaN) {
-      return +1;
+      return -1;
     }
     if (secondNaN) {
-      return -1;
+      return +1;
     }
     return firstNumber - secondNumber;
   }
@@ -754,16 +754,15 @@ export class UFGridSortHelper extends UFHtmlHelper {
     if (firstValue === secondValue) {
       return 0;
     }
-    // missing entries are placed at end
+    // missing entries are placed at start
     if (firstValue === null) {
-      return +1;
-    }
-    if (secondValue === null) {
       return -1;
     }
-    // sort dates in reverse order, so swap the values
-    const secondDate = Date.parse(firstValue);
-    const firstDate = Date.parse(secondValue);
+    if (secondValue === null) {
+      return +1;
+    }
+    const firstDate = Date.parse(firstValue);
+    const secondDate = Date.parse(secondValue);
     return this.compareParsedNumbers(firstDate, secondDate);
   }
 
