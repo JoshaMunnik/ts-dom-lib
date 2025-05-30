@@ -30,6 +30,9 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.97
+- added `UFDialogListener` to listen for dialog open/close changes
+
 1.0.96
 - NaN numbers are now sorted before normal numbers with `UFGridSortHelper`.
  
