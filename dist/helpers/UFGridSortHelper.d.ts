@@ -329,7 +329,7 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      */
     private compareNumber;
     /**
-     * Compares two parsed numbers. Check if a number is a NaN value. NaN values come after valid
+     * Compares two parsed numbers. Check if a number is a NaN value. NaN values come before valid
      * numbers.
      *
      * @param firstNumber
@@ -338,7 +338,7 @@ export declare class UFGridSortHelper extends UFHtmlHelper {
      *   Second value to compare
      *
      * @returns 0 if both values are equal or both values are NaN. -1 if first value is smaller or
-     *   second value is a NaN. +1 if first value is a NaN or second value is smaller.
+     *   is a NaN. +1 if second value is a NaN or the second value is smaller.
      *
      * @private
      */
