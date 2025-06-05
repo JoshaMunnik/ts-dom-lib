@@ -27,8 +27,6 @@
 // region imports
 import { UFMapOfSet } from "@ultraforce/ts-general-lib";
 import { UFHtml } from "../tools/UFHtml.js";
-// endregion
-// region exports
 /**
  * This singleton class can be used to listen for dialogs being opened or closed. Not all browsers
  * support toggle events for dialogs, so this class uses a MutationObserver to listen for changes

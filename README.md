@@ -30,6 +30,14 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.100
+- added `data-uf-file-none` to `UFFileInputHelper` to show elements when no file is selected.
+
+1.0.99
+- renamed `UFImagePreviewHelper` to `UFFileInputHelper` 
+- [BREAKING CHANGE] `UFFileInputHelper` now uses more general attribute names of 
+  `data-uf-file-name`, `data-uf-file-size` and `data-uf-file-type` instead `data-uf-image-xxxx`. 
+
 1.0.97
 - added `UFDialogListener` to listen for dialog open/close changes
 

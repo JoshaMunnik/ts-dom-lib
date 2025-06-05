@@ -27,7 +27,7 @@
 /**
  * Callback type for dialog open/close events.
  */
-type Callback = (element: HTMLDialogElement) => void;
+export type UFDialogCallback = (element: HTMLDialogElement) => void;
 /**
  * This singleton class can be used to listen for dialogs being opened or closed. Not all browsers
  * support toggle events for dialogs, so this class uses a MutationObserver to listen for changes
@@ -76,7 +76,7 @@ export declare class UFDialogListener {
      * @param callback
      *   Callback function to be called when the dialog is opened.
      */
-    addOpenListener(dialog: string | HTMLDialogElement, callback: Callback): void;
+    addOpenListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void;
     /**
      * Removes an open listener for a dialog element.
      *
@@ -85,7 +85,7 @@ export declare class UFDialogListener {
      * @param callback
      *   Callback function to be removed.
      */
-    removeOpenListener(dialog: string | HTMLDialogElement, callback: Callback): void;
+    removeOpenListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void;
     /**
      * Removes all open listeners for a dialog element.
      *
@@ -102,7 +102,7 @@ export declare class UFDialogListener {
      * @param callback
      *   Callback function to be called when the dialog is closed.
      */
-    addCloseListener(dialog: string | HTMLDialogElement, callback: Callback): void;
+    addCloseListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void;
     /**
      * Removes a close listener for a dialog element.
      *
@@ -111,7 +111,7 @@ export declare class UFDialogListener {
      * @param callback
      *   Callback function to be removed.
      */
-    removeCloseListener(dialog: string | HTMLDialogElement, callback: Callback): void;
+    removeCloseListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void;
     /**
      * Removes all close listeners for a dialog element.
      *
@@ -139,4 +139,3 @@ export declare class UFDialogListener {
      */
     private handleToggleDialog;
 }
-export {};

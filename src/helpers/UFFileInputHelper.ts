@@ -38,11 +38,12 @@ import {UFEventManager} from "../events/UFEventManager.js";
 // the data attributes used by this helper
 enum DataAttribute {
   ImagePreview = "data-uf-image-preview",
-  ImageName = "data-uf-image-name",
+  FileName = "data-uf-file-name",
   ImageWidth = "data-uf-image-width",
   ImageHeight = "data-uf-image-height",
-  ImageSize = "data-uf-image-size",
-  ImageType = "data-uf-image-type",
+  FileSize = "data-uf-file-size",
+  FileType = "data-uf-file-type",
+  FileNone = "data-uf-file-none",
 }
 
 // endregion
@@ -50,22 +51,31 @@ enum DataAttribute {
 // region exports
 
 /**
- * Helper class that adds image preview support to the page.
+ * Helper class that can show information from `input type="file"` tag. This helper only works with
+ * single file selection inputs. If multiple files are selected, only the first file will be used.
  *
- * To create an image preview, add an image element (img) with the attribute `data-uf-image-preview`
- * containing a selector that selects an input element of type file. Whenever a new file is
- * selected the image element will be updated with a preview of the image.
+ * Add `div`/`span` elements with one of the following attributes to the page:
+ * - `data-uf-file-name`: to show the name of the selected file.
+ * - `data-uf-file-size`: to show the size of the selected file.
+ * - `data-uf-file-type`: to show the mime type of the selected file.
+ * - `data-uf-image-width`: to show the width of the selected image.
+ * - `data-uf-image-height`: to show the height of the selected image.
  *
- * To show information about the selected file, add div/span elements with one of the following
- * attributes: `data-uf-image-name`, `data-uf-image-width`, `data-uf-image-height`,
- * `data-uf-image-size`, `data-uf-image-type`.
- * The attribute should contain the selector for the input element of type file. Whenever a file is
- * selected, the contents of the element is updated with the correct data.
+ * The value of the attribute will be a selector that selects the input element of type file. The
+ * contents of the tag will be updated with the information from the selected file.
  *
- * The file input element should support only a single file selection. This class will only use
- * the first file in the list of selected files.
+ * To create an image preview, add an image element (`img`) with the attribute
+ * `data-uf-image-preview` containing a selector that selects an input element of type file.
+ * Whenever a new file is selected the image element will be updated with a preview of the image.
+ *
+ * Add `data-uf-file-none` to an element to show the element when no file is selected. Or gets
+ * hidden when any file is selected. The value of the attribute will be a selector that selects
+ * the input element of type file. See {@link UFHtmlHelper} for more information on how elements
+ * are shown or hidden.
+ *
+ * The image related attributes will only work if the selected file is an image.
  */
-export class UFImagePreviewHelper extends UFHtmlHelper {
+export class UFFileInputHelper extends UFHtmlHelper {
   // region private variables
 
   /**
@@ -117,6 +127,13 @@ export class UFImagePreviewHelper extends UFHtmlHelper {
    */
   private m_typeElements: UFMapOfSet<HTMLInputElement, HTMLElement> = new UFMapOfSet();
 
+  /**
+   * Maps an input element to all elements which content will be shown if no file is selected.
+   *
+   * @private
+   */
+  private m_noneElements: UFMapOfSet<HTMLInputElement, HTMLElement> = new UFMapOfSet();
+
   // endregion
 
   // region UFHtmlHelper
@@ -145,6 +162,7 @@ export class UFImagePreviewHelper extends UFHtmlHelper {
     this.m_sizeElements.clear();
     this.m_typeElements.clear();
     this.m_widthElements.clear();
+    this.m_noneElements.clear();
   }
 
   /**
@@ -154,79 +172,104 @@ export class UFImagePreviewHelper extends UFHtmlHelper {
    */
   private addElements() {
     this.addElement(DataAttribute.ImagePreview, this.m_previewElements);
-    this.addElement(DataAttribute.ImageName, this.m_nameElements);
+    this.addElement(DataAttribute.FileName, this.m_nameElements);
     this.addElement(DataAttribute.ImageWidth, this.m_widthElements);
     this.addElement(DataAttribute.ImageHeight, this.m_heightElements);
-    this.addElement(DataAttribute.ImageSize, this.m_sizeElements);
-    this.addElement(DataAttribute.ImageType, this.m_typeElements);
+    this.addElement(DataAttribute.FileSize, this.m_sizeElements);
+    this.addElement(DataAttribute.FileType, this.m_typeElements);
+    this.addElement(DataAttribute.FileNone, this.m_noneElements);
   }
 
   /**
    * Adds input elements and related elements to the helper.
    *
-   * @param anAttribute
-   * @param aContainer
+   * @param attribute
+   * @param container
    *
    * @private
    */
-  private addElement(anAttribute: string, aContainer: UFMapOfSet<HTMLInputElement, HTMLElement>) {
+  private addElement(
+    attribute: string, container: UFMapOfSet<HTMLInputElement, HTMLElement>
+  ): void {
     this.addSourceAndTargetElements(
-      anAttribute,
+      attribute,
       this.m_inputElements,
-      aContainer,
+      container,
       'input',
       input => this.handleFileChange(input),
       DataAttribute.ImagePreview
     );
   }
 
-  private loadFile(anInputElement: HTMLInputElement, aFile: File): void {
-    const image: HTMLImageElement = new Image();
-    image.onload = () => this.processFile(anInputElement, aFile, image);
-    image.src = URL.createObjectURL(aFile);
-  }
-
   private processFile(
-    anInputElement: HTMLInputElement, aFile: File, anImage: HTMLImageElement
+    inputElement: HTMLInputElement, file: File
   ): void {
-    this.m_previewElements.get(anInputElement).forEach(
-      element => element.src = anImage.src
+    this.m_nameElements.get(inputElement).forEach(
+      element => element.textContent = file.name
     );
-    this.m_nameElements.get(anInputElement).forEach(
-      element => element.textContent = aFile.name
+    this.m_sizeElements.get(inputElement).forEach(
+      element => element.textContent = file.size.toString()
     );
-    this.m_widthElements.get(anInputElement).forEach(
-      element => element.textContent = anImage.width.toString()
+    this.m_typeElements.get(inputElement).forEach(
+      element => element.textContent = file.type
     );
-    this.m_heightElements.get(anInputElement).forEach(
-      element => element.textContent = anImage.height.toString()
+    this.m_noneElements.get(inputElement).forEach(
+      element => this.showElement(element, false)
     );
-    this.m_sizeElements.get(anInputElement).forEach(
-      element => element.textContent = aFile.size.toString()
+    this.loadImageFile(inputElement, file);
+  }
+
+  private loadImageFile(inputElement: HTMLInputElement, file: File): void {
+    const image: HTMLImageElement = new Image();
+    // this will only fire when a valid image is loaded
+    image.onload = () => this.processImageFile(inputElement, file, image);
+    image.src = URL.createObjectURL(file);
+  }
+
+  private processImageFile(
+    inputElement: HTMLInputElement, file: File, image: HTMLImageElement
+  ): void {
+    this.m_previewElements.get(inputElement).forEach(
+      element => element.src = image.src
     );
-    this.m_typeElements.get(anInputElement).forEach(
-      element => element.textContent = aFile.type
+    this.m_nameElements.get(inputElement).forEach(
+      element => element.textContent = file.name
+    );
+    this.m_widthElements.get(inputElement).forEach(
+      element => element.textContent = image.width.toString()
+    );
+    this.m_heightElements.get(inputElement).forEach(
+      element => element.textContent = image.height.toString()
+    );
+    this.m_sizeElements.get(inputElement).forEach(
+      element => element.textContent = file.size.toString()
+    );
+    this.m_typeElements.get(inputElement).forEach(
+      element => element.textContent = file.type
     );
   }
 
-  private clearElements(anInputElement: HTMLInputElement): void {
-    this.m_previewElements.get(anInputElement).forEach(
+  private clearElements(inputElement: HTMLInputElement): void {
+    this.m_previewElements.get(inputElement).forEach(
       element => element.src = ''
     );
-    this.m_nameElements.get(anInputElement).forEach(
+    this.m_nameElements.get(inputElement).forEach(
       element => element.textContent = '-'
     );
-    this.m_widthElements.get(anInputElement).forEach(
+    this.m_widthElements.get(inputElement).forEach(
       element => element.textContent = '-'
     );
-    this.m_heightElements.get(anInputElement).forEach(
+    this.m_heightElements.get(inputElement).forEach(
       element => element.textContent = '-'
     );
-    this.m_sizeElements.get(anInputElement).forEach(
+    this.m_sizeElements.get(inputElement).forEach(
       element => element.textContent = '-'
     );
-    this.m_typeElements.get(anInputElement).forEach(
+    this.m_typeElements.get(inputElement).forEach(
       element => element.textContent = '-'
+    );
+    this.m_noneElements.get(inputElement).forEach(
+      element => this.showElement(element, true)
     );
   }
 
@@ -237,17 +280,17 @@ export class UFImagePreviewHelper extends UFHtmlHelper {
   /**
    * Handle changes to the file input element.
    *
-   * @param anInputElement
+   * @param inputElement
    *
    * @private
    */
-  private handleFileChange(anInputElement: HTMLInputElement): void {
-    if (anInputElement.files == null) {
+  private handleFileChange(inputElement: HTMLInputElement): void {
+    if (inputElement.files == null) {
       return;
     }
-    anInputElement.files.length > 0
-      ? this.loadFile(anInputElement, anInputElement.files[0])
-      : this.clearElements(anInputElement);
+    inputElement.files.length > 0
+      ? this.processFile(inputElement, inputElement.files[0])
+      : this.clearElements(inputElement);
   }
 
   // endregion

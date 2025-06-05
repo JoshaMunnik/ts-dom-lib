@@ -20,7 +20,7 @@ export * from './helpers/UFFormToggleHelper.js';
 export * from './helpers/UFGridSortHelper.js';
 export * from './helpers/UFHtmlHelper.js';
 export * from './helpers/UFHtmlHelpers.js';
-export * from './helpers/UFImagePreviewHelper.js';
+export * from './helpers/UFFileInputHelper.js';
 export * from './helpers/UFManageSubmitHelper.js';
 export * from './helpers/UFPageRefreshHelper.js';
 export * from './helpers/UFPopupHelper.js';

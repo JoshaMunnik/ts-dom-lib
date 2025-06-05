@@ -33,7 +33,7 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFDetailsHelper } from "./UFDetailsHelper.js";
 import { UFCellFilterHelper } from "./UFCellFilterHelper.js";
 import { UFPopupHelper } from "./UFPopupHelper.js";
-import { UFImagePreviewHelper } from "./UFImagePreviewHelper.js";
+import { UFFileInputHelper } from "./UFFileInputHelper.js";
 import { UFSelectUrlHelper } from "./UFSelectUrlHelper.js";
 import { UFShareHoverHelper } from "./UFShareHoverHelper.js";
 import { UFPageRefreshHelper } from "./UFPageRefreshHelper.js";
@@ -69,7 +69,7 @@ export class UFHtmlHelpers extends UFHtmlHelper {
          */
         this.m_helpers = [];
         this.registerHelper(new UFCellFilterHelper());
-        this.registerHelper(new UFImagePreviewHelper());
+        this.registerHelper(new UFFileInputHelper());
         this.registerHelper(new UFSelectUrlHelper());
         this.registerHelper(new UFShareHoverHelper());
         this.registerHelper(new UFPageRefreshHelper());

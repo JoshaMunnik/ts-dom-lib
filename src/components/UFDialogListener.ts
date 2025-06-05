@@ -32,16 +32,12 @@ import {UFHtml} from "../tools/UFHtml.js";
 
 // endregion
 
-// region local types
+// region exports
 
 /**
  * Callback type for dialog open/close events.
  */
-type Callback = (element: HTMLDialogElement) => void;
-
-// endregion
-
-// region exports
+export type UFDialogCallback = (element: HTMLDialogElement) => void;
 
 /**
  * This singleton class can be used to listen for dialogs being opened or closed. Not all browsers
@@ -70,16 +66,16 @@ export class UFDialogListener {
    *
    * @private
    */
-  private m_dialogOpenListeners: UFMapOfSet<HTMLDialogElement, Callback> =
-    new UFMapOfSet<HTMLDialogElement, Callback>();
+  private m_dialogOpenListeners: UFMapOfSet<HTMLDialogElement, UFDialogCallback> =
+    new UFMapOfSet<HTMLDialogElement, UFDialogCallback>();
 
   /**
    * Map of dialog elements to their close listeners.
    *
    * @private
    */
-  private m_dialogCloseListeners: UFMapOfSet<HTMLDialogElement, Callback> =
-    new UFMapOfSet<HTMLDialogElement, Callback>();
+  private m_dialogCloseListeners: UFMapOfSet<HTMLDialogElement, UFDialogCallback> =
+    new UFMapOfSet<HTMLDialogElement, UFDialogCallback>();
 
   // endregion
 
@@ -126,7 +122,7 @@ export class UFDialogListener {
    * @param callback
    *   Callback function to be called when the dialog is opened.
    */
-  public addOpenListener(dialog: string | HTMLDialogElement, callback: Callback): void {
+  public addOpenListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void {
     const dialogElement = UFHtml.get<HTMLDialogElement>(dialog);
     this.startObservingDialog(dialogElement);
     this.m_dialogOpenListeners.add(dialogElement, callback);
@@ -140,7 +136,7 @@ export class UFDialogListener {
    * @param callback
    *   Callback function to be removed.
    */
-  public removeOpenListener(dialog: string | HTMLDialogElement, callback: Callback): void {
+  public removeOpenListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void {
     const dialogElement = UFHtml.get<HTMLDialogElement>(dialog);
     this.m_dialogOpenListeners.remove(dialogElement, callback);
   }
@@ -165,7 +161,7 @@ export class UFDialogListener {
    * @param callback
    *   Callback function to be called when the dialog is closed.
    */
-  public addCloseListener(dialog: string | HTMLDialogElement, callback: Callback): void {
+  public addCloseListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void {
     const dialogElement = UFHtml.get<HTMLDialogElement>(dialog);
     this.startObservingDialog(dialogElement);
     this.m_dialogCloseListeners.add(dialogElement, callback);
@@ -179,7 +175,7 @@ export class UFDialogListener {
    * @param callback
    *   Callback function to be removed.
    */
-  public removeCloseListener(dialog: string | HTMLDialogElement, callback: Callback): void {
+  public removeCloseListener(dialog: string | HTMLDialogElement, callback: UFDialogCallback): void {
     const dialogElement = UFHtml.get<HTMLDialogElement>(dialog);
     this.m_dialogCloseListeners.remove(dialogElement, callback);
   }
