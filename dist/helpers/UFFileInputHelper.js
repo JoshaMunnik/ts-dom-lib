@@ -25,6 +25,7 @@
  * SOFTWARE.
  */
 // region imports
+import { UFText } from "@ultraforce/ts-general-lib/dist/tools/UFText.js";
 import { UFHtmlHelper } from "./UFHtmlHelper.js";
 import { UFMapOfSet } from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
 import { UFEventManager } from "../events/UFEventManager.js";
@@ -40,6 +41,7 @@ var DataAttribute;
     DataAttribute["FileSize"] = "data-uf-file-size";
     DataAttribute["FileType"] = "data-uf-file-type";
     DataAttribute["FileNone"] = "data-uf-file-none";
+    DataAttribute["FileShow"] = "data-uf-file-show";
 })(DataAttribute || (DataAttribute = {}));
 // endregion
 // region exports
@@ -63,8 +65,10 @@ var DataAttribute;
  *
  * Add `data-uf-file-none` to an element to show the element when no file is selected. Or gets
  * hidden when any file is selected. The value of the attribute will be a selector that selects
- * the input element of type file. See {@link UFHtmlHelper} for more information on how elements
- * are shown or hidden.
+ * the input element of type file. Add `data-uf-file-show` to an element to show the element when
+ * a file is selected. Or gets hidden when no file is selected.
+ *
+ * See {@link UFHtmlHelper} for more information about how elements are shown or hidden.
  *
  * The image related attributes will only work if the selected file is an image.
  */
@@ -120,6 +124,12 @@ export class UFFileInputHelper extends UFHtmlHelper {
          * @private
          */
         this.m_noneElements = new UFMapOfSet();
+        /**
+         * Maps an input element to all elements which content will be shown if a file is selected.
+         *
+         * @private
+         */
+        this.m_showElements = new UFMapOfSet();
         // endregion
     }
     // endregion
@@ -146,6 +156,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
         this.m_typeElements.clear();
         this.m_widthElements.clear();
         this.m_noneElements.clear();
+        this.m_showElements.clear();
     }
     /**
      * Adds all elements to the helper.
@@ -160,6 +171,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
         this.addElement(DataAttribute.FileSize, this.m_sizeElements);
         this.addElement(DataAttribute.FileType, this.m_typeElements);
         this.addElement(DataAttribute.FileNone, this.m_noneElements);
+        this.addElement(DataAttribute.FileShow, this.m_showElements);
     }
     /**
      * Adds input elements and related elements to the helper.
@@ -177,6 +189,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
         this.m_sizeElements.get(inputElement).forEach(element => element.textContent = file.size.toString());
         this.m_typeElements.get(inputElement).forEach(element => element.textContent = file.type);
         this.m_noneElements.get(inputElement).forEach(element => this.showElement(element, false));
+        this.m_showElements.get(inputElement).forEach(element => this.showElement(element, true));
         this.loadImageFile(inputElement, file);
     }
     loadImageFile(inputElement, file) {
@@ -190,7 +203,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
         this.m_nameElements.get(inputElement).forEach(element => element.textContent = file.name);
         this.m_widthElements.get(inputElement).forEach(element => element.textContent = image.width.toString());
         this.m_heightElements.get(inputElement).forEach(element => element.textContent = image.height.toString());
-        this.m_sizeElements.get(inputElement).forEach(element => element.textContent = file.size.toString());
+        this.m_sizeElements.get(inputElement).forEach(element => element.textContent = UFText.formatFileSize(file.size));
         this.m_typeElements.get(inputElement).forEach(element => element.textContent = file.type);
     }
     clearElements(inputElement) {
@@ -201,6 +214,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
         this.m_sizeElements.get(inputElement).forEach(element => element.textContent = '-');
         this.m_typeElements.get(inputElement).forEach(element => element.textContent = '-');
         this.m_noneElements.get(inputElement).forEach(element => this.showElement(element, true));
+        this.m_showElements.get(inputElement).forEach(element => this.showElement(element, false));
     }
     // endregion
     // region event handlers

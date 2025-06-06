@@ -27,6 +27,7 @@
 
 // region imports
 
+import {UFText} from "@ultraforce/ts-general-lib/dist/tools/UFText.js";
 import {UFHtmlHelper} from "./UFHtmlHelper.js";
 import {UFMapOfSet} from "@ultraforce/ts-general-lib/dist/data/UFMapOfSet.js";
 import {UFEventManager} from "../events/UFEventManager.js";
@@ -44,6 +45,7 @@ enum DataAttribute {
   FileSize = "data-uf-file-size",
   FileType = "data-uf-file-type",
   FileNone = "data-uf-file-none",
+  FileShow = "data-uf-file-show",
 }
 
 // endregion
@@ -70,8 +72,10 @@ enum DataAttribute {
  *
  * Add `data-uf-file-none` to an element to show the element when no file is selected. Or gets
  * hidden when any file is selected. The value of the attribute will be a selector that selects
- * the input element of type file. See {@link UFHtmlHelper} for more information on how elements
- * are shown or hidden.
+ * the input element of type file. Add `data-uf-file-show` to an element to show the element when
+ * a file is selected. Or gets hidden when no file is selected.
+ *
+ * See {@link UFHtmlHelper} for more information about how elements are shown or hidden.
  *
  * The image related attributes will only work if the selected file is an image.
  */
@@ -134,6 +138,13 @@ export class UFFileInputHelper extends UFHtmlHelper {
    */
   private m_noneElements: UFMapOfSet<HTMLInputElement, HTMLElement> = new UFMapOfSet();
 
+  /**
+   * Maps an input element to all elements which content will be shown if a file is selected.
+   *
+   * @private
+   */
+  private m_showElements: UFMapOfSet<HTMLInputElement, HTMLElement> = new UFMapOfSet();
+
   // endregion
 
   // region UFHtmlHelper
@@ -163,6 +174,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
     this.m_typeElements.clear();
     this.m_widthElements.clear();
     this.m_noneElements.clear();
+    this.m_showElements.clear();
   }
 
   /**
@@ -178,6 +190,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
     this.addElement(DataAttribute.FileSize, this.m_sizeElements);
     this.addElement(DataAttribute.FileType, this.m_typeElements);
     this.addElement(DataAttribute.FileNone, this.m_noneElements);
+    this.addElement(DataAttribute.FileShow, this.m_showElements);
   }
 
   /**
@@ -216,6 +229,9 @@ export class UFFileInputHelper extends UFHtmlHelper {
     this.m_noneElements.get(inputElement).forEach(
       element => this.showElement(element, false)
     );
+    this.m_showElements.get(inputElement).forEach(
+      element => this.showElement(element, true)
+    );
     this.loadImageFile(inputElement, file);
   }
 
@@ -242,7 +258,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
       element => element.textContent = image.height.toString()
     );
     this.m_sizeElements.get(inputElement).forEach(
-      element => element.textContent = file.size.toString()
+      element => element.textContent = UFText.formatFileSize(file.size)
     );
     this.m_typeElements.get(inputElement).forEach(
       element => element.textContent = file.type
@@ -270,6 +286,9 @@ export class UFFileInputHelper extends UFHtmlHelper {
     );
     this.m_noneElements.get(inputElement).forEach(
       element => this.showElement(element, true)
+    );
+    this.m_showElements.get(inputElement).forEach(
+      element => this.showElement(element, false)
     );
   }
 

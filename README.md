@@ -30,6 +30,10 @@ This compiled minified version is created by the
 
 ## Version history
 
+1.0.101
+- added `data-uf-file-show` to `UFFileInputHelper` to show elements when a file is selected.
+- `data-uf-file-size` now uses `UFText.formatFileSize` to display the file size.
+
 1.0.100
 - added `data-uf-file-none` to `UFFileInputHelper` to show elements when no file is selected.
 

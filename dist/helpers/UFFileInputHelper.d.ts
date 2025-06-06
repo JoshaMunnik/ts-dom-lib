@@ -45,8 +45,10 @@ import { UFHtmlHelper } from "./UFHtmlHelper.js";
  *
  * Add `data-uf-file-none` to an element to show the element when no file is selected. Or gets
  * hidden when any file is selected. The value of the attribute will be a selector that selects
- * the input element of type file. See {@link UFHtmlHelper} for more information on how elements
- * are shown or hidden.
+ * the input element of type file. Add `data-uf-file-show` to an element to show the element when
+ * a file is selected. Or gets hidden when no file is selected.
+ *
+ * See {@link UFHtmlHelper} for more information about how elements are shown or hidden.
  *
  * The image related attributes will only work if the selected file is an image.
  */
@@ -99,6 +101,12 @@ export declare class UFFileInputHelper extends UFHtmlHelper {
      * @private
      */
     private m_noneElements;
+    /**
+     * Maps an input element to all elements which content will be shown if a file is selected.
+     *
+     * @private
+     */
+    private m_showElements;
     scan(): void;
     /**
      * Removes all event listeners and clears all data.
