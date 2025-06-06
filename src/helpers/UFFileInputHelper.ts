@@ -221,7 +221,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
       element => element.textContent = file.name
     );
     this.m_sizeElements.get(inputElement).forEach(
-      element => element.textContent = file.size.toString()
+      element => element.textContent = UFText.formatFileSize(file.size)
     );
     this.m_typeElements.get(inputElement).forEach(
       element => element.textContent = file.type
@@ -248,20 +248,11 @@ export class UFFileInputHelper extends UFHtmlHelper {
     this.m_previewElements.get(inputElement).forEach(
       element => element.src = image.src
     );
-    this.m_nameElements.get(inputElement).forEach(
-      element => element.textContent = file.name
-    );
     this.m_widthElements.get(inputElement).forEach(
       element => element.textContent = image.width.toString()
     );
     this.m_heightElements.get(inputElement).forEach(
       element => element.textContent = image.height.toString()
-    );
-    this.m_sizeElements.get(inputElement).forEach(
-      element => element.textContent = UFText.formatFileSize(file.size)
-    );
-    this.m_typeElements.get(inputElement).forEach(
-      element => element.textContent = file.type
     );
   }
 

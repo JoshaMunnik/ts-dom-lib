@@ -186,7 +186,7 @@ export class UFFileInputHelper extends UFHtmlHelper {
     }
     processFile(inputElement, file) {
         this.m_nameElements.get(inputElement).forEach(element => element.textContent = file.name);
-        this.m_sizeElements.get(inputElement).forEach(element => element.textContent = file.size.toString());
+        this.m_sizeElements.get(inputElement).forEach(element => element.textContent = UFText.formatFileSize(file.size));
         this.m_typeElements.get(inputElement).forEach(element => element.textContent = file.type);
         this.m_noneElements.get(inputElement).forEach(element => this.showElement(element, false));
         this.m_showElements.get(inputElement).forEach(element => this.showElement(element, true));
@@ -200,11 +200,8 @@ export class UFFileInputHelper extends UFHtmlHelper {
     }
     processImageFile(inputElement, file, image) {
         this.m_previewElements.get(inputElement).forEach(element => element.src = image.src);
-        this.m_nameElements.get(inputElement).forEach(element => element.textContent = file.name);
         this.m_widthElements.get(inputElement).forEach(element => element.textContent = image.width.toString());
         this.m_heightElements.get(inputElement).forEach(element => element.textContent = image.height.toString());
-        this.m_sizeElements.get(inputElement).forEach(element => element.textContent = UFText.formatFileSize(file.size));
-        this.m_typeElements.get(inputElement).forEach(element => element.textContent = file.type);
     }
     clearElements(inputElement) {
         this.m_previewElements.get(inputElement).forEach(element => element.src = '');
